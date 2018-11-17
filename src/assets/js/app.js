@@ -9,6 +9,7 @@ var CONTROLLER_LOGOUT = "logout";
 var CONTROLLER_WELCOME = "welcome";
 var CONTROLLER_PROFILE_OVERVIEW = "profile-overview";
 var CONTROLLER_PROFILE_DETAIL = "profile-detail";
+var CONTROLLER_QUERY = "query";
 
 //This is called when the browser is done loading
 $(function() {
@@ -67,6 +68,11 @@ function loadController(name, controllerData) {
                 },
                 loginController
             );
+            break;
+
+        case CONTROLLER_QUERY:
+            setCurrentController(name);
+            queryController();
             break;
 
         default:
