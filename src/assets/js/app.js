@@ -1,5 +1,6 @@
 //Global variables
 var session = sessionManager();
+var databaseManager = databaseManager();
 
 //Constants (sort of)
 var CONTROLLER_SIDEBAR = "sidebar";
@@ -15,7 +16,11 @@ $(function() {
     loadController(CONTROLLER_SIDEBAR);
 
     //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-    loadControllerFromUrl(CONTROLLER_WELCOME)
+    loadControllerFromUrl(CONTROLLER_WELCOME);
+
+    //Setup the database manager
+    databaseManager.connect("http://localhost:8080/");
+    databaseManager.authenticate("yourtokenhere");
 });
 
 //This function is responsible for creating the controllers of all views

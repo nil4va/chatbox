@@ -1,0 +1,13 @@
+{
+    "name": "fys-server-app",
+    "displayName": "FYS Server App",
+    "description": "",
+    "private": true,
+    "version": "1.0.0",
+    "dependencies": {
+        "mysql": "2.16.0"
+    },
+    "scripts": {
+        "app": "node ./app.js"
+    }
+}
