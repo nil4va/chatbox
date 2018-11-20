@@ -17,7 +17,8 @@ const defaultHeaders = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "*",
-    "Access-Control-Allow-Headers": "*"
+    //BUGFIX: Some browsers don't properly support wildcards, it seems...
+    "Access-Control-Allow-Headers": "Authorization, *"
 };
 
 const pools = {};
