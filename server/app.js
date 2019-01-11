@@ -106,7 +106,9 @@ function handlePOST(request, response, connectionPool) {
 
     request.on("end", () => {
         try {
-            handleQuery(connectionPool, JSON.parse(data), function(data) {
+            let buffer = JSON.parse(Buffer.concat(data).toString());
+
+            handleQuery(connectionPool, buffer, function(data) {
                 sendOK(response, data);
             }, function(e) {
                 sendBadRequest(response, e.message);
