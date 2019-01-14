@@ -79,7 +79,8 @@ function handleRequest(request, response) {
                 host: config.database.host,
                 user: user.username,
                 password: user.password,
-                database: user.database
+                database: user.database,
+                timezone: "UTC"
             });
 
             pools[token] = connectionPool;
