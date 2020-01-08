@@ -111,7 +111,7 @@ function handlePOST(request, response, connectionPool) {
 
             handleQuery(connectionPool, buffer, function(data) {
                 sendOK(response, data);
-            }, function(e) {
+            },  (e) => {
                 sendBadRequest(response, e.message);
             });
         }

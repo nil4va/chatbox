@@ -1,15 +1,15 @@
 //Global variables
-var session = sessionManager();
+const session = sessionManager();
 var databaseManager = databaseManager();
 
 //Constants (sort of)
-var CONTROLLER_SIDEBAR = "sidebar";
-var CONTROLLER_LOGIN = "login";
-var CONTROLLER_LOGOUT = "logout";
-var CONTROLLER_WELCOME = "welcome";
-var CONTROLLER_PROFILE_OVERVIEW = "profile-overview";
-var CONTROLLER_PROFILE_DETAIL = "profile-detail";
-var CONTROLLER_QUERY = "query";
+const CONTROLLER_SIDEBAR = "sidebar";
+const CONTROLLER_LOGIN = "login";
+const CONTROLLER_LOGOUT = "logout";
+const CONTROLLER_WELCOME = "welcome";
+const CONTROLLER_PROFILE_OVERVIEW = "profile-overview";
+const CONTROLLER_PROFILE_DETAIL = "profile-detail";
+const CONTROLLER_QUERY = "query";
 
 //This is called when the browser is done loading
 $(function() {
@@ -37,7 +37,7 @@ function loadController(name, controllerData) {
 
     switch(name) {
         case CONTROLLER_SIDEBAR:
-            sidebarController();
+            new SidebarController();
             break;
 
         case CONTROLLER_LOGIN:
