@@ -1,35 +1,31 @@
 /**
  * Responsible for handling the actions happening on welcome view
  *
- * @author Lennard Fonteijn
+ * @author Lennard Fonteijn & Pim Meijer
  */
-function welcomeController() {
+class WelcomeController {
     //Reference to our loaded view
-    var welcomeView;
 
-    function initialize() {
+    constructor() {
         $.get("views/welcome.html")
-            .done(setup)
-            .fail(error);
+            .done(this.setup.bind(this))
+            .fail(this.error.bind(this));
     }
 
     //Called when the welcome.html has been loaded
-    function setup(data) {
+    setup(data) {
         //Load the welcome-content into memory
-        welcomeView = $(data);
+        const welcomeView = $(data);
 
         //Set the name in the view from the session
-        welcomeView.find(".name").html(session.get("username"));
+        welcomeView.find(".name").html(app.session.get("username"));
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(welcomeView);
     }
 
     //Called when the login.html failed to load
-    function error() {
+    error() {
         $(".content").html("Failed to load content!");
     }
-
-    //Run the initialize function to kick things off
-    initialize();
 }

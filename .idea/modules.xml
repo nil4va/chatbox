@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FYS-Framework.iml" filepath="$PROJECT_DIR$/FYS-Framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PAD-framework.iml" filepath="$PROJECT_DIR$/PAD-framework.iml" />
     </modules>
   </component>
 </project>

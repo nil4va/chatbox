@@ -1,3 +1,4 @@
+
 /**
  * Responsible for handling the actions happening on sidebar view
  *
@@ -5,16 +6,19 @@
  */
 class SidebarController {
     constructor() {
+        console.log(app);
         $.get("views/sidebar.html")
-            .done(this.setup)
-            .fail(this.error);
+            .done(this.setup.bind(this))
+            .fail(this.error.bind(this));
     }
 
     //Called when the sidebar.html has been loaded
     setup(data) {
+        console.log("setup");
         //Load the sidebar-content into memory
         const sidebarView = $(data);
 
+        console.log(this);
         //Find all anchors and register the click-event
         sidebarView.find("a").on("click", this.handleClickMenuItem);
 
@@ -25,11 +29,12 @@ class SidebarController {
     }
 
     handleClickMenuItem() {
+
         //Get the data-controller from the clicked element (this)
         const controller = $(this).attr("data-controller");
 
         //Pass the action to a new function for further processing
-        loadController(controller);
+        app.loadController(controller);
 
         //Return false to prevent reloading the page
         return false;
