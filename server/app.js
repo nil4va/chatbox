@@ -1,9 +1,9 @@
 const express = safeRequire('express');
 const db = safeRequire('./db', 'could not load db config');
 const bodyParser = safeRequire('body-parser', 'could not load bodyparser');
-const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
-const crypto = require('crypto');
+const morgan = safeRequire('morgan');
+const cookieParser = safeRequire('cookie-parser');
+const crypto = safeRequire('crypto');
 
 const app = express();
 
@@ -35,8 +35,24 @@ app.use((req, res, next) => {
     next();
 });
 
+//always make sure the auth token is injected in the request
+//will be injected as null when there is no session
+//TODO: untested
+const authTokens = {};
+
+app.use((req, res, next) => {
+    // Get auth token from the cookies
+    const authToken = req.cookies['AuthToken'];
+
+    // Inject the user to the request
+    req.user = authTokens[authToken];
+
+    next();
+});
+
 //AUTH HELPER FUNCTIONS - TODO: Move
 const requireAuth = (req, res, next) => {
+    //if a token exists TODO: check if token is what we expect it to be
     if (req.user) {
         next();
     } else {
@@ -56,7 +72,6 @@ const getHashedPassword = (password) => {
 
 // ROUTES - add all api endpoints here
 
-
 app.get('/login', (req, res) => {
     const username = req.body.username;
     //TODO: we cant receive a password unencrypted!!
@@ -68,6 +83,9 @@ app.get('/login', (req, res) => {
     }, (data) => {
         //TODO: WIP Check for user retrieved from db
         console.log(data);
+
+        //add authtoken as index with user as value to array
+        authTokens[authToken] = user;
         res.cookie("authToken", generateAuthToken(), {maxAge: 360000});
 
     }, (err) => res.status(400).json(err));
@@ -93,8 +111,6 @@ app.post('/kamers', (req, res) => {
 });
 
 //END ROUTES
-
-
 function safeRequire(module, errorMessage) {
     try {
         return require(module);
@@ -105,7 +121,7 @@ function safeRequire(module, errorMessage) {
 
         return undefined;
     }
-}
+};
 
 module.exports = app;
 
