@@ -27,11 +27,11 @@ function queryController() {
         $(".content").empty().append(queryView);
     }
 
-    function handleQuery() {
-        var query = $("#query-input").val();
+    function getKamers() {
+        const databaseManager = new NetworkManager();
 
         databaseManager
-            .query(query)
+            .query("S")
             .done(function (data) {
                 $("#query-result").html(JSON.stringify(data, null, 4));
             })

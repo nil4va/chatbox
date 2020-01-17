@@ -13,7 +13,7 @@ class App {
 
     constructor() {
         this.session = sessionManager();
-        this.databaseManager = databaseManager();
+        this.networkManager = new NetworkManager();
 
         //Constants (sort of)
         this.CONTROLLER_SIDEBAR = "sidebar";
@@ -30,9 +30,6 @@ class App {
         //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
         this.loadControllerFromUrl(this.CONTROLLER_WELCOME);
 
-        //Setup the database manager
-        this.databaseManager.connect("http://localhost:8080/");
-        this.databaseManager.authenticate("yourtokenhere");
     }
 
 

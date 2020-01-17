@@ -1,7 +1,5 @@
 {
-  "yourtokenhere": {
-    "username": "root",
-    "password": "",
-    "database": "fys"
-  }
+  "username": "readwrite",
+  "password": "test1234",
+  "database": "kamers"
 }

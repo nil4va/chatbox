@@ -1,6 +1,6 @@
 {
-    "name": "fys-server-app",
-    "displayName": "FYS Server App",
+    "name": "pad-server-app",
+    "displayName": "PAD Server App",
     "description": "",
     "private": true,
     "version": "1.0.0",
