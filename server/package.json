@@ -1,13 +1,17 @@
 {
     "name": "pad-server-app",
-    "displayName": "PAD Server App",
-    "description": "",
+    "displayName": "PAD server",
+    "description": "PAD server setup for HvA HBO-ICT",
     "private": true,
     "version": "1.0.0",
-    "dependencies": {
-        "mysql": "2.16.0"
+    "devDependencies": {
+        "morgan": "^1.9.1",
+        "nodemon": "^2.0.2"
     },
-    "scripts": {
-        "app": "node ./app.js"
+    "dependencies": {
+        "cookie-parser": "^1.4.4",
+        "mysql": "^2.17.1",
+        "express": "^4.17.1",
+        "body-parser": "^1.19.0"
     }
 }
