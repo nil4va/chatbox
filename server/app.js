@@ -1,24 +1,21 @@
-const express = safeRequire('express');
-const db = safeRequire('./db', 'could not load db config');
-const bodyParser = safeRequire('body-parser', 'could not load bodyparser');
-const morgan = safeRequire('morgan');
-const cookieParser = safeRequire('cookie-parser');
-const crypto = safeRequire('crypto');
-
+const express = require('express');
+const db = require('./db');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const cryptoHelper = require("./cryptoHelper");
 const app = express();
 
 //logger lib for dev only - 'short' is basic logging info
+//TODO: if dev..
 app.use(morgan('short'));
 
 //init mysql connectionpool
 const connectionPool = db.init();
 
-//server side cookies
-app.use(cookieParser());
-
-//parsing request bodies
-app.use(bodyParser.urlencoded({ extended: false }));
+//parsing request bodies from json to js
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
 
 //CORS config
 app.use((req, res, next) => {
@@ -35,94 +32,44 @@ app.use((req, res, next) => {
     next();
 });
 
-//always make sure the auth token is injected in the request
-//will be injected as null when there is no session
-//TODO: untested
-const authTokens = {};
 
-app.use((req, res, next) => {
-    // Get auth token from the cookies
-    const authToken = req.cookies['AuthToken'];
-
-    // Inject the user to the request
-    req.user = authTokens[authToken];
-
-    next();
-});
-
-//AUTH HELPER FUNCTIONS - TODO: Move
-const requireAuth = (req, res, next) => {
-    //if a token exists TODO: check if token is what we expect it to be
-    if (req.user) {
-        next();
-    } else {
-        console.log("give unauthorized error ")
-    }
-};
-
-const generateAuthToken = () => {
-    return crypto.randomBytes(30).toString('hex');
-};
-
-const getHashedPassword = (password) => {
-    const sha256 = crypto.createHash('sha256');
-    return sha256.update(password).digest('base64');
-};
-
-
-// ROUTES - add all api endpoints here
-
-app.get('/login', (req, res) => {
+// ------ ROUTES - add all api endpoints here ------
+app.post('/login', (req, res) => {
     const username = req.body.username;
+
     //TODO: we cant receive a password unencrypted!!
-    const password = getHashedPassword(req.body.password);
+    // const password = cryptoHelper.getHashedPassword(req.body.password);
+    const password = req.body.password;
 
-    db.handleQuery(connectionPool,{
+    db.handleQuery(connectionPool, {
         query: "SELECT * FROM user WHERE username = ? AND password = ?",
-        values: [req.body.username, req.body.password]
+        values: [username, password]
     }, (data) => {
-        //TODO: WIP Check for user retrieved from db
-        console.log(data);
-
-        //add authtoken as index with user as value to array
-        authTokens[authToken] = user;
-        res.cookie("authToken", generateAuthToken(), {maxAge: 360000});
+        if (data.length === 1) {
+            console.log("login success: " + data[0].username);
+            res.status(200).json("success");
+        } else {
+            //wrong username
+            res.status(401).json("Wrong username or password");
+        }
 
     }, (err) => res.status(400).json(err));
 });
 
-app.post("/logout", (req, _) => {
-    req.session.destroy(() => console.log("user logged out."));
-});
+//dummy data example - kamers
+app.post('/example', (req, res) => {
 
-app.post("/authdata", requireAuth, (req, res) => console.log("protected route"));
-
-//dummy data
-app.post('/kamers', (req, res) => {
-    db.handleQuery(connectionPool,{
-        query: "SELECT * FROM kamer WHERE kamercode = ?",
-        values: [req.body.kamercode]
-    }, (data) => {
-        console.log(data);
-        res.status(200).json(data);
-    }, (err) => res.status(400).json(err)
-);
+    db.handleQuery(connectionPool, {
+            query: "SELECT * FROM kamer WHERE kamercode = ?",
+            values: [req.body.kamercode]
+        }, (data) => {
+            console.log(data);
+            res.status(200).json(data);
+        }, (err) => res.status(500).json(err)
+    );
 
 });
-
-//END ROUTES
-function safeRequire(module, errorMessage) {
-    try {
-        return require(module);
-    }
-    catch (e) {
-        console.log(e);
-        console.log(errorMessage);
-
-        return undefined;
-    }
-};
+//------- END ROUTES -------
 
 module.exports = app;
-
 

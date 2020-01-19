@@ -30,7 +30,7 @@ class WelcomeController {
 
     getExampleData(id) {
         app.networkManager
-            .doRequest("http://localhost:3000/kamers", { kamercode: id})
+            .doRequest("http://localhost:3000/example", { kamercode: id})
             .done(function (data) {
                 $(".content").html(JSON.stringify(data, null, 4));
             })

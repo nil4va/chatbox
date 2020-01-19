@@ -1,14 +1,14 @@
-const mysql = require("mysql")
-const config = require("./config.json");
-const users = require("./users.json", );
+const mysql = require("mysql");
+const config = require("./config/config.json");
+const users = require("./config/users.json",);
 
 module.exports = {
 
     init() {
-        if(config === undefined) {
+        if (config === typeof undefined) {
             console.log("Error: Could not load 'config.json', please make a copy of 'config.template.json'!")
             return;
-        } else if(users === undefined) {
+        } else if (users === typeof undefined) {
             console.log("Error: Could not load 'users.json', please make a copy of 'users.template.json'!");
             return;
         }
@@ -23,9 +23,7 @@ module.exports = {
             timezone: "UTC"
         });
 
-        // pools[token] = connectionPool;
-
-        connectionPool.on('error', function(err) {
+        connectionPool.on('error', function (err) {
             console.log("error while creating mysql pool err: " + err);
             throw err;
         });

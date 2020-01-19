@@ -9,13 +9,10 @@ class NetworkManager {
         //TODO: check what token needs to be
         // if(!token) {
         //     token = prompt("Please enter an authentication token to connect to the database:");
-        // }
-
+        //
         const promise = $.Deferred();
+        const json = JSON.stringify(data);
 
-        let json = JSON.stringify(data);
-
-        console.log(json);
         $.ajax({
             url: url,
             type: "POST",
@@ -25,12 +22,11 @@ class NetworkManager {
                 "Authorization": "Bearer " + "!!EMPTY"
             },
             data: json
-        }).done(function(data) {
+        }).done((data) => {
             promise.resolve(data);
-        }).fail(function(xhr) {
+        }).fail((xhr) => {
             if(xhr.status === 400) {
                 const data = JSON.parse(xhr.responseText);
-
                 promise.reject(data.reason);
             }
             else {

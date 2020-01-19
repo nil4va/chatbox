@@ -1,58 +1,50 @@
 /**
  * Implementation of a simple Session Manager
  *
- * @author Lennard Fonteijn
+ * @author Lennard Fonteijn & Pim Meijer
  */
-function sessionManager() {
-    var session = {};
+class SessionManager {
 
-    function get(key) {
-        return session[key];
-    }
-
-    function set(key, value) {
-        session[key] = value;
-
-        saveSession();
-    }
-
-    function remove(key) {
-        delete(session[key]);
-
-        saveSession();
-    }
-
-    function clear() {
-        session = {};
-
-        saveSession();
-    }
-
-    function loadSession() {
+    constructor() {
         try {
-            session = JSON.parse(localStorage.getItem("session"));
+            this.session = JSON.parse(localStorage.getItem("session"));
         }
         catch (e) {
             //Do nothing
         }
 
-        if(!session) {
-            session = {};
+        if(!this.session) {
+            this.session = {};
 
-            saveSession();
+            this.saveSession();
         }
     }
 
-    function saveSession() {
-        localStorage.setItem("session", JSON.stringify(session));
+     get(key) {
+        return this.session[key];
     }
 
-    loadSession();
+     set(key, value) {
+        this.session[key] = value;
+        this.session[key] = value;
 
-    return {
-        get: get,
-        set: set,
-        remove: remove,
-        clear: clear
+        this.saveSession();
     }
+
+     remove(key) {
+        delete(this.session[key]);
+
+        this.saveSession();
+    }
+
+     clear() {
+        this.session = {};
+
+        this.saveSession();
+    }
+
+     saveSession() {
+        localStorage.setItem("session", JSON.stringify(this.session));
+    }
+
 }

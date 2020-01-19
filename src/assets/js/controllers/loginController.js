@@ -18,7 +18,8 @@ function loginController() {
         //Load the login-content into memory
         loginView = $(data);
 
-        loginView.find(".login-form").on("submit", function() {
+        loginView.find(".login-form").on("submit", function(e) {
+            e.preventDefault();
             handleLogin();
 
             //Return false to prevent the form submission from reloading the page.
@@ -31,23 +32,25 @@ function loginController() {
 
     function handleLogin() {
         //Find the username and password
-        var username = loginView.find("[name='username']").val();
-        var password = loginView.find("[name='password']").val();
+        const username = loginView.find("[name='username']").val();
+        const password = loginView.find("[name='password']").val();
+        console.log("geweldig");
 
-        //Attempt to login
-        if(username !== "test" || password !== "test") {
-            loginView
-                .find(".error")
-                .html("Invalid credentials!");
-
-            return;
-        }
-
-        //Set the username in the global session variable
-        session.set("username", username);
+        app.networkManager
+            .doRequest("http://localhost:3000/login", { "username": username, "password": password})
+            .done((data) => {
+                console.log("success: "+ data);
+                app.session.set("username", username);
+                app.loadController(app.CONTROLLER_WELCOME);
+            })
+            .fail((reason) => {
+                console.log("fail");
+                    loginView
+                        .find(".error")
+                        .html(reason);
+            });
 
         //Succesful login! Move to a welcome page or something.
-        loadController(CONTROLLER_WELCOME);
     }
 
     //Called when the login.html failed to load

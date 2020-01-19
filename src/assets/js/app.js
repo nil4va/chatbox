@@ -12,7 +12,7 @@ let app;
 class App {
 
     constructor() {
-        this.session = sessionManager();
+        this.session = new SessionManager();
         this.networkManager = new NetworkManager();
 
         //Constants (sort of)
