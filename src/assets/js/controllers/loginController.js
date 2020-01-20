@@ -4,7 +4,6 @@
  * @author Lennard Fonteijn
  */
 class LoginController {
-    //Reference to our loaded view
 
     constructor() {
         $.get("views/login.html")

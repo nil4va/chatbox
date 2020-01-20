@@ -4,11 +4,6 @@
  * @author Lennard Fonteijn en Pim Meijer
  */
 
-/*
-
- */
-
-
 const appInstance = () => {
     class App {
 

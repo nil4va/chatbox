@@ -1,6 +1,6 @@
 
 /**
- * Implementation of a simple Database Manager
+ * Implementation of a simple network manager
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
