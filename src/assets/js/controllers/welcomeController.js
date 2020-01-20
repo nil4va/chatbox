@@ -18,23 +18,22 @@ class WelcomeController {
         const welcomeView = $(data);
 
         //Set the name in the view from the session
-        welcomeView.find(".name").html(app.session.get("username"));
+        welcomeView.find(".name").html(appInstance().session.get("username"));
 
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(welcomeView)
-
 
         //ajax request naar /kamers
         this.getExampleData("a02.11");
     }
 
     getExampleData(id) {
-        app.networkManager
-            .doRequest("http://localhost:3000/example", { kamercode: id})
-            .done(function (data) {
+        appInstance().networkManager
+            .doRequest("http://localhost:3000/example", {kamercode: id})
+            .done((data) => {
                 $(".content").html(JSON.stringify(data, null, 4));
             })
-            .fail(function (reason) {
+            .fail((reason) => {
                 $(".content").html(reason);
             });
     }

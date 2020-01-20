@@ -6,7 +6,6 @@
  */
 class SidebarController {
     constructor() {
-        console.log(app);
         $.get("views/sidebar.html")
             .done(this.setup.bind(this))
             .fail(this.error.bind(this));
@@ -14,11 +13,9 @@ class SidebarController {
 
     //Called when the sidebar.html has been loaded
     setup(data) {
-        console.log("setup");
         //Load the sidebar-content into memory
         const sidebarView = $(data);
 
-        console.log(this);
         //Find all anchors and register the click-event
         sidebarView.find("a").on("click", this.handleClickMenuItem);
 
@@ -34,7 +31,7 @@ class SidebarController {
         const controller = $(this).attr("data-controller");
 
         //Pass the action to a new function for further processing
-        app.loadController(controller);
+        appInstance().loadController(controller);
 
         //Return false to prevent reloading the page
         return false;

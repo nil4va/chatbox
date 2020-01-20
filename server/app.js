@@ -42,7 +42,7 @@ app.post('/login', (req, res) => {
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
-        query: "SELECT * FROM user WHERE username = ? AND password = ?",
+        query: "SELECT username, password FROM user WHERE username = ? AND password = ?",
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {

@@ -5,10 +5,10 @@ const users = require("./config/users.json",);
 module.exports = {
 
     init() {
-        if (config === typeof undefined) {
+        if (!config) {
             console.log("Error: Could not load 'config.json', please make a copy of 'config.template.json'!")
             return;
-        } else if (users === typeof undefined) {
+        } else if (!users) {
             console.log("Error: Could not load 'users.json', please make a copy of 'users.template.json'!");
             return;
         }
@@ -23,7 +23,7 @@ module.exports = {
             timezone: "UTC"
         });
 
-        connectionPool.on('error', function (err) {
+        connectionPool.on('error', (err) => {
             console.log("error while creating mysql pool err: " + err);
             throw err;
         });
@@ -36,7 +36,7 @@ module.exports = {
             sql: data.query,
             values: data.values,
             timeout: config.database.timeout
-        }, function (error, results) {
+        }, (error, results) => {
             if (error) {
                 errorCallback(error);
             } else {

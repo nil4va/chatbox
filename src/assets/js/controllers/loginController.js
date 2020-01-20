@@ -3,61 +3,53 @@
  *
  * @author Lennard Fonteijn
  */
-function loginController() {
+class LoginController {
     //Reference to our loaded view
-    var loginView;
 
-    function initialize() {
+    constructor() {
         $.get("views/login.html")
-            .done(setup)
-            .fail(error);
+            .done(this.setup.bind(this))
+            .fail(this.error.bind(this));
     }
 
     //Called when the login.html has been loaded
-    function setup(data) {
+    setup(data) {
         //Load the login-content into memory
-        loginView = $(data);
+        this.loginView = $(data);
 
-        loginView.find(".login-form").on("submit", function(e) {
-            e.preventDefault();
-            handleLogin();
-
-            //Return false to prevent the form submission from reloading the page.
-            return false;
-        });
+        this.loginView.find(".login-form").on("submit", (e) => this.handleLogin(e));
 
         //Empty the content-div and add the resulting view to the page
-        $(".content").empty().append(loginView);
+        $(".content").empty().append(this.loginView);
     }
 
-    function handleLogin() {
-        //Find the username and password
-        const username = loginView.find("[name='username']").val();
-        const password = loginView.find("[name='password']").val();
-        console.log("geweldig");
+    handleLogin(event) {
+        //prevent actual submit
+        event.preventDefault();
 
-        app.networkManager
-            .doRequest("http://localhost:3000/login", { "username": username, "password": password})
+        //Find the username and password
+        const username = this.loginView.find("[name='username']").val();
+        const password = this.loginView.find("[name='password']").val();
+
+        appInstance().networkManager
+            .doRequest("http://localhost:3000/login", {"username": username, "password": password})
             .done((data) => {
-                console.log("success: "+ data);
+                //Succesful login! Move to a welcome page or something.
+                console.log("success: " + data);
                 app.session.set("username", username);
                 app.loadController(app.CONTROLLER_WELCOME);
             })
             .fail((reason) => {
-                console.log("fail");
-                    loginView
-                        .find(".error")
-                        .html(reason);
+                console.log("fail: ");
+                this.loginView
+                    .find(".error")
+                    .html(reason.responseText);
             });
 
-        //Succesful login! Move to a welcome page or something.
     }
 
     //Called when the login.html failed to load
-    function error() {
+    error() {
         $(".content").html("Failed to load content!");
     }
-
-    //Run the initialize function to kick things off
-    initialize();
 }
