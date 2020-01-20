@@ -18,7 +18,6 @@ const appInstance = () => {
             this.CONTROLLER_WELCOME = "welcome";
             this.CONTROLLER_PROFILE_OVERVIEW = "profile-overview";
             this.CONTROLLER_PROFILE_DETAIL = "profile-detail";
-            this.CONTROLLER_QUERY = "query";
 
             //Always load the sidebar
             this.loadController(this.CONTROLLER_SIDEBAR);
@@ -116,7 +115,8 @@ const appInstance = () => {
             this.loadController(this.CONTROLLER_LOGIN);
         }
     }
-
+    
+    //if it doesnt exist, create it, otherwise return it(singleton)
     if (!this.app) {
         this.app = new App();
     }
