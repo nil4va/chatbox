@@ -34,6 +34,10 @@ app.use((req, res, next) => {
 
 
 // ------ ROUTES - add all api endpoints here ------
+const badRequestCode = 400;
+const httpOkCode = 200;
+
+
 app.post('/login', (req, res) => {
     const username = req.body.username;
 
@@ -47,13 +51,13 @@ app.post('/login', (req, res) => {
     }, (data) => {
         if (data.length === 1) {
             console.log("login success: " + data[0].username);
-            res.status(200).json("success");
+            res.status(httpOkCode).json("success");
         } else {
             //wrong username
             res.status(401).json("Wrong username or password");
         }
 
-    }, (err) => res.status(400).json(err));
+    }, (err) => res.status(badRequestCode).json(err));
 });
 
 //dummy data example - kamers
@@ -64,8 +68,8 @@ app.post('/example', (req, res) => {
             values: [req.body.kamercode]
         }, (data) => {
             console.log(data);
-            res.status(200).json(data);
-        }, (err) => res.status(500).json(err)
+            res.status(httpOkCode).json(data);
+        }, (err) => res.status(badRequestCode).json(err)
     );
 
 });

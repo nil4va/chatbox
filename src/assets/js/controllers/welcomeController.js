@@ -31,10 +31,10 @@ class WelcomeController {
         appInstance().networkManager
             .doRequest("http://localhost:3000/example", {kamercode: id})
             .done((data) => {
-                $(".content").html(JSON.stringify(data, null, 4));
+                $(".content").append(JSON.stringify(data, null, 4));
             })
             .fail((reason) => {
-                $(".content").html(reason);
+                $(".content").append(reason);
             });
     }
 

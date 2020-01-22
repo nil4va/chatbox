@@ -31,9 +31,11 @@ class NetworkManager {
     __onFail(xhr, promise) {
         if(xhr.status === 400) {
             const data = JSON.parse(xhr.responseText);
+            console.log(`bad request error 400 ${data.reason}`);
             promise.reject(data.reason);
         }
         else {
+            console.log(`server error ${xhr.status} ${data.reason}`);
             promise.reject("Something bad happened, see console.");
         }
     }
