@@ -34,9 +34,9 @@ app.use((req, res, next) => {
 
 
 // ------ ROUTES - add all api endpoints here ------
-const badRequestCode = 400;
 const httpOkCode = 200;
-
+const badRequestCode = 400;
+const authorizationErrCode = 401;
 
 app.post('/login', (req, res) => {
     const username = req.body.username;
@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
             res.status(httpOkCode).json("success");
         } else {
             //wrong username
-            res.status(401).json("Wrong username or password");
+            res.status(authorizationErrCode).json("Wrong username or password");
         }
 
     }, (err) => res.status(badRequestCode).json(err));

@@ -29,8 +29,9 @@ class NetworkManager {
      * @private
      */
     __onFail(xhr, promise) {
+        //400 is bad request, request has been arrived at server but server cant process it into a response
+        const data = JSON.parse(xhr.responseText);
         if(xhr.status === 400) {
-            const data = JSON.parse(xhr.responseText);
             console.log(`bad request error 400 ${data.reason}`);
             promise.reject(data.reason);
         }
