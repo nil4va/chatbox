@@ -1,3 +1,7 @@
+/**
+ * @author Pim Meijer
+ * @type {module:crypto}
+ */
 const crypto = require('crypto');
 
 module.exports = {

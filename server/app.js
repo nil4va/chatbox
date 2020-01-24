@@ -1,8 +1,14 @@
+/**
+ * @author Pim Meijer
+ * @type entry point of application - contains all server config and api endpoints
+ */
+
 const express = require('express');
 const db = require('./db');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const cryptoHelper = require("./cryptoHelper");
+const cryptoHelper = require("./utils/cryptoHelper");
+const corsConfig = require("./utils/corsConfig");
 const app = express();
 
 //logger lib for dev only - 'short' is basic logging info
@@ -17,21 +23,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
-//CORS config
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
-    if (req.method === "OPTIONS") {
-        res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-        return res.status(200).json({});
-    }
-
-    next();
-});
-
+//CORS config - Cross Origin Requests
+app.use(corsConfig);
 
 // ------ ROUTES - add all api endpoints here ------
 const httpOkCode = 200;

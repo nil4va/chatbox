@@ -6,10 +6,16 @@
 - Enkele crypto helper functions
 - MVC setup in front end met ES6, cookiemanager, networkmanager
 - ..
+## Dependencies - vooraf installeren!
+
+- MySQL
+- NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie 
+- Git
 
 ## Setup
 
-1. Draai ```npm install``` gebruik ```-g``` voor global install
+1. Clone het project. En open deze in IntelliJ
+2. Vanuit de root: draai ```npm install``` gebruik ```-g``` voor global install vanuit de root van het project
 2. Configureer ```server/config/config.json```
 3. Configureer ```server/config/users.json``` voor het specificeren van database. Voor nu worden er twee voorbeeldtabellen uitgelezen.
  Dit zijn de `user` tabel met `username` en `password` en de `kamer` tabel met `oppervlakte` en `kamercode`
@@ -26,5 +32,4 @@
 - [ ] ES6 imports scripts onderzoeken
 - [ ] Doc op pad cloud + gitlab
 - [ ] Browser compatibility testen
-
 

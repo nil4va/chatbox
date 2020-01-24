@@ -1,3 +1,8 @@
+/**
+ * @author Pim Meijer & Lennard Fonteijn
+ * Database connection pool with MySQL
+ */
+
 const mysql = require("mysql");
 const config = require("./config/config.json");
 const users = require("./config/users.json",);
@@ -24,7 +29,7 @@ module.exports = {
         });
 
         connectionPool.on('error', (err) => {
-            console.log("error while creating mysql pool err: " + err);
+            console.log(`error while creating mysql pool err: ${err}`);
             throw err;
         });
 
