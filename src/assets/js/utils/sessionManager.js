@@ -26,7 +26,6 @@ class SessionManager {
 
      set(key, value) {
         this.session[key] = value;
-        this.session[key] = value;
 
         this.saveSession();
     }

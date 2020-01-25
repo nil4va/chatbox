@@ -1,14 +1,18 @@
 /**
- * Responsible for handling the actions happening on login view
+ * Controller responsible for all events in view and setting data
  *
- * @author Lennard Fonteijn
+ * @author Pim Meijer
  */
+
 class LoginController {
 
     constructor() {
         $.get("views/login.html")
             .done(this.setup.bind(this))
             .fail(this.error.bind(this));
+
+        this.userRepository = new UserRepository();
+
     }
 
     //Called when the login.html has been loaded
@@ -22,29 +26,36 @@ class LoginController {
         $(".content").empty().append(this.loginView);
     }
 
-    handleLogin(event) {
-        //prevent actual submit
+    /**
+     * Async function that does a login request via repository
+     * @param event
+     * @returns {Promise<user>}
+     */
+    async handleLogin(event) {
+        //prevent actual submit and page refresh
         event.preventDefault();
 
         //Find the username and password
         const username = this.loginView.find("[name='username']").val();
         const password = this.loginView.find("[name='password']").val();
 
-        appInstance().networkManager
-            .doRequest("http://localhost:3000/login", {"username": username, "password": password})
-            .done((data) => {
-                //Succesful login! Move to a welcome page or something.
-                console.log("success: " + data);
-                app.session.set("username", username);
-                app.loadController(app.CONTROLLER_WELCOME);
-            })
-            .fail((reason) => {
-                console.log("fail: ");
+        try{
+            //await keyword 'stops' code until data is returned - can only be used in async function
+            const user = await this.userRepository.login(username, password);
+
+            appInstance().sessionManager.set("username", user.username);
+            appInstance().loadController(app.CONTROLLER_KAMER);
+
+        } catch(e) {
+            //if unauthorized error show error to user
+            if(e.code === 401) {
                 this.loginView
                     .find(".error")
-                    .html(reason.responseText);
-            });
-
+                    .html(e.reason);
+            } else {
+                console.log(e);
+            }
+        }
     }
 
     //Called when the login.html failed to load

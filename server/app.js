@@ -31,7 +31,7 @@ const httpOkCode = 200;
 const badRequestCode = 400;
 const authorizationErrCode = 401;
 
-app.post('/login', (req, res) => {
+app.post('/user/login', (req, res) => {
     const username = req.body.username;
 
     //TODO: we cant receive a password unencrypted!!
@@ -43,26 +43,26 @@ app.post('/login', (req, res) => {
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
-            console.log("login success: " + data[0].username);
-            res.status(httpOkCode).json("success");
+            //return justs the username for now, never send password back!
+            res.status(httpOkCode).json({"username": data[0].username});
         } else {
             //wrong username
-            res.status(authorizationErrCode).json("Wrong username or password");
+            res.status(authorizationErrCode).json({reason: "Wrong username or password"});
         }
 
-    }, (err) => res.status(badRequestCode).json(err));
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 //dummy data example - kamers
-app.post('/example', (req, res) => {
+app.post('/kamer', (req, res) => {
 
     db.handleQuery(connectionPool, {
-            query: "SELECT * FROM kamer WHERE kamercode = ?",
+            query: "SELECT kamercode, oppervlakte FROM kamer WHERE kamercode = ?",
             values: [req.body.kamercode]
         }, (data) => {
-            console.log(data);
+            //just give all data back as json
             res.status(httpOkCode).json(data);
-        }, (err) => res.status(badRequestCode).json(err)
+        }, (err) => res.status(badRequestCode).json({reason: err})
     );
 
 });

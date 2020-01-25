@@ -27,7 +27,6 @@
 
 - [ ] Error handling testen en uitbreiden
 - [ ] Environment config voor url's, libs, PAD cloud
-- [ ] Models in back of front end
 - [ ] Basis style toepassen  en Corendon vervangen
 - [ ] ES6 imports scripts onderzoeken
 - [ ] Doc op pad cloud + gitlab

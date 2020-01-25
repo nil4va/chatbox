@@ -8,22 +8,20 @@ const appInstance = () => {
     class App {
 
         constructor() {
-            this.session = new SessionManager();
+            this.sessionManager = new SessionManager();
             this.networkManager = new NetworkManager();
 
             //Constants (sort of)
             this.CONTROLLER_SIDEBAR = "sidebar";
             this.CONTROLLER_LOGIN = "login";
             this.CONTROLLER_LOGOUT = "logout";
-            this.CONTROLLER_WELCOME = "welcome";
-            this.CONTROLLER_PROFILE_OVERVIEW = "profile-overview";
-            this.CONTROLLER_PROFILE_DETAIL = "profile-detail";
+            this.CONTROLLER_KAMER = "kamer";
 
             //Always load the sidebar
             this.loadController(this.CONTROLLER_SIDEBAR);
 
             //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-            this.loadControllerFromUrl(this.CONTROLLER_WELCOME);
+            this.loadControllerFromUrl(this.CONTROLLER_KAMER);
 
         }
 
@@ -45,7 +43,7 @@ const appInstance = () => {
 
                 case this.CONTROLLER_LOGIN:
                     this.setCurrentController(name);
-                    this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
+                    this.isLoggedIn(() => new KamerController(), () => new LoginController());
                     break;
 
                 case this.CONTROLLER_LOGOUT:
@@ -53,24 +51,11 @@ const appInstance = () => {
                     this.handleLogout();
                     break;
 
-                case this.CONTROLLER_WELCOME:
+                case this.CONTROLLER_KAMER:
                     this.setCurrentController(name);
-                    this.isLoggedIn(() => new WelcomeController, () => new LoginController());
+                    this.isLoggedIn(() => new KamerController, () => new LoginController());
                     break;
 
-                case this.CONTROLLER_PROFILE_OVERVIEW:
-                    this.setCurrentController(name);
-                    this.isLoggedIn(profileOverviewController, () => new LoginController());
-                    break;
-
-                case this.CONTROLLER_PROFILE_DETAIL:
-                    this.setCurrentController(name);
-                    this.isLoggedIn(
-                        () => {
-                            profileDetailController(controllerData)
-                        }, () => new LoginController()
-                    );
-                    break;
 
                 default:
                     return false;
@@ -101,7 +86,8 @@ const appInstance = () => {
 
         //Convenience functions to handle logged-in states
         isLoggedIn(whenYes, whenNo) {
-            if (this.session.get("username")) {
+            console.log(this.sessionManager);
+            if (this.sessionManager.get("username")) {
                 whenYes();
             } else {
                 whenNo();
@@ -109,7 +95,7 @@ const appInstance = () => {
         }
 
         handleLogout() {
-            this.session.remove("username");
+            this.sessionManager.remove("username");
 
             //go to login screen
             this.loadController(this.CONTROLLER_LOGIN);
