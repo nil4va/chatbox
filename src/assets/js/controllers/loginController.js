@@ -8,8 +8,8 @@ class LoginController {
 
     constructor() {
         $.get("views/login.html")
-            .done(this.setup.bind(this))
-            .fail(this.error.bind(this));
+            .done((data) => this.setup(data))
+            .fail(() => this.error());
 
         this.userRepository = new UserRepository();
 

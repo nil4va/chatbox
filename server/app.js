@@ -34,8 +34,7 @@ const authorizationErrCode = 401;
 app.post('/user/login', (req, res) => {
     const username = req.body.username;
 
-    //TODO: we cant receive a password unencrypted!!
-    // const password = cryptoHelper.getHashedPassword(req.body.password);
+    //TODO: we cant receive a password unencrypted!! Use cryptohelpers :)
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
@@ -43,14 +42,14 @@ app.post('/user/login', (req, res) => {
         values: [username, password]
     }, (data) => {
         if (data.length === 1) {
-            //return justs the username for now, never send password back!
+            //return just the username for now, never send password back!
             res.status(httpOkCode).json({"username": data[0].username});
         } else {
             //wrong username
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
         }
 
-    }, (err) => res.status(badRequestCode).json({reason: err}));
+    }, (err) => res.status(badRequestCode).json());
 });
 
 //dummy data example - kamers

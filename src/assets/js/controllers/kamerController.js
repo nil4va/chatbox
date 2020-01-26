@@ -6,8 +6,8 @@
 class KamerController {
     constructor() {
         $.get("views/kamer.html")
-            .done(this.setup.bind(this))
-            .fail(this.error.bind(this));
+            .done((data) => this.setup(data))
+            .fail(() => this.error());
 
         this.kamerRepository = new KamerRepository();
     }
