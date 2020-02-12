@@ -7,7 +7,7 @@
 class UserRepository {
     constructor() {
         //TODO: get url from config
-        this.url = "http://localhost:3000/user"
+        this.route = "/user"
     }
 
     async getAll() {
@@ -22,7 +22,7 @@ class UserRepository {
      */
     async login(username, password) {
         return await appInstance().networkManager
-            .doRequest(`${this.url}/login`, {"username": username, "password": password});
+            .doRequest(`${this.route}/login`, {"username": username, "password": password});
     }
 
     async delete() {

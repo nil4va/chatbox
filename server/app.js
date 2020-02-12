@@ -49,7 +49,7 @@ app.post('/user/login', (req, res) => {
             res.status(authorizationErrCode).json({reason: "Wrong username or password"});
         }
 
-    }, (err) => res.status(badRequestCode).json());
+    }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
 //dummy data example - kamers

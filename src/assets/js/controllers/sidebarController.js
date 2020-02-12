@@ -7,8 +7,8 @@
 class SidebarController {
     constructor() {
         $.get("views/sidebar.html")
-            .done(this.setup.bind(this))
-            .fail(this.error.bind(this));
+            .done((data) => this.setup(data))
+            .fail(() => this.error());
     }
 
     //Called when the sidebar.html has been loaded

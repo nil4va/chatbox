@@ -25,7 +25,8 @@ module.exports = {
             user: users.username,
             password: users.password,
             database: users.database,
-            timezone: "UTC"
+            timezone: "UTC",
+            multipleStatements: true
         });
 
         connectionPool.on('error', (err) => {

@@ -7,7 +7,7 @@
 class KamerRepository {
     constructor() {
         //TODO: get url from config
-        this.url = "http://localhost:3000/kamer"
+        this.route = "/kamer"
     }
 
     async getAll() {
@@ -21,7 +21,7 @@ class KamerRepository {
      */
     async get(id) {
         return await appInstance().networkManager
-            .doRequest(this.url, {kamercode: id});
+            .doRequest(this.route, {kamercode: id});
     }
 
     async delete() {
