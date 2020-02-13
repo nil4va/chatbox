@@ -11,8 +11,7 @@ const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfig");
 const app = express();
 
-//logger lib for dev only - 'short' is basic logging info
-//TODO: if dev..
+//logger lib  - 'short' is basic logging info
 app.use(morgan('short'));
 
 //init mysql connectionpool
