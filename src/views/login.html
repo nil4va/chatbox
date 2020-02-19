@@ -1,18 +1,25 @@
-<div class="login">
-    <h1>Welcome to Corendon!</h1>
+<div class="row justify-content-md-center">
+    <div class="col-sm-5 m-3">
+        <h2 class="mb-3">Inloggen</h2>
 
-    <p>Please login with your credentials.</p>
+        <form class="login-form">
+            <div class="form-group">
+                <label for="exampleInputUsername">Gebruikersnaam</label>
+                <input type="text" name="username" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp" placeholder="Vul gebruikersnaam in">
+                <small id="help" class="form-text text-muted">Hint: ..</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword">Wachtwoord</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword" placeholder="Vul wachtwoord in">
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Onthoud mij</label>
+            </div>
 
-    <form method="post" class="login-form">
-        <div class="error"></div>
-        <div>
-            <input type="text" name="username" placeholder="Username" autocomplete="username" />
-        </div>
-        <div>
-            <input type="password" name="password" placeholder="Password" autocomplete="password" />
-        </div>
-        <div>
-            <button class="login-button">Login</button>
-        </div>
-    </form>
+            <div class="error mb-3 text-danger"></div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
 </div>

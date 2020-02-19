@@ -4,14 +4,14 @@
  *
  * @author Lennard Fonteijn, Pim Meijer
  */
-class SidebarController {
+class NavbarController {
     constructor() {
-        $.get("views/sidebar.html")
+        $.get("views/navbar.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
     }
 
-    //Called when the sidebar.html has been loaded
+    //Called when the navbar.html has been loaded
     setup(data) {
         //Load the sidebar-content into memory
         const sidebarView = $(data);
@@ -26,7 +26,6 @@ class SidebarController {
     }
 
     handleClickMenuItem() {
-
         //Get the data-controller from the clicked element (this)
         const controller = $(this).attr("data-controller");
 

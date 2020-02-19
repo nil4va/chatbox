@@ -32,16 +32,17 @@ class KamerController {
      * @returns {Promise<void>}
      */
     async fetchKamers(id) {
+        const exampleResponse = this.welcomeView.find(".example-response");
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const kamerData = await this.kamerRepository.get(id);
 
-            this.welcomeView.append(JSON.stringify(kamerData, null, 4));
+            exampleResponse.text(JSON.stringify(kamerData, null, 4));
         } catch (e) {
             console.log(`error while fetching kamers ${e}`);
 
             //for now just show every error on page, normally not all errors are appropriate for user
-            $(".content").append(e);
+            exampleResponse.text(e);
         }
     }
 

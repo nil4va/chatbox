@@ -82,6 +82,8 @@ Nooit `node_modules` uploaden
 
 ## Links
 
+Bootstrap kleuren en grids
+
 ## TODO
 
 - [ ] Error handling testen en uitbreiden

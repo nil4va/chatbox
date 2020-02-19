@@ -38,7 +38,7 @@ const appInstance = () => {
 
             switch (name) {
                 case this.CONTROLLER_SIDEBAR:
-                    new SidebarController();
+                    new NavbarController();
                     break;
 
                 case this.CONTROLLER_LOGIN:
