@@ -1,6 +1,6 @@
 
 /**
- * Implementation of a simple network manager
+ * Implementation of a network manager
  *
  * @author Lennard Fonteijn & Pim Meijer
  */

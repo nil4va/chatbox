@@ -12,19 +12,21 @@
 **Front-end(HTML, CSS, JS)**
 - Bootstrap 4 voorbeeld layout
 - MVC setup met twee voorbeelflows: een login en een stukje dummy data
-    - `views` bevat html pagina
-    - `controllers` 
+    - `views` bevat de HTML pagina's
+    - `controllers` bevat controllers met de schakeling tussen de data en de view
     - `repositories` omdat we in Javascript(ES6) geen expliciete types hebben is er niet echt een model. Een repository bevat/haalt data op en geeft het terug aan een controller
 - `sessionManager.js` voor het beheren van sessies in de browser
 - `networkManager.js` voor het uitvoeren van netwerk request naar de API op de server
 
-## Dependencies - vooraf installeren!
+## Setup
+
+### Dependencies - vooraf installeren!
 
 - MySQL
 - NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie 
 - Git
 
-## Stappen om het framework voor het eerst te draaien
+### Stappen om het framework voor het eerst te draaien
 
 1. Clone het project via Fork. Open het geclonede project in IntelliJ. Het is een vereiste om IntelliJ te gebruiken tijdens PAD.
 2. Configureer ```server/config/users.json``` voor de connectie naar jullie database. Deze gegeven vinden jullie op de PAD cloud. 
@@ -41,14 +43,7 @@ In de folder `src` vind je alle HTML/CSS en JS, ook wel de front-end. Vanuit dez
 Bij FYS hoefde je niet zelf de server te beheren en kon je een request doen naar de FYSCloud API. Bij PAD ga je dit dus ook zelf doen, je gaat dus je eigen
 server beheren die je eigen API bevat voor je eigen front-end
 
-Voorbeeld uit de console bij het doen van een inlogpoging:
-
-Doing request to http://localhost:3000/user/login
-JSON: ```{"username":"test","password":"test"}```
-
-Hier zie je dus ook dat er JSON verstuurd wordt net als by FYS.
-
-Weet je niet helemaal meer hoe het zat met GET, POST, query parameters en URL's? Doe les 1 van deze course:
+Weet je niet helemaal meer hoe het zat met Server, Client, GET, POST, query parameters en URL's? Doe les 1 van de course Client-Server Communication:
 
 https://classroom.udacity.com/courses/ud897/ 
 
@@ -85,6 +80,12 @@ vinden in de courses.
 - Learning Node.js https://www.linkedin.com/learning/learning-node-js-2
     - Chapter 1, 2 en 4 → Dit zijn de essentials binnen het NodeJS ecosysteem die je nodig hebt tijdens het project.
     - Chapter 7,8 en 9 → Deze hoofdstukken gaan in op de wat moeilijkere concepten zoals asynchrone code, software testen en error handling.
+    
+### Client-Server Communication
+    
+https://classroom.udacity.com/courses/ud897/ 
+
+In ieder geval les 1 is belangrijk. Les 5 over security is ook interessant, hier kom je ook meer te weten over wat CORS(`server/utils/corsConfig.js`) is. 
 
 ### ES6
 
