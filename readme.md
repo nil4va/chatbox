@@ -30,8 +30,8 @@
 
 1. Clone het project via Fork. Open het geclonede project in IntelliJ. Het is een vereiste om IntelliJ te gebruiken tijdens PAD.
 2. Configureer ```server/config/users.json``` voor de connectie naar jullie database. Deze gegeven vinden jullie op de PAD cloud. 
-3. Vanuit de folder `pad-framework` draai ```npm install``` 
-4. Open het tabje terminal in IntellIJ, typ hier ```nodemon server/server.js```(auto refresh on code change) of `node server/server.js`
+3. Open het tabje terminal in IntellIJ(linksonderin), zorg dat je in de folder `pad-framework` zit.  Draai vervolgens ```npm install```. 
+4. Daarna kun je de server runnen door ```nodemon server/server.js```(auto refresh on code change) of `node server/server.js` te typen.
 5. Open ```src/index.html``` in de browser. Je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken.
 
 ## Server en Client
@@ -90,8 +90,8 @@ In ieder geval les 1 is belangrijk. Les 5 over security is ook interessant, hier
 ### ES6
 
 - ES6 – Een nieuwe versie van Javascript die in de front-end gebruiken https://classroom.udacity.com/courses/ud356
-    - Lesson 1: 1tm5 + 10tm13→Dit is het minimum van les 1, de rest is zeker ook interessant!
-    - Lesson 2: 1tm9 + 12tm21→Classes en Inheritance, nieuwe manier van functies schrijven t.o.v. FYS en het gebruik van het “this” keyword
+    - Lesson 1: 1tm5 + 10tm13 → Dit is het minimum van les 1, de rest is zeker ook interessant!
+    - Lesson 2: 1tm9 + 12tm21 → Classes en Inheritance, nieuwe manier van functies schrijven t.o.v. FYS en het gebruik van het “this” keyword
 
 ### Bootstrap - layout toolkit voor HTML/CSS en JS
 
