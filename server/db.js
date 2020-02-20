@@ -1,19 +1,16 @@
 /**
  * @author Pim Meijer & Lennard Fonteijn
  * Database connection pool with MySQL
+ * This class uses config from config/users.json - make sure you fill in the right details here found on PAD cloud!
  */
 
 const mysql = require("mysql");
-const config = require("./config/config.json");
-const users = require("./config/users.json",);
+const users = require("./config/users.json");
 
 module.exports = {
 
     init() {
-        if (!config) {
-            console.log("Error: Could not load 'config.json', please make a copy of 'config.template.json'!")
-            return;
-        } else if (!users) {
+        if (!users) {
             console.log("Error: Could not load 'users.json', please make a copy of 'users.template.json'!");
             return;
         }
@@ -23,7 +20,7 @@ module.exports = {
         //TODO: different config for localhost
         //connection limit
         connectionPool = mysql.createPool({
-            host: config.database.host,
+            host: users.host,
             user: users.username,
             password: users.password,
             database: users.database,
@@ -40,11 +37,18 @@ module.exports = {
         return connectionPool;
     },
 
+    /**
+     * Use this function for all queries to database - see example in app.js
+     * @param connectionPool
+     * @param data containt query with "?" parameters(values)
+     * @param successCallback - function to execute when query succeeds
+     * @param errorCallback - function to execute when query fails
+     */
     handleQuery(connectionPool, data, successCallback, errorCallback) {
         connectionPool.query({
             sql: data.query,
             values: data.values,
-            timeout: config.database.timeout
+            timeout: users.timeout
         }, (error, results) => {
             if (error) {
                 errorCallback(error);

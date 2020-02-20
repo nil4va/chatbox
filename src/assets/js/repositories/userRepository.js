@@ -1,12 +1,11 @@
 /**
- * Repository responsible for all user data from server
+ * Repository responsible for all user data from server - CRUD
  * Make sure all functions are using the async keyword when interacting with network!
  * @author Pim Meijer
  */
 
 class UserRepository {
     constructor() {
-        //TODO: get url from config
         this.route = "/user"
     }
 
@@ -26,6 +25,11 @@ class UserRepository {
     }
 
     async delete() {
+
+    }
+
+
+    async register(username, password) {
 
     }
 

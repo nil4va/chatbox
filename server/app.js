@@ -1,6 +1,6 @@
 /**
  * @author Pim Meijer
- * @type entry point of application - contains all server config and api endpoints
+ * @type entry point of server application - contains all server config and api endpoints
  */
 
 const express = require('express');
@@ -17,10 +17,9 @@ app.use(morgan('short'));
 //init mysql connectionpool
 const connectionPool = db.init();
 
-//parsing request bodies from json to js
+//parsing request bodies from json to javascript objects
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-
 
 //CORS config - Cross Origin Requests
 app.use(corsConfig);
@@ -33,7 +32,7 @@ const authorizationErrCode = 401;
 app.post('/user/login', (req, res) => {
     const username = req.body.username;
 
-    //TODO: we cant receive a password unencrypted!! Use cryptohelpers :)
+    //TODO: We cant receive a password unencrypted!! Improve this by using cryptoHelper :)
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
@@ -52,11 +51,11 @@ app.post('/user/login', (req, res) => {
 });
 
 //dummy data example - kamers
-app.post('/kamer', (req, res) => {
+app.post('/room_example', (req, res) => {
 
     db.handleQuery(connectionPool, {
-            query: "SELECT kamercode, oppervlakte FROM kamer WHERE kamercode = ?",
-            values: [req.body.kamercode]
+            query: "SELECT id, surface FROM room_example WHERE id = ?",
+            values: [req.body.id]
         }, (data) => {
             //just give all data back as json
             res.status(httpOkCode).json(data);

@@ -1,5 +1,5 @@
 /**
- * Entry point front end application
+ * Entry point front end application - ther is also an app.js for the backend(server folder)!
  * Singleton for App instance
  * @author Lennard Fonteijn en Pim Meijer
  */
@@ -15,13 +15,13 @@ const appInstance = () => {
             this.CONTROLLER_SIDEBAR = "sidebar";
             this.CONTROLLER_LOGIN = "login";
             this.CONTROLLER_LOGOUT = "logout";
-            this.CONTROLLER_KAMER = "kamer";
+            this.CONTROLLER_WELCOME = "welcome";
 
             //Always load the sidebar
             this.loadController(this.CONTROLLER_SIDEBAR);
 
             //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-            this.loadControllerFromUrl(this.CONTROLLER_KAMER);
+            this.loadControllerFromUrl(this.CONTROLLER_WELCOME);
 
         }
 
@@ -43,7 +43,7 @@ const appInstance = () => {
 
                 case this.CONTROLLER_LOGIN:
                     this.setCurrentController(name);
-                    this.isLoggedIn(() => new KamerController(), () => new LoginController());
+                    this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
                     break;
 
                 case this.CONTROLLER_LOGOUT:
@@ -51,9 +51,9 @@ const appInstance = () => {
                     this.handleLogout();
                     break;
 
-                case this.CONTROLLER_KAMER:
+                case this.CONTROLLER_WELCOME:
                     this.setCurrentController(name);
-                    this.isLoggedIn(() => new KamerController, () => new LoginController());
+                    this.isLoggedIn(() => new WelcomeController, () => new LoginController());
                     break;
 
 

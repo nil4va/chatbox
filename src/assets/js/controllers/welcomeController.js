@@ -1,18 +1,18 @@
 /**
  * Responsible for handling the actions happening on welcome view
- *
+ * For now it uses the roomExampleRepository to get some example data from server
  * @author Lennard Fonteijn & Pim Meijer
  */
-class KamerController {
+class WelcomeController {
     constructor() {
-        $.get("views/kamer.html")
+        $.get("views/room_example.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
 
-        this.kamerRepository = new KamerRepository();
+        this.roomExampleRepository = new RoomExampleRepository();
     }
 
-    //Called when the kamer.html has been loaded
+    //Called when the room_example.html has been loaded
     setup(data) {
         //Load the welcome-content into memory
         this.welcomeView = $(data);
@@ -23,30 +23,30 @@ class KamerController {
         //Empty the content-div and add the resulting view to the page
         $(".content").empty().append(this.welcomeView)
 
-        this.fetchKamers("a02.11");
+        this.fetchRooms(1256);
     }
 
     /**
      * async function that retrieves a kamer by its id via repository
-     * @param id
+     * @param roomId the room id to retrieve
      * @returns {Promise<void>}
      */
-    async fetchKamers(id) {
+    async fetchRooms(roomId) {
         const exampleResponse = this.welcomeView.find(".example-response");
         try {
             //await keyword 'stops' code until data is returned - can only be used in async function
-            const kamerData = await this.kamerRepository.get(id);
+            const roomData = await this.roomExampleRepository.get(roomId);
 
-            exampleResponse.text(JSON.stringify(kamerData, null, 4));
+            exampleResponse.text(JSON.stringify(roomData, null, 4));
         } catch (e) {
-            console.log(`error while fetching kamers ${e}`);
+            console.log("error while fetching rooms", e);
 
             //for now just show every error on page, normally not all errors are appropriate for user
             exampleResponse.text(e);
         }
     }
 
-    //Called when the login.html failed to load
+    //Called when the login.html fails to load
     error() {
         $(".content").html("Failed to load content!");
     }

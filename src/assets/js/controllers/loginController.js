@@ -44,7 +44,7 @@ class LoginController {
             const user = await this.userRepository.login(username, password);
 
             appInstance().sessionManager.set("username", user.username);
-            appInstance().loadController(app.CONTROLLER_KAMER);
+            appInstance().loadController(app.CONTROLLER_WELCOME);
 
         } catch(e) {
             //if unauthorized error show error to user

@@ -40,10 +40,11 @@ class NetworkManager {
     __onFail(xhr, reject) {
         //400 is bad request, request has been arrived at server but server cant process it into a response
         if(!this.canParseJson(xhr.responseText)) {
-            reject({code: 1000, reason: "Unknown server error, no json response"});
+            reject({code: 1000, reason: "Unknown server error, no valid json response"});
             return;
         }
 
+        //ideally use the json from canParseJson
         const data = JSON.parse(xhr.responseText);
 
         if(xhr.status === 400) {
