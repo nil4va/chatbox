@@ -5,14 +5,14 @@
  */
 class WelcomeController {
     constructor() {
-        $.get("views/room_example.html")
+        $.get("views/welcome.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
 
         this.roomExampleRepository = new RoomExampleRepository();
     }
 
-    //Called when the room_example.html has been loaded
+    //Called when the welcome.html has been loaded
     setup(data) {
         //Load the welcome-content into memory
         this.welcomeView = $(data);

@@ -10,8 +10,8 @@ const users = require("./config/users.json");
 module.exports = {
 
     init() {
-        if (!users) {
-            console.log("Error: Could not load 'users.json', please make a copy of 'users.template.json'!");
+        if(!users.database || !users.username || !users.password) {
+            console.log("Error: 'config/users.json' not configured! Please fill in your team's credentials!");
             return;
         }
 
