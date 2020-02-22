@@ -49,7 +49,7 @@ https://classroom.udacity.com/courses/ud897/
 
 ## Voorbeeld van een flow(Welcome scherm)
 
-![Image description](readme_assets_gitlab/architecture_pad.png=800x600)
+<img src="readme_assets_gitlab/architecture_pad.png" width="800" height="600">
 
 **Front-end**
 
