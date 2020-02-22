@@ -1,6 +1,6 @@
 /**
  * @author Pim Meijer
- * @type entry point of server application - contains all server config and api endpoints
+ * @type server application - contains all server config and api endpoints
  */
 
 const express = require('express');
@@ -50,7 +50,7 @@ app.post('/user/login', (req, res) => {
     }, (err) => res.status(badRequestCode).json({reason: err}));
 });
 
-//dummy data example - kamers
+//dummy data example - rooms
 app.post('/room_example', (req, res) => {
 
     db.handleQuery(connectionPool, {

@@ -49,9 +49,11 @@ https://classroom.udacity.com/courses/ud897/
 
 ## Voorbeeld van een flow(Welcome scherm)
 
-<img src="readme_assets_gitlab/architecture_pad.png" width="800" height="600">
+<img src="readme_assets_gitlab/architecture_pad.png" width="600" height="400">
 
 **Front-end**
+
+`pad-framework/src`
 
 1. `src/assets/js/app.js` is het startpunt van de front-end applicatie. Deze laadt altijd de `navBarController.js` welke verantwoordelijk is
 voor de navigatie binnen de website. Deze controller vangt een klik af op een link en vraagt via `app.js` een andere controller op voor de betreffende pagina.
@@ -68,7 +70,9 @@ JSON: {"id":1256}`
 
 **Server**
 
-6. De server draait bijv. op port 3000. Deze luistert of er requests binnen komen. Specifiek gebeurt dit in `server/app.js`. Dit bestand bevat de meeste logica 
+`pad-framework/server
+`
+6. De server draait bijv. op port 3000. Deze luistert of er requests binnen komen. Specifiek gebeurt dit in `server/app.js`. 
 7. In dit geval zal de volgende route getriggered worden: `app.post('/room_example', (req, res) => { .. }`. Dit is een stukje code dat gebruik
 maakt van `Express.JS`. In de course over NodeJS(zie studiehandleiding en links onderop) vind je meer over Express.JS.
 8. Zoals je ziet verwachten we hier een `POST` request. Uit de `req` parameter kunnen we de JSON vissen die uit de front-end verstuurd is(id van room).
@@ -121,7 +125,7 @@ https://getbootstrap.com/docs/4.4/utilities/text/
 
 ## Troubleshooting
 
-_Ik krijg de melding port already in use:_
+_ Bij het runnen van de server krijg ik de melding port already in use:_
 
 Eindig het proces node in taakbeheer en draai de server nog een keer.
 
@@ -130,7 +134,7 @@ _Ik krijg errors in de console:_
 ![Image description](readme_assets_gitlab/error_example_readme.png)
 
 Het is hierbij van belang dat je goed kijkt wat er misgaat. Het kan nameelijk zoals in dit geval zo zijn dat er 
-ook iets in het servergedeelte niet goed staat. Hier wordt een niet bestaand veld gequery'ed
+ook iets in het servergedeelte niet goed staat. Hier wordt een niet bestaand veld gequery'ed.
 
 ## Deployen naar PAD Cloud(WIP) - v.a. sprint 2/3
 

@@ -16,7 +16,7 @@ module.exports = {
     /**
      * Gives you a SHA256 hashes string back
      * @param password
-     * @returns {string}
+     * @returns {string} hashed string in base64 format
      */
     getHashedPassword(password) {
         const sha256 = crypto.createHash('sha256');

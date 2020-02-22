@@ -1,6 +1,6 @@
 /**
  * @author Pim Meijer
- * Returns config for CORS, for now all requests are supported across domains
+ * Returns security config for CORS, for now all requests are supported across domains
  */
 module.exports = (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -15,5 +15,6 @@ module.exports = (req, res, next) => {
         return res.status(200).json({});
     }
 
+    //call next to continue the request flow -
     next();
 };

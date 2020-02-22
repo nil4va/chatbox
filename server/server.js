@@ -1,6 +1,6 @@
 /**
  * Do not change this - "main" entry point of the server
- * Add logic to app.js
+ * Add your server logic to app.js
  */
 const app = require('./app');
 

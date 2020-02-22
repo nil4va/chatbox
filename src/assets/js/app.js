@@ -1,6 +1,8 @@
 /**
- * Entry point front end application - ther is also an app.js for the backend(server folder)!
- * Singleton for App instance
+ * Entry point front end application - there is also an app.js for the backend(server folder)!
+ * Singleton for App instance - via this instance you can get the sessionManager, network manager or change controller
+ * Use: appInstance().sessionManager or appInstance().networkManager or appInstance().sessionManager or  appInstance().loadController(..)
+ * You only want one instance of this class and the used classes within - always use appInstance().
  * @author Lennard Fonteijn en Pim Meijer
  */
 
@@ -26,7 +28,12 @@ const appInstance = () => {
         }
 
 
-        //This function is responsible for creating the controllers of all views
+        /**
+         * Loads a controller
+         * @param name - name of controller - see constants
+         * @param controllerData - data to pass from on controller to another
+         * @returns {boolean} - successful controller change
+         */
         loadController(name, controllerData) {
             console.log("loadController: " + name);
 
@@ -64,6 +71,10 @@ const appInstance = () => {
             return true;
         }
 
+        /**
+         * Alternative way of loading controller by url
+         * @param fallbackController
+         */
         loadControllerFromUrl(fallbackController) {
             const currentController = this.getCurrentController();
 
@@ -84,7 +95,11 @@ const appInstance = () => {
             location.hash = name;
         }
 
-        //Convenience functions to handle logged-in states
+        /**
+         * Convenience functions to handle logged-in states
+         * @param whenYes - function to execute when user is logged in
+         * @param whenNo - function to execute when user is logged in
+         */
         isLoggedIn(whenYes, whenNo) {
             if (this.sessionManager.get("username")) {
                 whenYes();
@@ -93,6 +108,9 @@ const appInstance = () => {
             }
         }
 
+        /**
+         * Removes username via sessionManager and loads the login screen
+         */
         handleLogout() {
             this.sessionManager.remove("username");
 

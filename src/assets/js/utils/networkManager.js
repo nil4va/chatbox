@@ -1,10 +1,16 @@
 
 /**
- * Implementation of a network manager
+ * Implementation of a network manager that does an Ajax request to specified rout
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
 class NetworkManager {
+    /**
+     * Does an AJAX request to server(NodeJS)
+     * @param route - for example /user/login
+     * @param data - for example {username: "test", password: "test}
+     * @returns {Promise<unknown>}
+     */
     doRequest(route, data = {}) {
         const json = JSON.stringify(data);
 
@@ -32,7 +38,7 @@ class NetworkManager {
     }
 
     /**
-     * general fail handler which is always executed, error handling in view or controller
+     * generic fail handler which is always executed, add more specific error handling in controller
      * @param xhr
      * @param reject callback from Promise
      * @private
