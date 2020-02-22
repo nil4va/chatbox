@@ -1,5 +1,6 @@
 /**
- * Do not alter this
+ * Do not change this - "main" entry point of the server
+ * Add logic to app.js
  */
 const app = require('./app');
 

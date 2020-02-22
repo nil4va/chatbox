@@ -86,7 +86,6 @@ const appInstance = () => {
 
         //Convenience functions to handle logged-in states
         isLoggedIn(whenYes, whenNo) {
-            console.log(this.sessionManager);
             if (this.sessionManager.get("username")) {
                 whenYes();
             } else {

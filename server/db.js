@@ -18,13 +18,12 @@ module.exports = {
         let connectionPool;
 
         //TODO: different config for localhost
-        //connection limit
         connectionPool = mysql.createPool({
             host: users.host,
             user: users.username,
             password: users.password,
             database: users.database,
-            connectionLimit : 10,
+            connectionLimit : 10, //dont change this limit!! database connections are limited per team
             timezone: "UTC",
             multipleStatements: true
         });
