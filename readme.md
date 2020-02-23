@@ -33,7 +33,7 @@
 2. File -> Open de geclonede  folder in IntelliJ.
 3. Met het project geopend, open nu linksonderin het tabje >_Terminal. Voor je cursor moet het pad staan van het framework. Bijv. `C:\Users\pmeijer\projects\pad-framework`
 4. Typ `cd server` en druk op enter. Dit verandert het pad naar de `..pad-framework/server` folder.
-5. Typ nu het commando `npm install`. Dit installeert de packages uit `packages.json` zoals bijv. de `mySQL` library voor NodeJS. Al krijg je de melding dat npm niet gevonden kan worden
+5. Typ nu het commando `npm install`. Dit installeert de packages uit `package.json` zoals bijv. de `mySQL` library voor NodeJS. Al krijg je de melding dat npm niet gevonden kan worden
 zorg dan dat je nogmaals controleert of NodeJS geïnstalleerd is en dat je deze via Start(Windows) een keer hebt uitgevoerd. Start vervolgens IntellIJ
 nog een keer op en probeer het opnieuw.
 6. Als laatste zou het fijn zijn als onze server automatisch herstart bij een code wijziging. Typ hiervoor het command `npm install nodemon -g` en druk op enter. Dit
@@ -43,8 +43,9 @@ commando installeert nodemon globaal(-g) zodat je het bij elk project zou kunnen
 8. Nu zul je een melding krijgen over dat ``server/config/users.json`` niet is geconfigureerd. Open dit bestand en vul hier de gegevens in
 van de database van jullie team. Deze kunnen jullie vinden op de PAD Cloud.
 9. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
-10. Open ```src/index.html``` in de browser. Je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de editor klikken. Als je het goed
-hebt gedaan krijg je nu een inlog scherm te zien!
+10. De laatste stap test of de front-end een connectie kan maken met de server die we nu hebben draaien.
+Open ```src/index.html``` in IntellIJ. Lanceer deze in de browser, je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken. Als je het goed
+hebt gedaan krijg je nu een inlog scherm te zien! Zorg dat je het altijd op deze manier doet om CORS policy errors te voorkomen.
 
 ## Server en Client
 

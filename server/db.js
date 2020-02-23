@@ -13,7 +13,7 @@ module.exports = {
      * Makes a connection to the database. Only do this once in application lifecycle.
      */
     init() {
-        if(!users.database || !users.username || !users.password) {
+        if(!users.host || !users.database || !users.username || !users.password) {
             console.log("Error: 'config/users.json' not configured! Please fill in your team's credentials!");
             return;
         }
