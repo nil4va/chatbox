@@ -29,7 +29,8 @@
 
 ### Stappen om het framework voor het eerst te draaien
 
-1. Clone het project via Fork naar je computer
+1. Clone of download het project naar je computer. **Al download je het project als .zip zorg dan dat je de uitgepakte folder
+hernoemt naar `pad-framework`, anders krijg je later problemen bij het open van html in de browser**
 2. File -> Open de geclonede  folder in IntelliJ.
 3. Met het project geopend, open nu linksonderin het tabje >_Terminal. Voor je cursor moet het pad staan van het framework. Bijv. `C:\Users\pmeijer\projects\pad-framework`
 4. Typ `cd server` en druk op enter. Dit verandert het pad naar de `..pad-framework/server` folder.
