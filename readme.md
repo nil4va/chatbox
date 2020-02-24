@@ -56,9 +56,10 @@ van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.c
 9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Vul eerst het goede schema in bovenaan: bijv. `pad_oba_10_dev`. Zorg dan dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
 Dit script maakt een `user` en een `room_example` tabel aan.
 10. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
-11. De laatste stap test of de front-end een connectie kan maken met de server die we nu hebben draaien.
+11. Test of de front-end een connectie kan maken met de server die we nu hebben draaien.
 Open ```src/index.html``` in IntellIJ. Lanceer deze in de browser, je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken. Als je het goed
 hebt gedaan krijg je nu een inlog scherm te zien! Zorg dat je het altijd op deze manier doet om CORS policy errors te voorkomen.
+12. Log in met `test` en `test`. Al kom je op de welkompagina betekent dit dat ook de database goed is opgezet en dat je ready to code bent!
 
 ## Server en Client
 

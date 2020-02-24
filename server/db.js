@@ -34,7 +34,7 @@ module.exports = {
         //quicktest connection for errors
         connectionPool.getConnection((err, conn) => {
             if(err) {
-                console.log(err)
+                console.log(err);
                 console.log(`${err.errno} ${err.code}: ${err.sqlMessage}`);
             } else {
                 conn.release();
