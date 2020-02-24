@@ -1,7 +1,7 @@
 {
-  "host": "127.0.0.1",
+  "host": "",
   "timeout": 30000,
-  "username": "readwrite",
-  "password": "test1234",
-  "database": "pad_oba_1_dev"
+  "username": "",
+  "password": "",
+  "database": ""
 }
