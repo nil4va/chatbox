@@ -42,8 +42,18 @@ commando installeert nodemon globaal(-g) zodat je het bij elk project zou kunnen
 7. Typ nu `cd ..` zodat je weer in de bovenliggende folder terecht komt. Nu kun je de server applicatie runnen door het commando
 `nodemon server/server.js` uit te voeren.
 8. Nu zul je een melding krijgen over dat ``server/config/users.json`` niet is geconfigureerd. Open dit bestand en vul hier de gegevens in
-van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.cloud/.
-9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Zorg dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
+van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.cloud/. Voorbeeld van ingevulde `users.json`:
+```
+{
+  "host": "db.hbo-ict.cloud", --> geen port
+  "timeout": 30000,
+  "username": "pad_oba_10",
+  "password": "<wachtwoord>",
+  "database": "pad_oba_10_dev" --> dev of live
+}
+```
+
+9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Vul eerst het goede schema in bovenaan: bijv. `pad_oba_10_dev`. Zorg dan dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
 Dit script maakt een `user` en een `room_example` tabel aan.
 10. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
 11. De laatste stap test of de front-end een connectie kan maken met de server die we nu hebben draaien.
