@@ -31,9 +31,13 @@ module.exports = {
             multipleStatements: true
         });
 
-        connectionPool.on('error', (err) => {
-            console.log(`error while creating mysql pool err: ${err}`);
-            throw err;
+        //quicktest connection for errors
+        connectionPool.getConnection((err, conn) => {
+            if(err) {
+                console.log(`${err.errno} ${err.code}: ${err.sqlMessage}`);
+            } else {
+                conn.release();
+            }
         });
 
         return connectionPool;

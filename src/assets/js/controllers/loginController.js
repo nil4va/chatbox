@@ -29,7 +29,6 @@ class LoginController {
     /**
      * Async function that does a login request via repository
      * @param event
-     * @returns {Promise<user>}
      */
     async handleLogin(event) {
         //prevent actual submit and page refresh

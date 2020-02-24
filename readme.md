@@ -30,7 +30,7 @@
 ### Stappen om het framework voor het eerst te draaien
 
 1. Clone of download het project naar je computer. **Al download je het project als .zip zorg dan dat je de uitgepakte folder
-hernoemt naar `pad-framework`, anders krijg je later problemen bij het open van html in de browser**
+hernoemt naar `pad-framework`**, anders krijg je later problemen bij het open van html in de browser
 2. File -> Open de geclonede  folder in IntelliJ.
 3. Met het project geopend, open nu linksonderin het tabje >_Terminal. Voor je cursor moet het pad staan van het framework. Bijv. `C:\Users\pmeijer\projects\pad-framework`
 4. Typ `cd server` en druk op enter. Dit verandert het pad naar de `..pad-framework/server` folder.
@@ -42,9 +42,11 @@ commando installeert nodemon globaal(-g) zodat je het bij elk project zou kunnen
 7. Typ nu `cd ..` zodat je weer in de bovenliggende folder terecht komt. Nu kun je de server applicatie runnen door het commando
 `nodemon server/server.js` uit te voeren.
 8. Nu zul je een melding krijgen over dat ``server/config/users.json`` niet is geconfigureerd. Open dit bestand en vul hier de gegevens in
-van de database van jullie team. Deze kunnen jullie vinden op de PAD Cloud.
-9. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
-10. De laatste stap test of de front-end een connectie kan maken met de server die we nu hebben draaien.
+van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.cloud/.
+9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Zorg dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
+Dit script maakt een `user` en een `room_example` tabel aan.
+10. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
+11. De laatste stap test of de front-end een connectie kan maken met de server die we nu hebben draaien.
 Open ```src/index.html``` in IntellIJ. Lanceer deze in de browser, je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken. Als je het goed
 hebt gedaan krijg je nu een inlog scherm te zien! Zorg dat je het altijd op deze manier doet om CORS policy errors te voorkomen.
 

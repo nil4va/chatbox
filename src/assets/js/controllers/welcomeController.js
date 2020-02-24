@@ -29,7 +29,6 @@ class WelcomeController {
     /**
      * async function that retrieves a kamer by its id via repository
      * @param roomId the room id to retrieve
-     * @returns {Promise<void>}
      */
     async fetchRooms(roomId) {
         const exampleResponse = this.welcomeView.find(".example-response");
