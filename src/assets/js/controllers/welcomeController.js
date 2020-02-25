@@ -1,15 +1,16 @@
 /**
  * Responsible for handling the actions happening on welcome view
  * For now it uses the roomExampleRepository to get some example data from server
+ *
  * @author Lennard Fonteijn & Pim Meijer
  */
 class WelcomeController {
     constructor() {
+        this.roomExampleRepository = new RoomExampleRepository();
+
         $.get("views/welcome.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
-
-        this.roomExampleRepository = new RoomExampleRepository();
     }
 
     //Called when the welcome.html has been loaded
@@ -18,10 +19,10 @@ class WelcomeController {
         this.welcomeView = $(data);
 
         //Set the name in the view from the session
-        this.welcomeView.find(".name").html(appInstance().sessionManager.get("username"));
+        this.welcomeView.find(".name").html(sessionManager.get("username"));
 
         //Empty the content-div and add the resulting view to the page
-        $(".content").empty().append(this.welcomeView)
+        $(".content").empty().append(this.welcomeView);
 
         this.fetchRooms(1256);
     }

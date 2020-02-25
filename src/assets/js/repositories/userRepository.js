@@ -1,10 +1,11 @@
 /**
  * Repository responsible for all user data from server - CRUD
  * Make sure all functions are using the async keyword when interacting with network!
+ *
  * @author Pim Meijer
  */
-
 class UserRepository {
+
     constructor() {
         this.route = "/user"
     }
@@ -20,7 +21,7 @@ class UserRepository {
      * @returns {Promise<user>}
      */
     async login(username, password) {
-        return await appInstance().networkManager
+        return await networkManager
             .doRequest(`${this.route}/login`, {"username": username, "password": password});
     }
 

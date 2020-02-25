@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "",
+    "timeout": 30000,
+    "username": "",
+    "password": "",
+    "database": ""
+  }
+}

@@ -1,4 +1,3 @@
-
 /**
  * Responsible for handling the actions happening on sidebar view
  *
@@ -30,7 +29,7 @@ class NavbarController {
         const controller = $(this).attr("data-controller");
 
         //Pass the action to a new function for further processing
-        appInstance().loadController(controller);
+        app.loadController(controller);
 
         //Return false to prevent reloading the page
         return false;

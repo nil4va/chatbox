@@ -1,18 +1,18 @@
 /**
+ * Server application - contains all server config and api endpoints
+ *
  * @author Pim Meijer
- * @type server application - contains all server config and api endpoints
  */
-
-const express = require('express');
-const db = require('./db');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
+const express = require("express");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const db = require("./utils/databaseHelper");
 const cryptoHelper = require("./utils/cryptoHelper");
-const corsConfig = require("./utils/corsConfig");
+const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
 
 //logger lib  - 'short' is basic logging info
-app.use(morgan('short'));
+app.use(morgan("short"));
 
 //init mysql connectionpool
 const connectionPool = db.init();
@@ -29,10 +29,10 @@ const httpOkCode = 200;
 const badRequestCode = 400;
 const authorizationErrCode = 401;
 
-app.post('/user/login', (req, res) => {
+app.post("/user/login", (req, res) => {
     const username = req.body.username;
 
-    //TODO: We cant receive a password unencrypted!! Improve this by using cryptoHelper :)
+    //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
     const password = req.body.password;
 
     db.handleQuery(connectionPool, {
@@ -51,7 +51,7 @@ app.post('/user/login', (req, res) => {
 });
 
 //dummy data example - rooms
-app.post('/room_example', (req, res) => {
+app.post("/room_example", (req, res) => {
 
     db.handleQuery(connectionPool, {
             query: "SELECT id, surface FROM room_example WHERE id = ?",

@@ -1,11 +1,12 @@
 /**
  * -- THIS IS AN EXAMPLE REPOSITORY WITH EXAMPLE DATA FROM DB --
  * Repository responsible for all room related data from server - CRUD
- * Make sure all functions are using the async keyword when interacting with appInstance().networkManager!
+ * Make sure all functions are using the async keyword when interacting with `networkManager`!
+ *
  * @author Pim Meijer
  */
-
 class RoomExampleRepository {
+
     constructor() {
         this.route = "/room_example"
     }
@@ -21,7 +22,7 @@ class RoomExampleRepository {
      * @returns {Promise<room>}
      */
     async get(roomId) {
-        return await appInstance().networkManager
+        return await networkManager
             .doRequest(this.route, {id: roomId});
     }
 

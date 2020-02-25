@@ -3,16 +3,14 @@
  *
  * @author Pim Meijer
  */
-
 class LoginController {
 
     constructor() {
+        this.userRepository = new UserRepository();
+
         $.get("views/login.html")
             .done((data) => this.setup(data))
             .fail(() => this.error());
-
-        this.userRepository = new UserRepository();
-
     }
 
     //Called when the login.html has been loaded
@@ -42,8 +40,8 @@ class LoginController {
             //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
 
-            appInstance().sessionManager.set("username", user.username);
-            appInstance().loadController(app.CONTROLLER_WELCOME);
+            sessionManager.set("username", user.username);
+            app.loadController(CONTROLLER_WELCOME);
 
         } catch(e) {
             //if unauthorized error show error to user

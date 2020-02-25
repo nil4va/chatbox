@@ -36,30 +36,35 @@ hernoemt naar `pad-framework`**, anders krijg je later problemen bij het open va
 4. Typ `cd server` en druk op enter. Dit verandert het pad naar de `..pad-framework/server` folder.
 5. Typ nu het commando `npm install`. Dit installeert de packages uit `package.json` zoals bijv. de `mySQL` library voor NodeJS. Al krijg je de melding dat npm niet gevonden kan worden
 zorg dan dat je nogmaals controleert of NodeJS geïnstalleerd is en dat je deze via Start(Windows) een keer hebt uitgevoerd. Start vervolgens IntellIJ
-nog een keer op en probeer het opnieuw.
+nog een keer op en probeer het opnieuw. 
+   - Dit kan eventueel ook vanuit IntelliJ door rechts te klikken op de `package.json` en te kiezen voor `Run 'npm install'`.
 6. Als laatste zou het fijn zijn als onze server automatisch herstart bij een code wijziging. Typ hiervoor het command `npm install nodemon -g` en druk op enter. Dit
 commando installeert nodemon globaal(-g) zodat je het bij elk project zou kunnen gebruiken.
 7. Typ nu `cd ..` zodat je weer in de bovenliggende folder terecht komt. Nu kun je de server applicatie runnen door het commando
-`nodemon server/server.js` uit te voeren.
-8. Nu zul je een melding krijgen over dat ``server/config/users.json`` niet is geconfigureerd. Open dit bestand en vul hier de gegevens in
-van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.cloud/. Voorbeeld van ingevulde `users.json`:
-```
-{
-  "host": "db.hbo-ict.cloud", --> geen port
-  "timeout": 30000,
-  "username": "pad_oba_10",
-  "password": "<wachtwoord>",
-  "database": "pad_oba_10_dev" --> dev of live
-}
-```
+`nodemon server/server.js` uit te voeren. 
+   - Dit kan ook via het commando `npm start` of vanuit IntelliJ door weer rechts te klikken op `package.json` en te kiezen voor `Show npm Scripts`. Dubbelklik vervolgens op `start`.
+8. Nu zul je een melding krijgen over dat ``server/config/config.local.json`` niet is geconfigureerd. Open dit bestand en vul hier de gegevens in
+van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.cloud/. Voorbeeld van ingevulde `config.local.json`:
+    
+   ```
+    {
+        "database": {
+            "host": "db.hbo-ict.cloud", //Geen port
+            "timeout": 30000,
+            "username": "pad_oba_10",
+            "password": "<wachtwoord>",
+            "database": "pad_oba_10_dev" //Dev of Live
+        }
+    }
+    ```
 
 9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Vul eerst het goede schema in bovenaan: bijv. `pad_oba_10_dev`. Zorg dan dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
 Dit script maakt een `user` en een `room_example` tabel aan.
 10. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
 11. Test of de front-end een connectie kan maken met de server die we nu hebben draaien.
-Open ```src/index.html``` in IntellIJ. Lanceer deze in de browser, je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken. Als je het goed
+Open ```src/index.html``` in IntelliJ. Lanceer deze in de browser, je kunt hiervoor op het Chrome(of andere browser) icoontje rechtsbovenin de file klikken. Als je het goed
 hebt gedaan krijg je nu een inlog scherm te zien! Zorg dat je het altijd op deze manier doet om CORS policy errors te voorkomen.
-12. Log in met `test` en `test`. Al kom je op de welkompagina betekent dit dat ook de database goed is opgezet en dat je ready to code bent!
+12. Log in met `test` en `test`. Als je op de welkompagina komt betekent dit dat de database goed is opgezet en dat je ready-to-code bent!
 
 ## Server en Client
 
@@ -103,7 +108,7 @@ JSON: {"id":1256}`
 7. In dit geval zal de volgende route getriggered worden: `app.post('/room_example', (req, res) => { .. }`. Dit is een stukje code dat gebruik
 maakt van `Express.JS`. In de course over NodeJS(zie studiehandleiding en links onderop) vind je meer over Express.JS.
 8. Zoals je ziet verwachten we hier een `POST` request. Uit de `req` parameter kunnen we de JSON vissen die uit de front-end verstuurd is(id van room).
-9. Binnen deze route kunnen we gebruik maken van `db.js`. Dit script beheert de connectie naar de MySQL database. De functie `handleQuery(..)` kan een stukje data ophalen uit de database.
+9. Binnen deze route kunnen we gebruik maken van `databaseHelper.js`. Dit script beheert de connectie naar de MySQL database. De functie `handleQuery(..)` kan een stukje data ophalen uit de database.
 10. De laatste stap is om binnen deze route in `app.js` de data ook weer in JSON formaat terug te geven aan de front-end: `res.status(httpOkCode).json(data);`
 Let ook op dat je ook altijd wat terug moet geven als het fout gaat: `(err) => res.status(badRequestCode).json({reason: err})`
 
@@ -123,7 +128,7 @@ Zie verder in de `welcomeController.js` hoe deze data dan weer op het scherm get
     
 https://classroom.udacity.com/courses/ud897/ 
 
-In ieder geval les 1 is belangrijk. Les 5 over security is ook interessant, hier kom je ook meer te weten over wat CORS(`server/utils/corsConfig.js`) is. 
+In ieder geval les 1 is belangrijk. Les 5 over security is ook interessant, hier kom je ook meer te weten over wat CORS(`server/utils/corsConfigHelper.js`) is. 
 
 ### ES6
 
