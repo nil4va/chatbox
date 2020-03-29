@@ -18,6 +18,8 @@ const SERVER_CONFIG = require(SERVER_CONFIG_FILE);
 //Expose the config to the rest of the application
 global.serverConfigFile = SERVER_CONFIG_FILE;
 global.serverConfig = SERVER_CONFIG;
+global.appPath = process.env.APP || "./";
+global.wwwrootPath = process.env.WWWROOT || "../src/";
 
 const app = require('./app');
 

@@ -10,6 +10,7 @@ const db = require("./utils/databaseHelper");
 const cryptoHelper = require("./utils/cryptoHelper");
 const corsConfig = require("./utils/corsConfigHelper");
 const app = express();
+const fileUpload = require("express-fileupload");
 
 //logger lib  - 'short' is basic logging info
 app.use(morgan("short"));
@@ -23,6 +24,9 @@ app.use(bodyParser.json());
 
 //CORS config - Cross Origin Requests
 app.use(corsConfig);
+
+//File uploads
+app.use(fileUpload());
 
 // ------ ROUTES - add all api endpoints here ------
 const httpOkCode = 200;
@@ -62,6 +66,22 @@ app.post("/room_example", (req, res) => {
         }, (err) => res.status(badRequestCode).json({reason: err})
     );
 
+});
+
+app.post("/upload", function (req, res) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(badRequestCode).json({ reason: "No files were uploaded." });
+    }
+
+    let sampleFile = req.files.sampleFile;
+
+    sampleFile.mv(wwwrootPath + "/uploads/test.jpg", function (err) {
+        if (err) {
+            return res.status(badRequestCode).json({ reason: err });
+        }
+
+        return res.status(httpOkCode).json("OK");
+    });
 });
 //------- END ROUTES -------
 
