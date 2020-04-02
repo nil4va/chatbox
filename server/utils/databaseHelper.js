@@ -27,7 +27,7 @@ function init() {
         user: dbConfig.username,
         password: dbConfig.password,
         database: dbConfig.database,
-        connectionLimit : 10, //NOTE: Each team only has a maximum of 10 connections, this includes MySQL Workbench connections.
+        connectionLimit : dbConfig.connectionLimit, //NOTE: Each team only has a maximum of 10 connections, this includes MySQL Workbench connections.
         timezone: "UTC",
         multipleStatements: true
     });
