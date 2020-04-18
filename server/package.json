@@ -5,7 +5,8 @@
     "private": true,
     "version": "1.0.0",
     "devDependencies": {
-        "nodemon": "^2.0.2"
+        "nodemon": "2.0.2",
+        "cypress": "4.4.0"
     },
     "dependencies": {
         "morgan": "1.9.1",
@@ -15,6 +16,8 @@
         "body-parser": "1.19.0"
     },
     "scripts": {
-        "start": "nodemon server.js"
+        "start": "nodemon server.js",
+        "cy:open": "cypress open",
+        "cy:run": "cypress run"
     }
 }
