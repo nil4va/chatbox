@@ -22,7 +22,7 @@ class UserRepository {
      */
     async login(username, password) {
         return await networkManager
-            .doRequest(`${this.route}/login`, "POST", {"username": username, "password": password});
+            .doRequest(`${this.route}/login`, {"username": username, "password": password}, "POST");
     }
 
     async delete() {

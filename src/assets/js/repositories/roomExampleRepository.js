@@ -23,7 +23,7 @@ class RoomExampleRepository {
      */
     async get(roomId) {
         return await networkManager
-            .doRequest(this.route, "POST",{id: roomId});
+            .doRequest(this.route,{id: roomId});
     }
 
     async create() {

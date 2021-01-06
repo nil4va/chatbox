@@ -8,11 +8,11 @@ class NetworkManager {
     /**
      * Does an AJAX request to server(NodeJS)
      * @param route - for example /user/login
-     * @param method - POST, GET or other HTTP Verb
      * @param data - for example {username: "test", password: "test}
+     * @param method - POST, GET or other HTTP Verb -> added default value to stay in sync with video's on YT
      * @returns {Promise<unknown>}
      */
-    doRequest(route, method, data = {}) {
+    doRequest(route, data = {}, method = "POST") {
         const json = JSON.stringify(data);
 
         const url = baseUrl + route;
