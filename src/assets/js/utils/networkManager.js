@@ -8,10 +8,11 @@ class NetworkManager {
     /**
      * Does an AJAX request to server(NodeJS)
      * @param route - for example /user/login
+     * @param method - POST, GET or other HTTP Verb
      * @param data - for example {username: "test", password: "test}
      * @returns {Promise<unknown>}
      */
-    doRequest(route, data = {}) {
+    doRequest(route, method, data = {}) {
         const json = JSON.stringify(data);
 
         const url = baseUrl + route;
@@ -22,7 +23,7 @@ class NetworkManager {
 
             $.ajax({
                 url: url,
-                type: "POST",
+                type: method,
                 dataType: 'json',
                 contentType: 'application/json; charset=UTF-8',
                 data: json,
