@@ -23,7 +23,7 @@
 ### Dependencies - vooraf installeren!
 
 - MySQL 
-- NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie - 12.16.1
+- NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie - 14.15.4 
 - Git
 - IntelliJ Ultimate Edition
 
@@ -168,6 +168,10 @@ _Ik krijg errors in de console:_
 Het is hierbij van belang dat je goed kijkt wat er misgaat. Het kan nameelijk zoals in dit geval zo zijn dat er 
 ook iets in het servergedeelte niet goed staat. Hier wordt een niet bestaand veld gequery'ed.
 
-## Deployen naar PAD Cloud(WIP) - v.a. sprint 2/3
+_Connection limit error:_
 
+https://www.youtube.com/watch?v=e8psB6jmDYs&list=PLvltGXy557e6KYqvUltMopI5udp8i6GaK&index=7&ab_channel=HBO-ICT
+
+## Deployen naar PAD Cloud
+- https://www.youtube.com/watch?v=g38Nh6JWrGc&list=PLvltGXy557e6KYqvUltMopI5udp8i6GaK&index=6&ab_channel=HBO-ICT
 - Nooit `node_modules` uploaden
