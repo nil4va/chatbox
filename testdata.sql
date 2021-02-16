@@ -1,4 +1,4 @@
-USE `VUL JE SCHEMA HIER IN`;
+USE `pad_sde_1_dev`;
 
 CREATE TABLE IF NOT EXISTS `user`
 (
