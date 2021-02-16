@@ -11,7 +11,7 @@
 
 **Front-end(HTML, CSS, JS)**
 - Bootstrap 4 voorbeeld layout
-- MVC setup met twee voorbeelflows: een login en een stukje testdata
+- "MVC" setup met twee voorbeeldflows: een login en een stukje testdata
     - `views` bevat de HTML pagina's
     - `controllers` bevat controllers - de schakeling tussen de views en de data
     - `repositories` omdat we in Javascript(ES6) geen expliciete types hebben is er niet echt een model. Een repository bevat/haalt data op en geeft het terug aan een controller.
@@ -23,7 +23,7 @@
 ### Dependencies - vooraf installeren!
 
 - MySQL 
-- NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie - 14.15.4 
+- NodeJS - https://nodejs.org/en/download/ - Pak de LTS versie - 14.15.5 
 - Git
 - IntelliJ Ultimate Edition
 
@@ -34,7 +34,7 @@ hernoemt naar `pad-framework`**, anders krijg je later problemen bij het open va
 2. File -> Open de geclonede  folder in IntelliJ.
 3. Met het project geopend, open nu linksonderin het tabje >_Terminal. Voor je cursor moet het pad staan van het framework. Bijv. `C:\Users\pmeijer\projects\pad-framework`
 4. Typ `cd server` en druk op enter. Dit verandert het pad naar de `..pad-framework/server` folder.
-5. Typ nu het commando `npm install`. Dit installeert de packages uit `package.json` zoals bijv. de `mySQL` library voor NodeJS. Al krijg je de melding dat npm niet gevonden kan worden
+5. Typ nu het commando `npm install`. Dit installeert de packages uit `package.json` zoals bijv. de `mySQL` package voor NodeJS. Al krijg je de melding dat npm niet gevonden kan worden
 zorg dan dat je nogmaals controleert of NodeJS geïnstalleerd is en dat je deze via Start(Windows) een keer hebt uitgevoerd. Start vervolgens IntellIJ
 nog een keer op en probeer het opnieuw. 
    - Dit kan eventueel ook vanuit IntelliJ door rechts te klikken op de `package.json` en te kiezen voor `Run 'npm install'`.
@@ -57,7 +57,10 @@ van de database van jullie team. Deze kunnen jullie vinden op: https://hbo-ict.c
         }
     }
     ```
-
+    _Al krijg je de connectie om wat voor reden dan ook niet werkend, gebruik dan even een lokale database. Je maakt een 
+   nieuw schema aan in MySQL Workbench, deze vul je in bij `"database"`. Als `"host"` vul je in localhost. Gebruikersnaam en 
+   wachtwoord heb je zelf ingesteld bij MySQL Workbench._
+   
 9. In de root van het project(`/pad-framework`) vind je een bestandje `testdata.sql`. Vul eerst het goede schema in bovenaan: bijv. `pad_oba_10_dev`. Zorg dan dat één van de teamleden deze SQL een keer heeft uitgevoerd in jullie database.
 Dit script maakt een `user` en een `room_example` tabel aan.
 10. Draai nu nogmaals `nodemon server/server.js`. Nu zou de foutmelding moeten zijn verdwenen.
