@@ -7,122 +7,161 @@
  *
  * @author Lennard Fonteijn & Pim Meijer
  */
-const CONTROLLER_SIDEBAR = "sidebar";
-const CONTROLLER_LOGIN = "login";
-const CONTROLLER_LOGOUT = "logout";
-const CONTROLLER_WELCOME = "welcome";
-const CONTROLLER_UPLOAD = "upload";
+const CONTROLLER_SIDEBAR = 'sidebar'
+const CONTROLLER_LOGIN = 'login'
+const CONTROLLER_LOGOUT = 'logout'
+const CONTROLLER_WELCOME = 'welcome'
+const CONTROLLER_UPLOAD = 'upload'
+const CONTROLLER_CHAT = 'chat'
 
-const sessionManager = new SessionManager();
-const networkManager = new NetworkManager();
+const sessionManager = new SessionManager()
+const networkManager = new NetworkManager()
 
-class App {
-
-    init() {
-        //Always load the sidebar
-        this.loadController(CONTROLLER_SIDEBAR);
-
-        //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-        this.loadControllerFromUrl(CONTROLLER_WELCOME);
-    }
-
-    /**
-     * Loads a controller
-     * @param name - name of controller - see constants
-     * @param controllerData - data to pass from on controller to another
-     * @returns {boolean} - successful controller change
-     */
-    loadController(name, controllerData) {
-        console.log("loadController: " + name);
-
-        if (controllerData) {
-            console.log(controllerData);
-        } else {
-            controllerData = {};
-        }
-
-        switch (name) {
-            case CONTROLLER_SIDEBAR:
-                new NavbarController();
-                break;
-
-            case CONTROLLER_LOGIN:
-                this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController(), () => new LoginController());
-                break;
-
-            case CONTROLLER_LOGOUT:
-                this.setCurrentController(name);
-                this.handleLogout();
-                break;
-
-            case CONTROLLER_WELCOME:
-                this.setCurrentController(name);
-                this.isLoggedIn(() => new WelcomeController, () => new LoginController());
-                break;
-
-            case CONTROLLER_UPLOAD:
-                new UploadController();
-                break;
-
-            default:
-                return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Alternative way of loading controller by url
-     * @param fallbackController
-     */
-    loadControllerFromUrl(fallbackController) {
-        const currentController = this.getCurrentController();
-
-        if (currentController) {
-            if (!this.loadController(currentController)) {
-                this.loadController(fallbackController);
-            }
-        } else {
-            this.loadController(fallbackController);
-        }
-    }
-
-    getCurrentController() {
-        return location.hash.slice(1);
-    }
-
-    setCurrentController(name) {
-        location.hash = name;
-    }
-
-    /**
-     * Convenience functions to handle logged-in states
-     * @param whenYes - function to execute when user is logged in
-     * @param whenNo - function to execute when user is logged in
-     */
-    isLoggedIn(whenYes, whenNo) {
-        if (sessionManager.get("username")) {
-            whenYes();
-        } else {
-            whenNo();
-        }
-    }
-
-    /**
-     * Removes username via sessionManager and loads the login screen
-     */
-    handleLogout() {
-        sessionManager.remove("username");
-
-        //go to login screen
-        this.loadController(CONTROLLER_LOGIN);
-    }
+HTMLElement.prototype.$ = function (q) {
+  return this.querySelector(q)
 }
 
-const app = new App();
+HTMLElement.prototype.$$ = function (q) {
+  return Array.from(this.querySelectorAll(q))
+}
+
+HTMLElement.prototype.on = function (evt, func) {
+  this.addEventListener(evt, func)
+}
+
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)]
+}
+
+String.prototype.random = function () {
+  return Array.from(this).random()
+}
+
+String.prototype.replaceAt = function (index, replacement) {
+  return (
+    this.substr(0, index) +
+    replacement +
+    this.substr(index + replacement.length)
+  )
+}
+
+class App {
+  init() {
+    //Always load the sidebar
+    this.loadController(CONTROLLER_SIDEBAR)
+
+    //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
+    this.loadControllerFromUrl(CONTROLLER_WELCOME)
+  }
+
+  /**
+   * Loads a controller
+   * @param name - name of controller - see constants
+   * @param controllerData - data to pass from on controller to another
+   * @returns {boolean} - successful controller change
+   */
+  loadController(name, controllerData) {
+    console.log('loadController: ' + name)
+
+    if (controllerData) {
+      console.log(controllerData)
+    } else {
+      controllerData = {}
+    }
+
+    switch (name) {
+      case CONTROLLER_SIDEBAR:
+        new NavbarController()
+        break
+
+      case CONTROLLER_LOGIN:
+        this.setCurrentController(name)
+        this.isLoggedIn(
+          () => new WelcomeController(),
+          () => new LoginController()
+        )
+        break
+
+      case CONTROLLER_LOGOUT:
+        this.setCurrentController(name)
+        this.handleLogout()
+        break
+
+      case CONTROLLER_WELCOME:
+        this.setCurrentController(name)
+        this.isLoggedIn(
+          () => new WelcomeController(),
+          () => new LoginController()
+        )
+        break
+
+      case CONTROLLER_UPLOAD:
+        new UploadController()
+        break
+
+      case CONTROLLER_CHAT:
+        this.setCurrentController(name)
+        new ChatController()
+        break
+
+      default:
+        return false
+    }
+
+    return true
+  }
+
+  /**
+   * Alternative way of loading controller by url
+   * @param fallbackController
+   */
+  loadControllerFromUrl(fallbackController) {
+    const currentController = this.getCurrentController()
+
+    if (currentController) {
+      if (!this.loadController(currentController)) {
+        this.loadController(fallbackController)
+      }
+    } else {
+      this.loadController(fallbackController)
+    }
+  }
+
+  getCurrentController() {
+    return location.hash.slice(1)
+  }
+
+  setCurrentController(name) {
+    location.hash = name
+  }
+
+  /**
+   * Convenience functions to handle logged-in states
+   * @param whenYes - function to execute when user is logged in
+   * @param whenNo - function to execute when user is logged in
+   */
+  isLoggedIn(whenYes, whenNo) {
+    if (sessionManager.get('username')) {
+      whenYes()
+    } else {
+      whenNo()
+    }
+  }
+
+  /**
+   * Removes username via sessionManager and loads the login screen
+   */
+  handleLogout() {
+    sessionManager.remove('username')
+
+    //go to login screen
+    this.loadController(CONTROLLER_LOGIN)
+  }
+}
+
+const app = new App()
 
 //When the DOM is ready, kick off our application.
 $(function () {
-    app.init();
-});
+  app.init()
+})

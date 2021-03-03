@@ -11,6 +11,10 @@ const cryptoHelper = require('./utils/cryptoHelper')
 const corsConfig = require('./utils/corsConfigHelper')
 const app = express()
 const fileUpload = require('express-fileupload')
+const WebSocket = require('ws')
+
+const WSS_PORT = 8080
+const WSS_PATH = '/'
 
 //logger lib  - 'short' is basic logging info
 app.use(morgan('short'))
@@ -97,6 +101,28 @@ app.post('/upload', function (req, res) {
 //------- END ROUTES -------
 
 app.get('/gateway', (req, res) => {
-  res.send(httpOkCode).json({ gateway: '/ws' })
+  res
+    .status(httpOkCode)
+    .json({ gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}` })
 })
+
+// create new websocket server
+const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
+
+function sendMsg(ws, content, from) {
+  ws.send(JSON.stringify({ content, from }))
+}
+// listen for new connections
+wss.on('connection', ws => {
+  console.log('new connection')
+  // listen for messages from client
+  ws.on('message', msg => {
+    let data = JSON.parse(msg)
+    sendMsg(ws, data.content, data.from)
+    sendMsg(ws, `server echo: ${data.content}`, 'server')
+  })
+
+  sendMsg(ws, 'websocket connect success', 'server')
+})
+
 module.exports = app
