@@ -298,3 +298,18 @@ export class LinkedList extends Array {
     return this
   }
 }
+
+export class CustomEventTarget extends EventTarget {
+  on(evt, fun, opts) {
+    this.addEventListener(evt, fun, opts)
+  }
+
+  dispatch(evt, data, cancelable) {
+    return this.dispatchEvent(
+      new CustomEvent(evt, {
+        detail: data,
+        cancelable: cancelable || false,
+      })
+    )
+  }
+}
