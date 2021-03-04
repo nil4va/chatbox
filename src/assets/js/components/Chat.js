@@ -28,7 +28,12 @@ export default class Chat extends Component {
             placeholder="Type a message"
             onchange=${e => chatRepository.send(e.target.value)}
           />
-          <button onclick=${e => chatRepository.send(qs('#msginput').value)}>
+          <button
+            onclick=${e => {
+              chatRepository.send(qs('#msginput').value)
+              qs('#msginput').value = ''
+            }}
+          >
             Send
           </button>
         </div>
