@@ -112,14 +112,57 @@ const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
 function sendMsg(ws, content, from) {
   ws.send(JSON.stringify({ content, from }))
 }
+const USERIDMAP = {}
+// gets the id for a username
+function nameToId(name) {
+  if (!name) return
+  return new Promise(resolve => {
+    if (USERIDMAP[name]) return resolve(USERIDMAP[name])
+    db.handleQuery(
+      connectionPool,
+      {
+        query: 'SELECT id FROM user WHERE username = ?',
+        values: [name],
+      },
+      data => {
+        if (data.length === 1) {
+          USERIDMAP[name] = data[0].id
+          resolve(data[0].id)
+        } else {
+          resolve(null)
+        }
+      },
+      err => {
+        resolve(null)
+      }
+    )
+  })
+}
+
 // listen for new connections
 wss.on('connection', ws => {
   console.log('new connection')
   // listen for messages from client
-  ws.on('message', msg => {
+  ws.on('message', async msg => {
     let data = JSON.parse(msg)
-    sendMsg(ws, data.content, data.from)
-    sendMsg(ws, `server echo: ${data.content}`, 'server')
+    console.log(data)
+    let fromId = await nameToId(data.from)
+    let toId = await nameToId(data.to)
+    db.handleQuery(
+      connectionPool,
+      {
+        query: 'INSERT INTO message (`from`,`to`,content) VALUES (?,?,?)',
+        values: [fromId, toId, data.content],
+      },
+      suc => {
+        sendMsg(ws, data.content, data.from)
+        sendMsg(ws, `server echo: ${data.content}`, 'server')
+      },
+      err => {
+        console.log(err)
+        sendMsg(ws, 'database error', 'server')
+      }
+    )
   })
 
   sendMsg(ws, 'websocket connect success', 'server')

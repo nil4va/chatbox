@@ -7,7 +7,9 @@ class ChatController {
     qs('.content').innerHTML = ''
     render(
       html`
-        <${Chat} />
+        <div class="gt">
+          <${Chat} />
+        </div>
       `,
       qs('.content')
     )
