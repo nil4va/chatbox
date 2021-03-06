@@ -13,6 +13,8 @@ const CONTROLLER_LOGOUT = 'logout'
 const CONTROLLER_WELCOME = 'welcome'
 const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
+const CONTROLLER_POST = 'post'
+const CONTROLLER_POSTS = 'posts'
 
 const sessionManager = new SessionManager()
 const networkManager = new NetworkManager()
@@ -102,6 +104,11 @@ class App {
       case CONTROLLER_CHAT:
         this.setCurrentController(name)
         new ChatController()
+        break
+
+      case CONTROLLER_POSTS:
+        this.setCurrentController(name)
+        new PostsController()
         break
 
       default:
