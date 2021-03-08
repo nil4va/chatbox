@@ -107,12 +107,11 @@ app.get('/gateway', (req, res) => {
 })
 
 app.post('/post/postinfo', (req, res) => {
-    console.log(req.body.id)
     db.handleQuery(
         connectionPool,
         {
             query:
-                'SELECT title, context, photo, creatorId FROM post WHERE postId = ?',
+                'SELECT title, context, creatorId FROM post WHERE postId = ?',
             values: [req.body.id],
         },
         data => {
@@ -120,13 +119,41 @@ app.post('/post/postinfo', (req, res) => {
                 res.status(httpOkCode).json({
                     title: data[0].title,
                     context: data[0].context,
-                    photo: data[0].photo,
                     creator: data[0].creatorId
                 })
             } else {
                 res
                     .status(badRequestCode)
                     .json({reason: 'Post not found'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/posts/posts', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT postId, title FROM post',
+            values: [],
+        },
+        data => {
+            if (data.length > 0) {
+                let json = []
+
+                data.forEach(item => json.push({
+                    postId: item.postId,
+                    title: item.title
+                }) )
+                console.log(json)
+
+                res.status(httpOkCode).json(json)
+            } else {
+                res
+                    .status(badRequestCode)
+                    .json({reason: 'No posts found'})
             }
         },
         err => res.status(badRequestCode).json({reason: err})

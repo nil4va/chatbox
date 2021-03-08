@@ -1,0 +1,14 @@
+.post {
+    outline: 2px solid black;
+    margin: 5px;
+    align-content: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.postimg {
+    width: 30%;
+    outline: 2px solid black;
+    margin-right: 5%;
+    align-self: center;
+}
