@@ -106,9 +106,9 @@ class App {
         new ChatController()
         break
 
-      case CONTROLLER_POSTS:
+      case CONTROLLER_POST:
         this.setCurrentController(name)
-        new PostsController()
+        new PostController()
         break
 
       default:
