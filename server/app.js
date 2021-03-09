@@ -111,7 +111,7 @@ app.post('/posts/:id', (req, res) => {
         connectionPool,
         {
             query:
-                'SELECT title, context, creatorId FROM post WHERE postId = ?',
+                'SELECT title, context, username FROM post INNER JOIN user ON post.creatorId = user.id WHERE postId = ?',
             values: [req.params.id],
         },
         data => {
@@ -119,7 +119,7 @@ app.post('/posts/:id', (req, res) => {
                 res.status(httpOkCode).json({
                     title: data[0].title,
                     context: data[0].context,
-                    creator: data[0].creatorId
+                    creator: data[0].username,
                 })
             } else {
                 res
@@ -136,14 +136,13 @@ app.post('/posts', (req, res) => {
         connectionPool,
         {
             query:
-                'SELECT postId, title, username FROM post INNER JOIN user ON post.creatorId = user.id',
+                'SELECT postId, title FROM post',
         },
         data => {
             if (data.length > 0) {
                 let json = data.map(item => ({
                     postId: item.postId,
-                    title: item.title,
-                    username: item.username
+                    title: item.title
                 }))
 
                 res.status(httpOkCode).json(json)

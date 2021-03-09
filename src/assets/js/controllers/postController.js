@@ -17,8 +17,9 @@ class PostController {
         this.postView = $(data);
 
         const info = await this.postRepository.getPostInfo(postId);
+        console.log(info)
 
-        this.postView.find("#chatButton").on("click", e => this.startChat(info.username));
+        this.postView.find("#chatButton").on("click", e => this.startChat(info.creator));
 
         // todo: use querystring
 
@@ -38,7 +39,7 @@ class PostController {
     startChat(posterUserName) {
         //check if user is logged in
         if (sessionManager.get("username")) {
-            app.loadController(CONTROLLER_CHAT, (sessionManager.get("username"), posterUserName) );
+            app.loadController(CONTROLLER_CHAT, posterUserName);
             console.log("chat aangemaakt!")
             //TODO: kijk of er al een chat is, zo ja ga naar chatscherm. zo nee, start nieuwe chat
         } else {
