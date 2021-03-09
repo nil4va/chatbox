@@ -1,15 +1,20 @@
 import WebSocketManager from '../utils/webSocketManager.js'
 import { CustomEventTarget } from '../utils/alfa.js'
 
+/**
+ * @author Alfa Saijers
+ */
 export default class ChatRepository extends CustomEventTarget {
   constructor(from, to) {
     super()
     this._from = from
     this._to = to
     this._messages = []
-    this.init()
+    this.initWebSocket()
   }
-  async init() {
+
+  // initialize the websocket connection
+  async initWebSocket() {
     this.ws = await WebSocketManager.connect()
     this.ws.onopen = () => {
       // put messages from the server into the msgs array
@@ -27,6 +32,7 @@ export default class ChatRepository extends CustomEventTarget {
     return this._messages
   }
 
+  // the name of the logged in user
   getFrom() {
     return this._from
   }
