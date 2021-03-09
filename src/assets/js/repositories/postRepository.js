@@ -1,10 +1,15 @@
 class PostRepository {
     constructor() {
-        this.route = "/post"
+        this.route = "/posts"
     }
 
-    async getPostInfo(postId) {
-        return await networkManager
-            .doRequest(`${this.route}/postinfo`, {id: postId}, "POST");
+     getPostInfo(postId) {
+        return  networkManager
+            .doRequest(`${this.route}/${postId}`, {}, "POST");
+    }
+
+    getAll() {
+        return networkManager
+            .doRequest(`${this.route}`, {}, "POST");
     }
 }

@@ -5,7 +5,7 @@
  */
 class PostsController {
     constructor() {
-        this.postsRepository = new PostsRepository();
+        this.postRepository = new PostRepository();
 
         $.get("views/posts.html")
             .done((data) => this.setup(data))
@@ -15,12 +15,11 @@ class PostsController {
     async setup(data) {
         this.postsView = $(data);
 
-        // todo: use querystring
-        const info = await this.postsRepository.getPosts();
+        const info = await this.postRepository.getAll();
 
         // display each post from database on screen with title and photo
         info.forEach(post => {
-            const image = "<img src= 'src/assets/img/posts/" + post.postId + ".png' alt = 'product photo' class='postimg'/>"
+            const image = "<img src= 'assets/img/posts/" + post.postId + ".png' alt = 'product photo' class='postimg'/>"
             this.postsView.find("#content").append(
                 "<div id=" + post.postId + " class='post '>" + image + post.title + "</div>");
         })

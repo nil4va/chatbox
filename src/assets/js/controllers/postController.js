@@ -16,15 +16,17 @@ class PostController {
     async setup(data, postId) {
         this.postView = $(data);
 
-        this.postView.find("#chatButton").on("click", this.startChat);
+        const info = await this.postRepository.getPostInfo(postId);
+
+        this.postView.find("#chatButton").on("click", e => this.startChat(info.username));
 
         // todo: use querystring
-        const info = await this.postRepository.getPostInfo(postId);
+
 
         // display text from database on screen
         this.postView.find("#postTitle").text(info.title);
 
-        const photopath = "src/assets/img/posts/" + postId + ".png";
+        const photopath = "assets/img/posts/" + postId + ".png";
         this.postView.find("#postPhoto").html("<img src= " + photopath + " alt = 'product photo'/>");
 
         this.postView.find("#postDescription").text(info.context);
@@ -33,9 +35,10 @@ class PostController {
         $(".content").empty().append(this.postView);
     }
 
-    startChat() {
+    startChat(posterUserName) {
         //check if user is logged in
         if (sessionManager.get("username")) {
+            app.loadController(CONTROLLER_CHAT, (sessionManager.get("username"), posterUserName) );
             console.log("chat aangemaakt!")
             //TODO: kijk of er al een chat is, zo ja ga naar chatscherm. zo nee, start nieuwe chat
         } else {

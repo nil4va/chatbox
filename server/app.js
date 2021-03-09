@@ -106,13 +106,13 @@ app.get('/gateway', (req, res) => {
         .json({gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}`})
 })
 
-app.post('/post/postinfo', (req, res) => {
+app.post('/posts/:id', (req, res) => {
     db.handleQuery(
         connectionPool,
         {
             query:
                 'SELECT title, context, creatorId FROM post WHERE postId = ?',
-            values: [req.body.id],
+            values: [req.params.id],
         },
         data => {
             if (data.length === 1) {
@@ -131,23 +131,20 @@ app.post('/post/postinfo', (req, res) => {
     )
 })
 
-app.post('/posts/posts', (req, res) => {
+app.post('/posts', (req, res) => {
     db.handleQuery(
         connectionPool,
         {
             query:
-                'SELECT postId, title FROM post',
-            values: [],
+                'SELECT postId, title, username FROM post INNER JOIN user ON post.creatorId = user.id',
         },
         data => {
             if (data.length > 0) {
-                let json = []
-
-                data.forEach(item => json.push({
+                let json = data.map(item => ({
                     postId: item.postId,
-                    title: item.title
-                }) )
-                console.log(json)
+                    title: item.title,
+                    username: item.username
+                }))
 
                 res.status(httpOkCode).json(json)
             } else {
