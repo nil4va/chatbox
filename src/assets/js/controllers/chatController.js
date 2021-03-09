@@ -2,8 +2,10 @@ import ChatRepository from '../repositories/chatRepository.js'
 import { ce, qs } from '../utils/alfa.js'
 
 class ChatController {
-  constructor() {
-    this.chatRepository = new ChatRepository('test', 'server')
+  constructor( to = 'server') {
+    console.log(to);
+    const from = sessionManager.get("username") || 'test';
+    this.chatRepository = new ChatRepository(from, to)
     this.init()
   }
 

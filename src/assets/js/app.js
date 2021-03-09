@@ -103,7 +103,7 @@ class App {
 
       case CONTROLLER_CHAT:
         this.setCurrentController(name)
-        new ChatController()
+        new ChatController(controllerData)
         break
 
       case CONTROLLER_POSTS:
