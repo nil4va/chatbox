@@ -106,6 +106,56 @@ app.get('/gateway', (req, res) => {
         .json({gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}`})
 })
 
+app.post('/posts/:id', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT title, context, username FROM post INNER JOIN user ON post.creatorId = user.id WHERE postId = ?',
+            values: [req.params.id],
+        },
+        data => {
+            if (data.length === 1) {
+                res.status(httpOkCode).json({
+                    title: data[0].title,
+                    context: data[0].context,
+                    creator: data[0].username,
+                })
+            } else {
+                res
+                    .status(badRequestCode)
+                    .json({reason: 'Post not found'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/posts', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT postId, title FROM post',
+        },
+        data => {
+            if (data.length > 0) {
+                let json = data.map(item => ({
+                    postId: item.postId,
+                    title: item.title
+                }))
+
+                res.status(httpOkCode).json(json)
+            } else {
+                res
+                    .status(badRequestCode)
+                    .json({reason: 'No posts found'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
 // create new websocket server
 const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
 
