@@ -23,7 +23,7 @@ app.use(morgan('short'))
 const connectionPool = db.init()
 
 //parsing request bodies from json to javascript objects
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 //CORS config - Cross Origin Requests
@@ -38,134 +38,150 @@ const badRequestCode = 400
 const authorizationErrCode = 401
 
 app.post('/user/login', (req, res) => {
-  const username = req.body.username
+    const username = req.body.username
 
-  //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
-  const password = req.body.password
+    //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
+    const password = req.body.password
 
-  db.handleQuery(
-    connectionPool,
-    {
-      query:
-        'SELECT username, password FROM user WHERE username = ? AND password = ?',
-      values: [username, password],
-    },
-    data => {
-      if (data.length === 1) {
-        //return just the username for now, never send password back!
-        res.status(httpOkCode).json({ username: data[0].username })
-      } else {
-        //wrong username
-        res
-          .status(authorizationErrCode)
-          .json({ reason: 'Wrong username or password' })
-      }
-    },
-    err => res.status(badRequestCode).json({ reason: err })
-  )
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT username, password FROM user WHERE username = ? AND password = ?',
+            values: [username, password],
+        },
+        data => {
+            if (data.length === 1) {
+                //return just the username for now, never send password back!
+                res.status(httpOkCode).json({username: data[0].username})
+            } else {
+                //wrong username
+                res
+                    .status(authorizationErrCode)
+                    .json({reason: 'Wrong username or password'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
 })
 
 //dummy data example - rooms
 app.post('/room_example', (req, res) => {
-  db.handleQuery(
-    connectionPool,
-    {
-      query: 'SELECT id, surface FROM room_example WHERE id = ?',
-      values: [req.body.id],
-    },
-    data => {
-      //just give all data back as json
-      res.status(httpOkCode).json(data)
-    },
-    err => res.status(badRequestCode).json({ reason: err })
-  )
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'SELECT id, surface FROM room_example WHERE id = ?',
+            values: [req.body.id],
+        },
+        data => {
+            //just give all data back as json
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
 })
 
 app.post('/upload', function (req, res) {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res
-      .status(badRequestCode)
-      .json({ reason: 'No files were uploaded.' })
-  }
-
-  let sampleFile = req.files.sampleFile
-
-  sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
-    if (err) {
-      return res.status(badRequestCode).json({ reason: err })
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res
+            .status(badRequestCode)
+            .json({reason: 'No files were uploaded.'})
     }
 
-    return res.status(httpOkCode).json('OK')
-  })
+    let sampleFile = req.files.sampleFile
+
+    sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
+        if (err) {
+            return res.status(badRequestCode).json({reason: err})
+        }
+
+        return res.status(httpOkCode).json('OK')
+    })
 })
 //------- END ROUTES -------
 
 app.get('/gateway', (req, res) => {
-  res
-    .status(httpOkCode)
-    .json({ gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}` })
+    res
+        .status(httpOkCode)
+        .json({gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}`})
 })
 
 // create new websocket server
-const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
+const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
 
 function sendMsg(ws, content, from) {
-  ws.send(JSON.stringify({ content, from }))
+    ws.send(JSON.stringify({content, from}))
 }
+
 const USERIDMAP = {}
+
 // gets the id for a username
 function nameToId(name) {
-  if (!name) return
-  return new Promise(resolve => {
-    if (USERIDMAP[name]) return resolve(USERIDMAP[name])
-    db.handleQuery(
-      connectionPool,
-      {
-        query: 'SELECT id FROM user WHERE username = ?',
-        values: [name],
-      },
-      data => {
-        if (data.length === 1) {
-          USERIDMAP[name] = data[0].id
-          resolve(data[0].id)
-        } else {
-          resolve(null)
-        }
-      },
-      err => {
-        resolve(null)
-      }
-    )
-  })
+    if (!name) return
+    return new Promise(resolve => {
+        if (USERIDMAP[name]) return resolve(USERIDMAP[name])
+        db.handleQuery(
+            connectionPool,
+            {
+                query: 'SELECT id FROM user WHERE username = ?',
+                values: [name],
+            },
+            data => {
+                if (data.length === 1) {
+                    USERIDMAP[name] = data[0].id
+                    resolve(data[0].id)
+                } else {
+                    resolve(null)
+                }
+            },
+            err => {
+                resolve(null)
+            }
+        )
+    })
 }
 
 // listen for new connections
 wss.on('connection', ws => {
-  console.log('new connection')
-  // listen for messages from client
-  ws.on('message', async msg => {
-    let data = JSON.parse(msg)
-    console.log(data)
-    let fromId = await nameToId(data.from)
-    let toId = await nameToId(data.to)
-    db.handleQuery(
-      connectionPool,
-      {
-        query: 'INSERT INTO message (`from`,`to`,content) VALUES (?,?,?)',
-        values: [fromId, toId, data.content],
-      },
-      suc => {
-        sendMsg(ws, data.content, data.from)
-        sendMsg(ws, `server echo: ${data.content}`, 'server')
-      },
-      err => {
-        console.log(err)
-        sendMsg(ws, 'database error', 'server')
-      }
-    )
-  })
+    console.log('new connection')
+    // listen for messages from client
+    ws.on('message', async msg => {
+        let data = JSON.parse(msg)
+        console.log(data)
+        let fromId = await nameToId(data.from)
+        let toId = await nameToId(data.to)
+        db.handleQuery(
+            connectionPool,
+            {
+                query: 'INSERT INTO message (`from`,`to`,content) VALUES (?,?,?)',
+                values: [fromId, toId, data.content],
+            },
+            suc => {
+                sendMsg(ws, data.content, data.from)
+                sendMsg(ws, `server echo: ${data.content}`, 'server')
+            },
+            err => {
+                console.log(err)
+                sendMsg(ws, 'database error', 'server')
+            }
+        )
+    })
 
-  sendMsg(ws, 'websocket connect success', 'server')
+    sendMsg(ws, 'websocket connect success', 'server')
+})
+
+app.get("/chatList/:naam", async (req, res) => {
+    const NAAM = req.params.naam
+    const id = await nameToId(NAAM)
+    db.handleQuery(connectionPool, {
+        query: "SELECT `to` FROM message WHERE `from` = ?",
+        values: [id]
+    }, (data) => {
+        if(data.insertId) {
+            res.status(httpOkCode).json({reason: err})}
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
 })
 
 module.exports = app
+
+

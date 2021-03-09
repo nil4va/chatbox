@@ -1,5 +1,6 @@
 import ChatRepository from '../repositories/chatRepository.js'
-import { ce, qs } from '../utils/alfa.js'
+import {ce, getQuery, qs} from '../utils/alfa.js'
+import chatRepository from "../repositories/chatRepository.js";
 
 class ChatController {
   constructor() {
@@ -10,7 +11,6 @@ class ChatController {
   async init() {
     let res = await fetch('views/chat.html')
     let html = await res.text()
-    console.log(html)
     qs('.content').innerHTML = html
     this.showMessages()
     this.chatRepository.on('message', e => {
@@ -36,6 +36,7 @@ class ChatController {
       )
     })
   }
+
 }
 
 window.ChatController = ChatController
