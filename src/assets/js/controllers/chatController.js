@@ -23,6 +23,7 @@ class ChatController {
   }
 
   showMessages() {
+
     // render all the messages
     qs('.history').innerHTML = ''
     this.chatRepository.getAll().map(msg => {
@@ -34,6 +35,7 @@ class ChatController {
               ? 'msgself'
               : 'msgother'),
           innerHTML: `<p>${msg.content}</p>`,
+          
         })
       )
     })
