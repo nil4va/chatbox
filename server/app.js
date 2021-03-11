@@ -207,8 +207,8 @@ wss.on('connection', ws => {
                 values: [fromId, toId, data.content],
             },
             suc => {
-                sendMsg(ws, data.content, data.from)
-                sendMsg(ws, `server echo: ${data.content}`, 'server')
+                sendMsg(ws, {content:data.content,timestamp: new Date()}, data.from)
+                sendMsg(ws, {content:`server echo: ${data.content}`, timestamp: new Date()}, 'server')
             },
             err => {
                 console.log(err)

@@ -11,6 +11,13 @@ class ChatController {
         this.init()
     }
 
+    dateConvertion(number) {
+        var d = new Date(number);
+        var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
+            d.getHours() + ":" + d.getMinutes();
+        return datestring
+    }
+
     async init(data) {
         let res = await fetch('views/chat.html')
         let html = await res.text()
@@ -38,9 +45,11 @@ class ChatController {
                         (msg.from === this.chatRepository.getFrom()
                             ? 'msgself'
                             : 'msgother'),
-                    innerHTML: `<p>${msg.content}</p>`,
+                    innerHTML: `<p>${msg.content.content}</p>
+                                <p id="timer"><small></small></p>`,
                 })
             )
+            document.getElementById("timer").innerHTML = this.dateConvertion(msg.content.timestamp)
         })
     }
 
