@@ -195,10 +195,21 @@ function nameToId(name) {
 wss.on('connection', ws => {
     console.log('new connection')
     // listen for messages from client
+    let id
+    ws.on('close', function close() {
+        db.handleQuery(connectionPool, {
+                query: 'UPDATE user SET (`isOnline`, `id`) VALUES (?,?)',
+                values: [0, id],
+            },
+        )
+    });
+
+
     ws.on('message', async msg => {
         let data = JSON.parse(msg)
         console.log(data)
         let fromId = await nameToId(data.from)
+        id = fromId
         let toId = await nameToId(data.to)
         db.handleQuery(
             connectionPool,
@@ -215,6 +226,13 @@ wss.on('connection', ws => {
                 sendMsg(ws, 'database error', 'server')
             }
         )
+        db.handleQuery(connectionPool, {
+                query: 'UPDATE user SET (`isOnline`, `id`) VALUES (?,?)',
+                values: [1, fromId],
+            },
+        )
+
+
     })
 
     sendMsg(ws, 'websocket connect success', 'server')
