@@ -36,6 +36,10 @@ export default class ChatRepository extends CustomEventTarget {
     return this._from
   }
 
+  getTo() {
+    return this._to;
+  }
+
   set to(value) {
     this._to = value;
   }

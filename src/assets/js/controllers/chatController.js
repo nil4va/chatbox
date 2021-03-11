@@ -12,8 +12,6 @@ class ChatController {
     }
 
     async init(data) {
-        // this.chatView = $(data);
-        // this.chatView.find(".previewChat").on("click", e => )
         let res = await fetch('views/chat.html')
         let html = await res.text()
         qs('.content').innerHTML = html
@@ -23,7 +21,7 @@ class ChatController {
             this.showMessages()
             console.log(e)
             if (e.detail.from === sessionManager.get("username"))
-            this.previewData()
+                this.previewData()
         })
         qs('#msgsend').onclick = e =>
             this.chatRepository.send(qs('#msginput').value)
@@ -49,13 +47,14 @@ class ChatController {
     async previewData() {
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
+        const chronologicalOrder = data.sort(function (a, b) {
+            return new Date(b.timestamp) - new Date(a.timestamp)
+        })
         console.log(data)
-
-        for (const chat of data) {
+        for (let [i,chat] of chronologicalOrder.entries()) {
             const chatElement = ce(
                 "div", {
                     onclick: e => {
-                        console.log(this.chatRepository.send(this._to))
                         this.chatRepository.to = chat.username
                         this.showMessages()
                     },
@@ -66,10 +65,15 @@ class ChatController {
                     <div>
                         <div class="userName">${chat.username}</div>
                         <div class="lastMessage">${chat.content}</div>
-                        <div class="timeStamp">${chat.timestamp}</div>
+                        <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
+                        <div class="chatOptions"><span class="thumbtack">...</span></div>
                     </div>
                 </div>`,
                 })
+            chatElement.$(".chatOptions").on("click", e => {
+                console.log("click!!")
+                this.chatListRepository.pinChat(chat.username)
+            })
             qs(".chatList").append(chatElement);
         }
     }
