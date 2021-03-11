@@ -35,16 +35,6 @@ export default class ChatRepository extends CustomEventTarget {
   getFrom() {
     return this._from
   }
-
-
-  // send a message to the other person
-  send(content) {
-    var d = Date();
-    var a = d.toString()
-
-    content = content+', ' + a
-    console.log('msg out:', content)
-    this.ws.send(JSON.stringify({ content, from: this._from, to: this._to}))
   getTo() {
     return this._to;
   }
@@ -53,8 +43,13 @@ export default class ChatRepository extends CustomEventTarget {
     this._to = value;
   }
 
-// send a message to the other person
+  // send a message to the other person
   send(content) {
-    this.ws.send(JSON.stringify({ content, from: this._from, to: this._to }))
-  }
-}
+    var d = Date();
+    var a = d.toString()
+
+    content = content + ', ' + a
+    console.log('msg out:', content)
+    this.ws.send(JSON.stringify({content, from: this._from, to: this._to}))
+
+  }}
