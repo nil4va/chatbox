@@ -220,15 +220,39 @@ wss.on('connection', ws => {
     sendMsg(ws, 'websocket connect success', 'server')
 })
 
-app.get("/chatList/:naam", async (req, res) => {
-    const NAAM = req.params.naam
-    const id = await nameToId(NAAM)
+app.get("/chatList", async (req, res) => {
+    const nameOtherUser = req.body.nameOtherUser
+    const id = await nameToId(nameOtherUser)
+    const loggedInName = req.body.userIdLoggedIn
+    const LoggedInId = await nameToId(loggedInName)
     db.handleQuery(connectionPool, {
-        query: "SELECT `to` FROM message WHERE `from` = ?",
-        values: [id]
-    }, (data) => {
-        if(data.insertId) {
-            res.status(httpOkCode).json({reason: err})}
+        query: "SELECT `to`, `from`, `content`, MAX(timestamp) FROM message WHERE `from` = ? AND `to` = ?",
+        values: [id, LoggedInId]
+    }, data => {
+        if (data) {
+            res.status(httpOkCode).json({
+                nameOtherUser: data.params.name,
+                lastMessage: data.content,
+                timeStampPreview: data.timestamp,
+            })
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
+
+app.post("/chatList", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const id = await nameToId(loggedInName)
+    db.handleQuery(connectionPool, {
+        query: "SELECT `user`.`username`, `content`, MAX(timestamp) FROM `message` INNER JOIN user ON `to` =" +
+            " `user`.`id` WHERE `from` = ? GROUP BY `to`",
+        values: [id],
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
     }, (err) => err => res.status(badRequestCode).json({reason: err}))
 })
 

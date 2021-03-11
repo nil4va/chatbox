@@ -36,7 +36,11 @@ export default class ChatRepository extends CustomEventTarget {
     return this._from
   }
 
-  // send a message to the other person
+  set to(value) {
+    this._to = value;
+  }
+
+// send a message to the other person
   send(content) {
     this.ws.send(JSON.stringify({ content, from: this._from, to: this._to }))
   }
