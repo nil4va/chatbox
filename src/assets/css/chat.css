@@ -1,26 +1,82 @@
 .chat {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  padding: 5rem;
-  min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    padding: 5rem;
+    min-height: 0;
+    justify-content: flex-end;
 }
 
 #msginput {
-  align-self: flex-start;
+    align-self: flex-start;
 }
 
 .history {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-grow: 1;
 }
 
 .msgself {
-  align-self: flex-end;
+    align-self: flex-end;
 }
 
 .msgother {
-  align-self: flex-start;
+    align-self: flex-start;
+}
+
+.chatList {
+    background-color: #F9F7F7;
+    height: auto;
+}
+
+.previewChat {
+    background-color: #F9F7F7;
+    padding: 20px;
+    border-bottom: #C28899 solid 1px;
+    position: relative;
+}
+
+.previewChat:hover {
+    background-color: #c28899;
+}
+
+.profilePicture {
+    background-color: #1d2124;
+    border-radius: 100%;
+    margin: 0 20px 0 20px;
+    height: 70px;
+    width: 70px;
+}
+
+.timeStamp {
+    font-style: italic;
+    font-size: 11px;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+.userName {
+    flex-direction: column;
+    font-weight: 600;
+}
+
+.lastMessage {
+    flex-direction: column;
+}
+
+.chatOptions {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+}
+
+.chatOptions:hover span {
+    display: none;
+}
+
+.chatOptions:hover:before {
+    content: '📌';
 }

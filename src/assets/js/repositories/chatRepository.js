@@ -20,7 +20,6 @@ export default class ChatRepository extends CustomEventTarget {
       // put messages from the server into the msgs array
       this.ws.onmessage = msg => {
         let data = JSON.parse(msg.data)
-        console.log('msg in:', data.content)
         this._messages.push(data)
         this.dispatch('message', data)
       }
@@ -36,15 +35,21 @@ export default class ChatRepository extends CustomEventTarget {
   getFrom() {
     return this._from
   }
+  getTo() {
+    return this._to;
+  }
 
+  set to(value) {
+    this._to = value;
+  }
 
   // send a message to the other person
   send(content) {
     var d = Date();
     var a = d.toString()
 
-    content = content+', ' + a
+    content = content + ', ' + a
     console.log('msg out:', content)
-    this.ws.send(JSON.stringify({ content, from: this._from, to: this._to}))
-  }
-}
+    this.ws.send(JSON.stringify({content, from: this._from, to: this._to}))
+
+  }}

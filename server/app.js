@@ -238,6 +238,62 @@ wss.on('connection', ws => {
     sendMsg(ws, 'websocket connect success', 'server')
 })
 
+app.post("/chatList", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const id = await nameToId(loggedInName)
+    db.handleQuery(connectionPool, {
+        query: "SELECT `user`.`username`, `content`, MAX(timestamp) AS `timestamp` FROM `message` INNER JOIN user ON" +
+            " `to` =" +
+            " `user`.`id` WHERE `from` = ? GROUP BY `to`",
+        values: [id],
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
+
+app.post("/chatList/pin", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const recieverName = req.body.otherUserName
+    console.log(recieverName, loggedInName)
+    const recieverId = await nameToId(recieverName)
+    const id = await nameToId(loggedInName)
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `chat` SET `sender` = ?,`reciever` = ?, `isPinned` = 1 WHERE `sender` = ? AND `reciever` = ?",
+        values: [id, recieverId, id, recieverId],
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
+
+app.post("/chatList/pin", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const recieverName = req.body.otherUserName
+    const recieverId = await nameToId(recieverName)
+    const id = await nameToId(loggedInName)
+    db.handleQuery((connectionPool, {
+        query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
+        values: [id, recieverId],
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err})))
+})
+
 
 module.exports = app
+
 
