@@ -41,6 +41,8 @@ class ChatController {
                     innerHTML: `<p>${msg.content}</p>`,
                 })
             )
+            console.log(msg);
+
         })
     }
 
@@ -52,7 +54,7 @@ class ChatController {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
         console.log(data)
-        for (let [i,chat] of chronologicalOrder.entries()) {
+        for (let [i, chat] of chronologicalOrder.entries()) {
             const chatElement = ce(
                 "div", {
                     onclick: e => {
@@ -69,7 +71,7 @@ class ChatController {
                         <div class="userName">${chat.username}</div>
                         <div class="lastMessage">${chat.content}</div>
                         <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
-                        <div class="chatOptions"><span class="thumbtack">...</span></div>
+                        <div class="chatOptions"><span>...</span></div>
                     </div>
                 </div>`,
                 })
@@ -78,6 +80,10 @@ class ChatController {
                 this.chatListRepository.pinChat(chat.username)
             })
             qs(".chatList").append(chatElement);
+            $('.previewChat').on('click', function(){
+                $('.previewChat').removeClass('selected');
+                $(this).addClass('selected');
+            });
         }
 
     }

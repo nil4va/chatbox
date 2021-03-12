@@ -210,7 +210,6 @@ wss.on('connection', ws => {
         let data = JSON.parse(msg)
         console.log(data)
         let fromId = await nameToId(data.from)
-        id = fromId
         let toId = await nameToId(data.to)
         db.handleQuery(
             connectionPool,
@@ -244,8 +243,7 @@ app.post("/chatList", async (req, res) => {
     const id = await nameToId(loggedInName)
     db.handleQuery(connectionPool, {
         query: "SELECT `user`.`username`, `content`, MAX(timestamp) AS `timestamp` FROM `message` INNER JOIN user ON" +
-            " `to` =" +
-            " `user`.`id` WHERE `from` = ? GROUP BY `to`",
+            " `to` = `user`.`id` WHERE `from` = ? GROUP BY `to`",
         values: [id],
     }, data => {
         console.log(data)
@@ -296,6 +294,19 @@ app.post("/chatList/pin", async (req, res) => {
 app.post("/isOnlineList", (req, res) =>{
     db.handleQuery(connectionPool, {
     query: "SELECT * FROM `user` WHERE `isOnline` = 1",
+//     }, (err) => err => res.status(badRequestCode).json({reason: err}))
+// })
+
+app.post("/chatList/pin", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const recieverName = req.body.otherUserName
+    const recieverId = await nameToId(recieverName)
+    const id = await nameToId(loggedInName)
+    console.log(recieverId)
+    console.log("hello")
+    db.handleQuery((connectionPool, {
+        query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
+        values: [id, recieverId],
     }, data => {
         console.log(data)
         if (data) {

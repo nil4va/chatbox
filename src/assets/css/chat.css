@@ -38,6 +38,10 @@
     position: relative;
 }
 
+.previewChat.selected {
+    background-color: #dc98a9;
+}
+
 .previewChat:hover {
     background-color: #c28899;
 }
@@ -67,7 +71,7 @@
     flex-direction: column;
 }
 
-.chatOptions {
+.chatOptions{
     position: absolute;
     right: 15px;
     cursor: pointer;
@@ -79,4 +83,5 @@
 
 .chatOptions:hover:before {
     content: '📌';
+    font-size: 30px;
 }
