@@ -28,4 +28,10 @@ class ChatListRepository {
                 otherUserName: otherUserName,
             })
     }
+
+    getOnlineList(isOnlineList) {
+        return networkManager
+            .doRequest("/isOnlineList", {
+            })
+    }
 }
