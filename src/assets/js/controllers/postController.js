@@ -40,6 +40,8 @@ class PostController {
         //check if user is logged in
         if (sessionManager.get("username")) {
             app.loadController(CONTROLLER_CHAT, posterUserName);
+            console.log("chat aangemaakt!")
+            //TODO: kijk of er al een chat is, zo ja ga naar chatscherm. zo nee, start nieuwe chat
         } else {
             alert("You have to be logged in in order to start a chat");
         }

@@ -13,7 +13,7 @@ const app = express()
 const fileUpload = require('express-fileupload')
 const WebSocket = require('ws')
 
-const WSS_PORT = 8090
+const WSS_PORT = 8080
 const WSS_PATH = '/'
 
 //logger lib  - 'short' is basic logging info
@@ -195,17 +195,6 @@ function nameToId(name) {
 wss.on('connection', ws => {
     console.log('new connection')
     // listen for messages from client
-    let id
-
-    ws.on('close', function close() {
-        db.handleQuery(connectionPool, {
-                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
-                values: [0, id],
-            },
-        )
-    });
-
-
     ws.on('message', async msg => {
         let data = JSON.parse(msg)
         console.log(data)
@@ -224,16 +213,8 @@ wss.on('connection', ws => {
             err => {
                 console.log(err)
                 sendMsg(ws, 'database error', 'server')
-            })
-        db.handleQuery(connectionPool, {
-                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
-                values: [1, fromId],
-        }, data => {
-            console.log(data)
-        }, (err) => err => res.status(badRequestCode).json({reason: err}))
-
-
-
+            }
+        )
     })
 
     sendMsg(ws, 'websocket connect success', 'server')
@@ -242,9 +223,13 @@ wss.on('connection', ws => {
 app.post("/chatList", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
     const id = await nameToId(loggedInName)
+    const recieverName = req.body.otherUserName
+    const recieverId = await nameToId(recieverName)
     db.handleQuery(connectionPool, {
-        query: "SELECT `user`.`username`, `content`, MAX(timestamp) AS `timestamp` FROM `message` INNER JOIN user ON" +
-            " `to` = `user`.`id` WHERE `from` = ? GROUP BY `to`",
+        query: "SELECT a.`to`, a.`timestamp`, a.`content`, `user`.`username` FROM `message` a INNER JOIN " +
+            "( SELECT `to`, MAX(`timestamp`) `timestamp` FROM `message` WHERE `from` = ? GROUP BY `to` ) b ON a.`to`" +
+            " = b.`to` " +
+            "AND a.`timestamp` = b.`timestamp` INNER JOIN `user` ON a.`to` = `user`.`id`",
         values: [id],
     }, data => {
         console.log(data)
@@ -274,36 +259,6 @@ app.post("/chatList/pin", async (req, res) => {
         }
     }, (err) => err => res.status(badRequestCode).json({reason: err}))
 })
- app.post("/chatList/pin", async (req, res) => {
-     const loggedInName = req.body.userIdLoggedIn
-     const recieverName = req.body.otherUserName
-     const recieverId = await nameToId(recieverName)
-     const id = await nameToId(loggedInName)
-     db.handleQuery((connectionPool, {
-         query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
-         values: [id, recieverId],
-     }, data => {
-       console.log(data)
-      if (data) {
-           res.status(httpOkCode).json(
-                data
-            )
-      }
-    }, (err) => err => res.status(badRequestCode).json({reason: err})))
-})
-
-app.post("/isOnlineList", (req, res) =>{
-   db.handleQuery(connectionPool, {
-   query: "SELECT * FROM `user` WHERE `isOnline` = 1",
-   }, data => {
-    console.log(data)
-    if (data) {
-        res.status(httpOkCode).json(
-            data
-        )
-    }
-}, (err) => err => res.status(badRequestCode).json({reason: err}))
-})
 
 app.post("/chatList/pin", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
@@ -315,15 +270,16 @@ app.post("/chatList/pin", async (req, res) => {
     db.handleQuery((connectionPool, {
         query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
         values: [id, recieverId],
-    },data => {
-    console.log(data)
-    if (data) {
-        res.status(httpOkCode).json(
-            data
-        )
-    }
-}, (err) => err => res.status(badRequestCode).json({reason: err})))
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err})))
 })
+
 
 module.exports = app
 

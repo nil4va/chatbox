@@ -11,9 +11,10 @@ class ChatController {
         this.init()
     }
 
-    async init() {
+    async init(data) {
         let res = await fetch('views/chat.html')
         let html = await res.text()
+        this.view = html;
         qs('.content').innerHTML = html
         this.showMessages()
         await this.previewData()
@@ -49,7 +50,6 @@ class ChatController {
     async previewData() {
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
-        const onlineList = await this.chatListRepository.getOnlineList()
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
@@ -66,12 +66,14 @@ class ChatController {
                     innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
                     <div>
-                        <div class="indicator ${onlineList.includes(chat.username) ?"online": "offline"}"></div>
-                 
                         <div class="userName">${chat.username}</div>
-                        <div class="lastMessage">${chat.content}</div>
+                        <div class="lastMessage">${chat.content.slice(0, 20) + "..."}</div>
                         <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
-                        <div class="chatOptions"><span>...</span></div>
+                        <div class="chatOptions ${sessionManager.get('pinList').includes(chat.username) ? 'pinned' : ''}"><span>${
+                        sessionManager.get('pinList').includes(chat.username)
+                            ? '📌'
+                            : "pin chat"
+                    }</span></div>
                     </div>
                 </div>`,
                 })
@@ -80,12 +82,12 @@ class ChatController {
                 this.chatListRepository.pinChat(chat.username)
             })
             qs(".chatList").append(chatElement);
-            $('.previewChat').on('click', function(){
+            $('.previewChat').on('click', function () {
                 $('.previewChat').removeClass('selected');
                 $(this).addClass('selected');
             });
-        }
 
+        }
     }
 }
 
