@@ -291,11 +291,11 @@ app.post("/chatList/pin", async (req, res) => {
 //     }, (err) => err => res.status(badRequestCode).json({reason: err})))
 // })
 
-app.post("/isOnlineList", (req, res) =>{
-    db.handleQuery(connectionPool, {
-    query: "SELECT * FROM `user` WHERE `isOnline` = 1",
+//app.post("/isOnlineList", (req, res) =>{
+//    db.handleQuery(connectionPool, {
+//    query: "SELECT * FROM `user` WHERE `isOnline` = 1",
 //     }, (err) => err => res.status(badRequestCode).json({reason: err}))
-// })
+//})
 
 app.post("/chatList/pin", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
@@ -314,7 +314,7 @@ app.post("/chatList/pin", async (req, res) => {
                 data
             )
         }
-    }, (err) => err => res.status(badRequestCode).json({reason: err}))
+    }, (err) => err => res.status(badRequestCode).json({reason: err})))
 })
 
 module.exports = app
