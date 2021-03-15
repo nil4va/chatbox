@@ -228,8 +228,9 @@ wss.on('connection', ws => {
         db.handleQuery(connectionPool, {
                 query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
                 values: [1, fromId],
-            },
-        )
+        }, data => {
+            console.log(data)
+        }, (err) => err => res.status(badRequestCode).json({reason: err}))
 
 
 
@@ -273,29 +274,36 @@ app.post("/chatList/pin", async (req, res) => {
         }
     }, (err) => err => res.status(badRequestCode).json({reason: err}))
 })
-// app.post("/chatList/pin", async (req, res) => {
-//     const loggedInName = req.body.userIdLoggedIn
-//     const recieverName = req.body.otherUserName
-//     const recieverId = await nameToId(recieverName)
-//     const id = await nameToId(loggedInName)
-//     db.handleQuery((connectionPool, {
-//         query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
-//         values: [id, recieverId],
-//     }, data => {
-//         console.log(data)
-//         if (data) {
-//             res.status(httpOkCode).json(
-//                 data
-//             )
-//         }
-//     }, (err) => err => res.status(badRequestCode).json({reason: err})))
-// })
+ app.post("/chatList/pin", async (req, res) => {
+     const loggedInName = req.body.userIdLoggedIn
+     const recieverName = req.body.otherUserName
+     const recieverId = await nameToId(recieverName)
+     const id = await nameToId(loggedInName)
+     db.handleQuery((connectionPool, {
+         query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
+         values: [id, recieverId],
+     }, data => {
+       console.log(data)
+      if (data) {
+           res.status(httpOkCode).json(
+                data
+            )
+      }
+    }, (err) => err => res.status(badRequestCode).json({reason: err})))
+})
 
-//app.post("/isOnlineList", (req, res) =>{
-//    db.handleQuery(connectionPool, {
-//    query: "SELECT * FROM `user` WHERE `isOnline` = 1",
-//     }, (err) => err => res.status(badRequestCode).json({reason: err}))
-//})
+app.post("/isOnlineList", (req, res) =>{
+   db.handleQuery(connectionPool, {
+   query: "SELECT * FROM `user` WHERE `isOnline` = 1",
+   }, data => {
+    console.log(data)
+    if (data) {
+        res.status(httpOkCode).json(
+            data
+        )
+    }
+}, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
 
 app.post("/chatList/pin", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
@@ -307,14 +315,14 @@ app.post("/chatList/pin", async (req, res) => {
     db.handleQuery((connectionPool, {
         query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
         values: [id, recieverId],
-    }, data => {
-        console.log(data)
-        if (data) {
-            res.status(httpOkCode).json(
-                data
-            )
-        }
-    }, (err) => err => res.status(badRequestCode).json({reason: err})))
+    },data => {
+    console.log(data)
+    if (data) {
+        res.status(httpOkCode).json(
+            data
+        )
+    }
+}, (err) => err => res.status(badRequestCode).json({reason: err})))
 })
 
 module.exports = app

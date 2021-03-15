@@ -11,7 +11,7 @@ class ChatController {
         this.init()
     }
 
-    async init(data) {
+    async init() {
         let res = await fetch('views/chat.html')
         let html = await res.text()
         qs('.content').innerHTML = html
