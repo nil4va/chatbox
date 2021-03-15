@@ -13,7 +13,7 @@ const app = express()
 const fileUpload = require('express-fileupload')
 const WebSocket = require('ws')
 
-const WSS_PORT = 8080
+const WSS_PORT = 8090
 const WSS_PATH = '/'
 
 //logger lib  - 'short' is basic logging info
@@ -195,6 +195,17 @@ function nameToId(name) {
 wss.on('connection', ws => {
     console.log('new connection')
     // listen for messages from client
+    let id
+
+    ws.on('close', function close() {
+        db.handleQuery(connectionPool, {
+                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
+                values: [0, id],
+            },
+        )
+    });
+
+
     ws.on('message', async msg => {
         let data = JSON.parse(msg)
         console.log(data)
@@ -213,8 +224,16 @@ wss.on('connection', ws => {
             err => {
                 console.log(err)
                 sendMsg(ws, 'database error', 'server')
-            }
-        )
+            })
+        db.handleQuery(connectionPool, {
+                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
+                values: [1, fromId],
+        }, data => {
+            console.log(data)
+        }, (err) => err => res.status(badRequestCode).json({reason: err}))
+
+
+
     })
 
     sendMsg(ws, 'websocket connect success', 'server')
@@ -263,13 +282,12 @@ app.post("/chatList/pin", async (req, res) => {
 app.post("/chatList/pin", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
     const recieverName = req.body.otherUserName
+    console.log(recieverName, loggedInName)
     const recieverId = await nameToId(recieverName)
     const id = await nameToId(loggedInName)
-    console.log(recieverId)
-    console.log("hello")
-    db.handleQuery((connectionPool, {
-        query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
-        values: [id, recieverId],
+    db.handleQuery(connectionPool, {
+        query: "UPDATE `chat` SET `sender` = ?,`reciever` = ?, `isPinned` = 1 WHERE `sender` = ? AND `reciever` = ?",
+        values: [id, recieverId, id, recieverId],
     }, data => {
         console.log(data)
         if (data) {
@@ -277,9 +295,58 @@ app.post("/chatList/pin", async (req, res) => {
                 data
             )
         }
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
+ app.post("/chatList/pin", async (req, res) => {
+     const loggedInName = req.body.userIdLoggedIn
+     const recieverName = req.body.otherUserName
+     const recieverId = await nameToId(recieverName)
+     const id = await nameToId(loggedInName)
+     db.handleQuery((connectionPool, {
+         query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
+         values: [id, recieverId],
+     }, data => {
+       console.log(data)
+      if (data) {
+           res.status(httpOkCode).json(
+                data
+            )
+      }
     }, (err) => err => res.status(badRequestCode).json({reason: err})))
 })
 
+app.post("/isOnlineList", (req, res) =>{
+   db.handleQuery(connectionPool, {
+   query: "SELECT * FROM `user` WHERE `isOnline` = 1",
+   }, data => {
+    console.log(data)
+    if (data) {
+        res.status(httpOkCode).json(
+            data
+        )
+    }
+}, (err) => err => res.status(badRequestCode).json({reason: err}))
+})
+
+app.post("/chatList/pin", async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const recieverName = req.body.otherUserName
+    const recieverId = await nameToId(recieverName)
+    const id = await nameToId(loggedInName)
+    console.log(recieverId)
+    console.log("hello")
+    db.handleQuery((connectionPool, {
+        query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
+        values: [id, recieverId],
+    },data => {
+    console.log(data)
+    if (data) {
+        res.status(httpOkCode).json(
+            data
+        )
+    }
+}, (err) => err => res.status(badRequestCode).json({reason: err})))
+})
 
 module.exports = app
 

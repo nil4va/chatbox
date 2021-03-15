@@ -44,4 +44,10 @@ class ChatListRepository {
         // als de pagina ingeladen wordt ga je eerst uit de session manager ophalen wat de id is
         // en dan komt het punaise
     }
+
+    getOnlineList(isOnlineList) {
+        return networkManager
+            .doRequest("/isOnlineList", {
+            })
+    }
 }
