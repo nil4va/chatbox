@@ -15,6 +15,7 @@ const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
+const CONTROLLER_REGISTREREN ='register'
 
 const sessionManager = new SessionManager()
 const networkManager = new NetworkManager()
@@ -114,6 +115,14 @@ class App {
             new PostController(controllerData)
             break
 
+      case CONTROLLER_REGISTREREN:
+        this.setCurrentController(name)
+        this.isRegisterd(
+            () => new WelcomeController(),
+            () => new RegisterController()
+        )
+        break
+
       default:
         return false
     }
@@ -155,6 +164,14 @@ class App {
       whenYes()
     } else {
       whenNo()
+    }
+  }
+
+  isRegisterd(whenYes, whenNo) {
+    if(sessionManager.get('username')) {
+      whenYes()
+    } else {
+      whenNo
     }
   }
 
