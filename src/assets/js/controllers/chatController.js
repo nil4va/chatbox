@@ -14,6 +14,7 @@ class ChatController {
     async init(data) {
         let res = await fetch('views/chat.html')
         let html = await res.text()
+        this.view = html;
         qs('.content').innerHTML = html
         this.showMessages()
         await this.previewData()
@@ -41,18 +42,21 @@ class ChatController {
                     innerHTML: `<p>${msg.content}</p>`,
                 })
             )
+            console.log(msg);
+
         })
     }
 
     async previewData() {
+        qs('.pinnedList').innerHTML = ''
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
         console.log(data)
-        for (let [i,chat] of chronologicalOrder.entries()) {
-            const chatElement = ce(
+        for (let [i, chat] of chronologicalOrder.entries()) {
+            let chatElement = ce(
                 "div", {
                     onclick: e => {
                         this.chatRepository.to = chat.username
@@ -64,17 +68,37 @@ class ChatController {
                     <div class="profilePicture"></div>
                     <div>
                         <div class="userName">${chat.username}</div>
-                        <div class="lastMessage">${chat.content}</div>
+                        <div class="lastMessage">${chat.content.slice(0, 25) + "..."}</div>
                         <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
-                        <div class="chatOptions"><span class="thumbtack">...</span></div>
+                        <div class="chatOptions"><span>${
+                        sessionManager.get('pinList').includes(chat.username)
+                            ? '📌'
+                            : "pin chat"
+                    }</span></div>
                     </div>
                 </div>`,
                 })
             chatElement.$(".chatOptions").on("click", e => {
-                console.log("click!!")
-                this.chatListRepository.pinChat(chat.username)
+                if (!sessionManager.get("pinList").includes(chat.username) ) {
+                    this.chatListRepository.pinChat(chat.username)
+                    this.previewData()
+                }else if (sessionManager.get("pinList").includes(chat.username) ) {
+                    this.chatListRepository.unpinChat(chat.username)
+                    this.previewData()
+                }
             })
-            qs(".chatList").append(chatElement);
+
+            if (sessionManager.get("pinList").includes(chat.username) ) {
+                qs(".pinnedList").prepend(chatElement);
+            } else {
+                qs(".chatList").append(chatElement)
+            }
+
+            $('.previewChat').on('click', function () {
+                $('.previewChat').removeClass('selected');
+                $(this).addClass('selected');
+            });
+
         }
     }
 }

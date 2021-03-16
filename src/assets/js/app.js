@@ -50,6 +50,9 @@ String.prototype.replaceAt = function (index, replacement) {
 
 class App {
   init() {
+
+    if(!sessionManager.get('pinList')) sessionManager.set('pinList', [])
+
     //Always load the sidebar
     this.loadController(CONTROLLER_SIDEBAR)
 

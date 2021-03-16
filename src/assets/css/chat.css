@@ -29,6 +29,7 @@
 .chatList {
     background-color: #F9F7F7;
     height: auto;
+    max-width: 1010px;
 }
 
 .previewChat {
@@ -36,6 +37,11 @@
     padding: 20px;
     border-bottom: #C28899 solid 1px;
     position: relative;
+    min-width: 350px;
+}
+
+.previewChat.selected {
+    background-color: #dc98a9;
 }
 
 .previewChat:hover {
@@ -54,7 +60,7 @@
     font-style: italic;
     font-size: 11px;
     position: absolute;
-    right: 30px;
+    right: 10px;
     top: 10px;
 }
 
@@ -67,16 +73,8 @@
     flex-direction: column;
 }
 
-.chatOptions {
+.chatOptions{
     position: absolute;
     right: 15px;
     cursor: pointer;
-}
-
-.chatOptions:hover span {
-    display: none;
-}
-
-.chatOptions:hover:before {
-    content: '📌';
 }

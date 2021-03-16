@@ -195,21 +195,10 @@ function nameToId(name) {
 wss.on('connection', ws => {
     console.log('new connection')
     // listen for messages from client
-    let id
-    ws.on('close', function close() {
-        db.handleQuery(connectionPool, {
-                query: 'UPDATE user SET (`isOnline`, `id`) VALUES (?,?)',
-                values: [0, id],
-            },
-        )
-    });
-
-
     ws.on('message', async msg => {
         let data = JSON.parse(msg)
         console.log(data)
         let fromId = await nameToId(data.from)
-        id = fromId
         let toId = await nameToId(data.to)
         db.handleQuery(
             connectionPool,
@@ -226,13 +215,6 @@ wss.on('connection', ws => {
                 sendMsg(ws, 'database error', 'server')
             }
         )
-        db.handleQuery(connectionPool, {
-                query: 'UPDATE user SET (`isOnline`, `id`) VALUES (?,?)',
-                values: [1, fromId],
-            },
-        )
-
-
     })
 
     sendMsg(ws, 'websocket connect success', 'server')
@@ -241,10 +223,13 @@ wss.on('connection', ws => {
 app.post("/chatList", async (req, res) => {
     const loggedInName = req.body.userIdLoggedIn
     const id = await nameToId(loggedInName)
+    const recieverName = req.body.otherUserName
+    const recieverId = await nameToId(recieverName)
     db.handleQuery(connectionPool, {
-        query: "SELECT `user`.`username`, `content`, MAX(timestamp) AS `timestamp` FROM `message` INNER JOIN user ON" +
-            " `to` =" +
-            " `user`.`id` WHERE `from` = ? GROUP BY `to`",
+        query: "SELECT a.`to`, a.`timestamp`, a.`content`, `user`.`username` FROM `message` a INNER JOIN " +
+            "( SELECT `to`, MAX(`timestamp`) `timestamp` FROM `message` WHERE `from` = ? GROUP BY `to` ) b ON a.`to`" +
+            " = b.`to` " +
+            "AND a.`timestamp` = b.`timestamp` INNER JOIN `user` ON a.`to` = `user`.`id`",
         values: [id],
     }, data => {
         console.log(data)
@@ -280,8 +265,10 @@ app.post("/chatList/pin", async (req, res) => {
     const recieverName = req.body.otherUserName
     const recieverId = await nameToId(recieverName)
     const id = await nameToId(loggedInName)
+    console.log(recieverId)
+    console.log("hello")
     db.handleQuery((connectionPool, {
-        query: "INSERT INTO chat (sender, reciever) VALUES (?,?)",
+        query: "INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)",
         values: [id, recieverId],
     }, data => {
         console.log(data)
