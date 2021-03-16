@@ -89,7 +89,7 @@ class ChatController {
             })
 
             if (sessionManager.get("pinList").includes(chat.username) ) {
-                qs(".pinnedList").append(chatElement);
+                qs(".pinnedList").prepend(chatElement);
             } else {
                 qs(".chatList").append(chatElement)
             }
