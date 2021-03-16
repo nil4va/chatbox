@@ -48,6 +48,7 @@ class ChatController {
     }
 
     async previewData() {
+        qs('.pinnedList').innerHTML = ''
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
         const chronologicalOrder = data.sort(function (a, b) {
@@ -55,7 +56,7 @@ class ChatController {
         })
         console.log(data)
         for (let [i, chat] of chronologicalOrder.entries()) {
-            const chatElement = ce(
+            let chatElement = ce(
                 "div", {
                     onclick: e => {
                         this.chatRepository.to = chat.username
@@ -67,9 +68,9 @@ class ChatController {
                     <div class="profilePicture"></div>
                     <div>
                         <div class="userName">${chat.username}</div>
-                        <div class="lastMessage">${chat.content.slice(0, 20) + "..."}</div>
+                        <div class="lastMessage">${chat.content.slice(0, 25) + "..."}</div>
                         <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
-                        <div class="chatOptions ${sessionManager.get('pinList').includes(chat.username) ? 'pinned' : ''}"><span>${
+                        <div class="chatOptions"><span>${
                         sessionManager.get('pinList').includes(chat.username)
                             ? '📌'
                             : "pin chat"
@@ -78,10 +79,21 @@ class ChatController {
                 </div>`,
                 })
             chatElement.$(".chatOptions").on("click", e => {
-                console.log("click!!")
-                this.chatListRepository.pinChat(chat.username)
+                if (!sessionManager.get("pinList").includes(chat.username) ) {
+                    this.chatListRepository.pinChat(chat.username)
+                    this.previewData()
+                }else if (sessionManager.get("pinList").includes(chat.username) ) {
+                    this.chatListRepository.unpinChat(chat.username)
+                    this.previewData()
+                }
             })
-            qs(".chatList").append(chatElement);
+
+            if (sessionManager.get("pinList").includes(chat.username) ) {
+                qs(".pinnedList").append(chatElement);
+            } else {
+                qs(".chatList").append(chatElement)
+            }
+
             $('.previewChat').on('click', function () {
                 $('.previewChat').removeClass('selected');
                 $(this).addClass('selected');
