@@ -45,10 +45,10 @@ export default class ChatRepository extends CustomEventTarget {
 
   // send a message to the other person
   send(content) {
-    var d = Date();
-    var a = d.toString()
+    var d = new Date();
+    var a = d.toLocaleString();
 
-    content = content + ', ' + a
+    content = content + ' <br> '  + a
     console.log('msg out:', content)
     this.ws.send(JSON.stringify({content, from: this._from, to: this._to}))
 
