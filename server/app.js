@@ -290,15 +290,21 @@ app.post('/chatList', async (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT a.`to`, a.`timestamp`, a.`content`, `user`.`username` FROM `message` a INNER JOIN ' +
-        '( SELECT `to`, MAX(`timestamp`) `timestamp` FROM `message` WHERE `from` = ? GROUP BY `to` ) b ON a.`to`' +
-        ' = b.`to` ' +
-        'AND a.`timestamp` = b.`timestamp` INNER JOIN `user` ON a.`to` = `user`.`id`',
-      values: [id],
+        'SELECT a.timestamp, a.content, u1.username receiver, u2.username sender FROM `message` a INNER JOIN(SELECT MAX(id) id FROM `message` WHERE `to` = ? or `from` = ? group by `to`, `from`) b ON a.id = b.id INNER JOIN user u1 ON a.`to` = u1.id INNER JOIN user u2 ON a.`from` = u2.id ORDER BY b.id desc',
+      values: [id, id],
     },
     data => {
-      //   console.log(data)
       if (data) {
+        let reg = new Set()
+        console.log(data)
+        data = data.reduce((a, c) => {
+          let other = c.receiver === loggedInName ? c.sender : c.receiver
+          if (!reg.has(other)) {
+            reg.add(other)
+            a.push(c)
+          }
+          return a
+        }, [])
         res.status(httpOkCode).json(data)
       }
     },

@@ -28,7 +28,7 @@ export default class ChatRepository extends CustomEventTarget {
 
   // get all messages sent in this session
   getAll() {
-    return this._messages.filter(v => v.to == this._to)
+    return this._messages.filter(v => v.to === this._to || v.to === this._from)
   }
 
   // the name of the logged in user
@@ -37,6 +37,10 @@ export default class ChatRepository extends CustomEventTarget {
   }
   getTo() {
     return this._to
+  }
+
+  getOther(name) {
+    return name === this._from ? this._to : this._from
   }
 
   set to(value) {

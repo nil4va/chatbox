@@ -38,7 +38,7 @@ class ChatController {
           this.previewData()
           break
         case TYPES.TYPING:
-          if (data.from === this.chatRepository.getFrom()) {
+          if (data.to === this.chatRepository.getFrom()) {
             if (data.typing) {
               qs('.typing').textContent = `${data.from} is typing...`
             } else {
@@ -60,7 +60,7 @@ class ChatController {
       clearTimeout(timeout)
       timeout = setTimeout(h => {
         this.chatRepository.stopTyping()
-      }, 2000)
+      }, 1000)
     }
   }
 
@@ -93,24 +93,29 @@ class ChatController {
     })
     console.log(data)
     for (let [i, chat] of chronologicalOrder.entries()) {
+      let otherPerson =
+        chat.receiver === sessionManager.get('username')
+          ? chat.sender
+          : chat.receiver
+
       let chatElement = ce('div', {
         onclick: e => {
-          this.chatRepository.to = chat.username
+          this.chatRepository.to = otherPerson
           if (!this._hasSelectedAChat) this.onceAfterSelectFirstChat()
           this.showMessages()
         },
         className:
           'previewChat ' +
-          (this.chatRepository.getTo() === chat.username ? 'selected' : ''),
+          (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
         innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
                     <div>
                         <div class="indicator ${
-                          onlineList.includes(chat.username)
+                          onlineList.includes(otherPerson)
                             ? 'online'
                             : 'offline'
                         }"></div>
-                        <div class="userName">${chat.username}</div>
+                        <div class="userName">${otherPerson}</div>
                         <div class="lastMessage">${
                           chat.content.slice(0, 25) + '...'
                         }</div>
@@ -118,24 +123,24 @@ class ChatController {
                           chat.timestamp
                         ).toLocaleString()}</div>
                         <div class="chatOptions"><span>${
-                          sessionManager.get('pinList').includes(chat.username)
+                          sessionManager.get('pinList').includes(otherPerson)
                             ? '📌'
                             : 'pin chat'
                         }</span></div>
                     </div>
                 </div>`,
       })
+
       chatElement.$('.chatOptions').on('click', e => {
-        if (!sessionManager.get('pinList').includes(chat.username)) {
-          this.chatListRepository.pinChat(chat.username)
-          this.previewData()
-        } else if (sessionManager.get('pinList').includes(chat.username)) {
-          this.chatListRepository.unpinChat(chat.username)
-          this.previewData()
+        if (!sessionManager.get('pinList').includes(otherPerson)) {
+          this.chatListRepository.pinChat(otherPerson)
+        } else {
+          this.chatListRepository.unpinChat(otherPerson)
         }
+        this.previewData()
       })
 
-      if (sessionManager.get('pinList').includes(chat.username)) {
+      if (sessionManager.get('pinList').includes(otherPerson)) {
         qs('.pinnedList').prepend(chatElement)
       } else {
         qs('.chatList').append(chatElement)
