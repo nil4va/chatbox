@@ -105,7 +105,10 @@ class App {
 
       case CONTROLLER_CHAT:
         this.setCurrentController(name)
-        new ChatController(controllerData)
+        this.isLoggedIn(
+            () => new ChatController(controllerData),
+            () => new LoginController()
+        )
         break
 
       case CONTROLLER_POSTS:
