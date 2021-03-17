@@ -195,13 +195,23 @@ function nameToId(name) {
 wss.on('connection', ws => {
     console.log('new connection')
     // listen for messages from client
+    ws.on('close', function close() {
+        db.handleQuery(connectionPool, {
+                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
+                values: [0, id],
+            },
+        )
+    });
     ws.on('message', async msg => {
         let data = JSON.parse(msg)
         console.log(data)
         let fromId = await nameToId(data.from)
         let toId = await nameToId(data.to)
         db.handleQuery(
-            connectionPool,
+            connectionPool,{
+                query: 'UPDATE `user` SET `isOnline` = ? WHERE id = ?',
+                values: [1, fromId],
+            },
             {
                 query: 'INSERT INTO message (`from`,`to`,content) VALUES (?,?,?)',
                 values: [fromId, toId, data.content],
@@ -278,6 +288,18 @@ app.post("/chatList/pin", async (req, res) => {
             )
         }
     }, (err) => err => res.status(badRequestCode).json({reason: err})))
+})
+app.post("/isOnlineList", (req, res) =>{
+    db.handleQuery(connectionPool, {
+        query: "SELECT * FROM `user` WHERE `isOnline` = 1",
+    }, data => {
+        console.log(data)
+        if (data) {
+            res.status(httpOkCode).json(
+                data
+            )
+        }
+    }, (err) => err => res.status(badRequestCode).json({reason: err}))
 })
 
 

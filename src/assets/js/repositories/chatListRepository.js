@@ -19,6 +19,11 @@ class ChatListRepository {
                 userIdLoggedIn: sessionManager.get("username")
             })
     }
+    getOnlineList(isOnlineList) {
+        return networkManager
+            .doRequest("/isOnlineList", {
+            })
+    }
 
     // pinChat(otherUserName) {
     //     console.log(otherUserName)
