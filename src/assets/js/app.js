@@ -170,7 +170,7 @@ class App {
     if (sessionManager.get('username')) {
       whenYes()
     } else {
-      whenNo
+      whenNo()
     }
   }
 

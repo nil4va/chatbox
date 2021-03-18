@@ -1,35 +1,34 @@
 class RegisterController {
     constructor() {
-        this.userRepository = new UserRepository();
+        this.registerRepository = new RegisterRepository();
         $.get("views/registreren.html")
             .done((data) => this.setup((data))
                 .fail(() => this.error));
     }
     setup(data) {
-        this.welcomeView = $(data);
+        this.createRegisterView = $(data);
 
-        this.welcomeView.find(".name").html(sessionManager.get("username"));
+        this.createRegisterView.find(".name").html(sessionManager.get("username"));
 
-        $(".content").empty().append(this.welcomeView);
+        $(".content").empty().append(this.createRegisterView);
 
-        this.fetchRooms(1256);
-    }
-
-    async fetchRooms(roomId) {
-        const exampleResponse = this.welcomeView.find(".example-response");
-        try {
-
-            const roomData = await this.roomExampleRepository.get(roomId);
-
-            exampleResponse.text(JSON.stringify(roomData, null, 4));
-        } catch (e) {
-            console.log("error while fetching rooms", e);
-
-            exampleResponse.text(e);
-        }
+        this.createRegisterView.find(".btn").on("click", (event) => this.onAddEvent(event))
     }
 
     error() {
         $(".content").html("Failed to load content!");
+    }
+
+    async onAddEvent(event) {
+        event.preventDefault();
+        const username = this.createRegisterView.find("#exampleInputUsername").val();
+        const password = this.createRegisterView.find("#exampleInputPassword").val();
+
+        try{
+            const registerId = await this.registerRepository.create(username,password);
+            app.loadController(CONTROLLER_WELCOME);
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
