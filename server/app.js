@@ -89,14 +89,14 @@ app.post('/register', (req, res) => {
         connectionPool,
         {
             query:
-            'INSERT INTO user(username, password) VALUES(?,?)',
-            values:[req.body.username,req.body.password]
+                'INSERT INTO user(username, password) VALUES(?,?)',
+            values: [req.body.username, req.body.password]
         }, (data) => {
-          if(data.insertId) {
-              res.status(httpOkCode).json({id: data.insertId});
-          } else {
-              res.status(badRequestCode).json({reason: "Something went wrong, no record inserted"});
-          }
+            if (data.insertId) {
+                res.status(httpOkCode).json({id: data.insertId});
+            } else {
+                res.status(badRequestCode).json({reason: "Something went wrong, no record inserted"});
+            }
         }, (err) =>
             res.status(badRequestCode).json({reason: err})
     )
@@ -176,6 +176,24 @@ app.post('/posts', (req, res) => {
         err => res.status(badRequestCode).json({reason: err})
     )
 })
+
+app.post('/profile', (req, res) => {
+
+        db.handleQuery(
+            connectionPool,
+            {
+                query:
+                'INSERT INTO profile(firstname,lastname,emailadress,phoneNumber,bio) VALUES (?,?,?,?,?)',
+                values: [req.body.firstname, req.body.lastname, req.body.emailadress, req.body.phoneNumber, req.body.bio]
+    }, (data) => {
+                if(data.insertId){
+                    res.status(httpOkCode).json({id: data.insertId});
+                } else{
+                    res.status(badRequestCode).json({reason: "Profile is not complete"})
+                }
+            }, (err) => res.status(badRequestCode).json({reason: err})
+        )
+    });
 
 // create new websocket server
 const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
