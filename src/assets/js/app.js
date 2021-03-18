@@ -15,8 +15,7 @@ const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
-const CONTROLLER_REGISTREREN ='register'
-const CONTROLLER_PROFILE = 'profile'
+const CONTROLLER_REGISTREREN = 'register'
 
 const sessionManager = new SessionManager()
 const networkManager = new NetworkManager()
@@ -51,8 +50,7 @@ String.prototype.replaceAt = function (index, replacement) {
 
 class App {
   init() {
-
-    if(!sessionManager.get('pinList')) sessionManager.set('pinList', [])
+    if (!sessionManager.get('pinList')) sessionManager.set('pinList', [])
 
     //Always load the sidebar
     this.loadController(CONTROLLER_SIDEBAR)
@@ -68,12 +66,6 @@ class App {
    * @returns {boolean} - successful controller change
    */
   loadController(name, controllerData) {
-
-    if (controllerData) {
-    } else {
-      controllerData = {}
-    }
-
     switch (name) {
       case CONTROLLER_SIDEBAR:
         new NavbarController()
@@ -106,7 +98,10 @@ class App {
 
       case CONTROLLER_CHAT:
         this.setCurrentController(name)
-        new ChatController(controllerData)
+        this.isLoggedIn(
+          () => new ChatController(controllerData),
+          () => new LoginController()
+        )
         break
 
       case CONTROLLER_POSTS:
@@ -116,14 +111,14 @@ class App {
 
       case CONTROLLER_POST:
         this.setCurrentController(name)
-            new PostController(controllerData)
-            break
+        new PostController(controllerData)
+        break
 
       case CONTROLLER_REGISTREREN:
         this.setCurrentController(name)
         this.isRegisterd(
-            () => new WelcomeController(),
-            () => new RegisterController()
+          () => new WelcomeController(),
+          () => new RegisterController()
         )
         break
 
@@ -180,7 +175,7 @@ class App {
   }
 
   isRegisterd(whenYes, whenNo) {
-    if(sessionManager.get('username')) {
+    if (sessionManager.get('username')) {
       whenYes()
     } else {
       whenNo()
