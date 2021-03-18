@@ -81,6 +81,27 @@ app.post('/room_example', (req, res) => {
     )
 })
 
+app.post('/register', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+            'INSERT INTO user(username, password) VALUES(?,?)',
+            values:[req.body.username,req.body.password]
+        }, (data) => {
+          if(data.insertId) {
+              res.status(httpOkCode).json({id: data.insertId});
+          } else {
+              res.status(badRequestCode).json({reason: "Something went wrong, no record inserted"});
+          }
+        }, (err) =>
+            res.status(badRequestCode).json({reason: err})
+    )
+})
+
 app.post('/upload', function (req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res
