@@ -20,10 +20,12 @@
 
 .msgself {
     align-self: flex-end;
+    background-color: #dc98a9;
 }
 
 .msgother {
     align-self: flex-start;
+    background-color: #c28899;
 }
 
 .chatList {
