@@ -190,12 +190,6 @@ app.post('/profile', (req, res) => {
         )
     });
 
-// create new websocket server
-const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
-
-const USERIDMAP = {}
-
-// gets the id for a username
 function nameToId(name) {
   if (!name) return
   return new Promise(resolve => {
@@ -240,6 +234,36 @@ function sendError(ws, type, data) {
 function sendSuccess(ws, type, data) {
   sendMsg(ws, MSGTYPES.SUCCESS, { type, data })
 }
+
+app.post('/history', async (req, res) => {
+
+    const id1 =  await nameToId(req.body.personName1)
+    const id2 =  await nameToId(req.body.personName2)
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT u1.username `from` , u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? OR `to` = ? AND `from` = ? OR `to` = ?',
+            values: [id1, id2, id2, id1]
+        }, (data) => {
+            res.status(httpOkCode).json(data)
+        }, (err) => res.status(badRequestCode).json({reason: err})
+    )
+});
+
+
+// create new websocket server
+const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
+
+function sendMsg(ws, content, from) {
+    ws.send(JSON.stringify({content, from}))
+}
+
+const USERIDMAP = {}
+
+// gets the id for a username
+
 
 // listen for new connections
 wss.on('connection', ws => {

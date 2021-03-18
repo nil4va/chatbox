@@ -64,11 +64,12 @@ class ChatController {
     }
   }
 
-  showMessages() {
+  async showMessages() {
     // render all the messages
     qs('.username').textContent = this.chatRepository.getTo()
     qs('.history').innerHTML = ''
-    this.chatRepository.getAll().map(msg => {
+     const messages = await this.chatRepository.getAll()
+    messages.map(msg => {
       qs('.history').append(
         ce('div', {
           className:
@@ -87,7 +88,7 @@ class ChatController {
     qs('.pinnedList').innerHTML = ''
     qs('.chatList').innerHTML = ''
     const data = await this.chatListRepository.getAll()
-    const onlineList = await this.chatListRepository.getOnlineList()
+    const onlineList = [] || await this.chatListRepository.getOnlineList()
     const chronologicalOrder = data.sort(function (a, b) {
       return new Date(b.timestamp) - new Date(a.timestamp)
     })
