@@ -28,9 +28,8 @@ export default class ChatRepository extends CustomEventTarget {
 
   // get all messages sent in this session
   async getAll() {
-    const data =
-    await networkManager
-        .doRequest(this.route,{personName1: this._to, personName2: this._from});
+    const data = await networkManager
+        .doRequest("/history",{personName1: this._to, personName2: this._from});
     return [...data, ...this._messages]
   }
 
