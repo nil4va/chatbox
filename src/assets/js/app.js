@@ -16,6 +16,7 @@ const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
 const CONTROLLER_REGISTREREN = 'register'
+const CONTROLLER_PROFILE = 'profile'
 
 const sessionManager = new SessionManager()
 const networkManager = new NetworkManager()
