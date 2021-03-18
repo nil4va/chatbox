@@ -82,24 +82,26 @@ app.post('/room_example', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
+  const username = req.body.username
+  const password = req.body.password
 
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'INSERT INTO user(username, password) VALUES(?,?)',
-            values: [req.body.username, req.body.password]
-        }, (data) => {
-            if (data.insertId) {
-                res.status(httpOkCode).json({id: data.insertId});
-            } else {
-                res.status(badRequestCode).json({reason: "Something went wrong, no record inserted"});
-            }
-        }, (err) =>
-            res.status(badRequestCode).json({reason: err})
-    )
+  db.handleQuery(
+    connectionPool,
+    {
+      query: 'INSERT INTO user(username, password) VALUES(?,?)',
+      values: [req.body.username, req.body.password],
+    },
+    data => {
+      if (data.insertId) {
+        res.status(httpOkCode).json({ id: data.insertId })
+      } else {
+        res
+          .status(badRequestCode)
+          .json({ reason: 'Something went wrong, no record inserted' })
+      }
+    },
+    err => res.status(badRequestCode).json({ reason: err })
+  )
 })
 
 app.post('/upload', function (req, res) {
@@ -173,22 +175,29 @@ app.post('/posts', (req, res) => {
 })
 
 app.post('/profile', (req, res) => {
-
-        db.handleQuery(
-            connectionPool,
-            {
-                query:
-                'INSERT INTO profile(firstname,lastname,emailadress,phoneNumber,bio) VALUES (?,?,?,?,?)',
-                values: [req.body.firstname, req.body.lastname, req.body.emailadress, req.body.phoneNumber, req.body.bio]
-    }, (data) => {
-                if(data.insertId){
-                    res.status(httpOkCode).json({id: data.insertId});
-                } else{
-                    res.status(badRequestCode).json({reason: "Profile is not complete"})
-                }
-            }, (err) => res.status(badRequestCode).json({reason: err})
-        )
-    });
+  db.handleQuery(
+    connectionPool,
+    {
+      query:
+        'INSERT INTO profile(firstname,lastname,emailadress,phoneNumber,bio) VALUES (?,?,?,?,?)',
+      values: [
+        req.body.firstname,
+        req.body.lastname,
+        req.body.emailadress,
+        req.body.phoneNumber,
+        req.body.bio,
+      ],
+    },
+    data => {
+      if (data.insertId) {
+        res.status(httpOkCode).json({ id: data.insertId })
+      } else {
+        res.status(badRequestCode).json({ reason: 'Profile is not complete' })
+      }
+    },
+    err => res.status(badRequestCode).json({ reason: err })
+  )
+})
 
 function nameToId(name) {
   if (!name) return
@@ -236,34 +245,33 @@ function sendSuccess(ws, type, data) {
 }
 
 app.post('/history', async (req, res) => {
+  const id1 = await nameToId(req.body.personName1)
+  const id2 = await nameToId(req.body.personName2)
 
-    const id1 =  await nameToId(req.body.personName1)
-    const id2 =  await nameToId(req.body.personName2)
-
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'SELECT u1.username `from` , u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? OR `to` = ? AND `from` = ? OR `to` = ?',
-            values: [id1, id2, id2, id1]
-        }, (data) => {
-            res.status(httpOkCode).json(data)
-        }, (err) => res.status(badRequestCode).json({reason: err})
-    )
-});
-
+  db.handleQuery(
+    connectionPool,
+    {
+      query:
+        'SELECT u1.username `from`, u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ?;',
+      values: [id1, id2, id2, id1],
+    },
+    data => {
+      res.status(httpOkCode).json(data)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
+  )
+})
 
 // create new websocket server
-const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
+const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
 
 function sendMsg(ws, content, from) {
-    ws.send(JSON.stringify({content, from}))
+  ws.send(JSON.stringify({ content, from }))
 }
 
 const USERIDMAP = {}
 
 // gets the id for a username
-
 
 // listen for new connections
 wss.on('connection', ws => {

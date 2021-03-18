@@ -47,12 +47,13 @@ class ChatController {
           }
       }
     })
-    qs('#msgsend').onclick = e => {
+    qs('#msgsend').onclick = async e => {
       this.chatRepository.send(qs('#msginput').value)
       qs('#msginput').value = ''
       qs('#msginput').focus()
-      this.showMessages()
+      await this.showMessages()
       this.previewData()
+      qs('.history').scollTop = qs('.history').scrollHeight
     }
     let timeout = null
     qs('#msginput').oninput = e => {
@@ -68,7 +69,7 @@ class ChatController {
     // render all the messages
     qs('.username').textContent = this.chatRepository.getTo()
     qs('.history').innerHTML = ''
-     const messages = await this.chatRepository.getAll()
+    const messages = await this.chatRepository.getAll()
     messages.map(msg => {
       qs('.history').append(
         ce('div', {
@@ -88,7 +89,7 @@ class ChatController {
     qs('.pinnedList').innerHTML = ''
     qs('.chatList').innerHTML = ''
     const data = await this.chatListRepository.getAll()
-    const onlineList = [] || await this.chatListRepository.getOnlineList()
+    const onlineList = [] || (await this.chatListRepository.getOnlineList())
     const chronologicalOrder = data.sort(function (a, b) {
       return new Date(b.timestamp) - new Date(a.timestamp)
     })
