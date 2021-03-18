@@ -252,7 +252,7 @@ app.post('/history', async (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT u1.username `from`, u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ?;',
+        'SELECT u1.username `from`, u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
       values: [id1, id2, id2, id1],
     },
     data => {

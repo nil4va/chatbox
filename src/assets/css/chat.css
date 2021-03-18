@@ -42,7 +42,7 @@
   min-width: 350px;
 }
 .chatwindow {
-  height: 700px;
+  height: 500px;
   display: flex;
   flex-direction: column;
 }
