@@ -51,6 +51,7 @@ class ChatController {
         qs('.pinnedList').innerHTML = ''
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
+        const onlineList = await this.chatListRepository.getOnlineList()
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
@@ -66,6 +67,7 @@ class ChatController {
                     innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
                     <div>
+                        <div class="indicator ${onlineList.includes(chat.username) ?"online": "offline"}"></div>
                         <div class="userName">${chat.username}</div>
                         <div class="lastMessage">${chat.content.slice(0, 25) + "..."}</div>
                         <div class="timeStamp">${new Date(chat.timestamp).toLocaleString()}</div>
