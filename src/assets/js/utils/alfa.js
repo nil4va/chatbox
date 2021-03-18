@@ -84,7 +84,7 @@ export function qs(x, y) {
 // queryselectorall alias
 export function qsa(x, y) {
   y = y || document
-  return y.querySelectorAll(x)
+  return Array.from(y.querySelectorAll(x))
 }
 
 // async wait for x seconds

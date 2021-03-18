@@ -1,5 +1,5 @@
 import ChatRepository from '../repositories/chatRepository.js'
-import { ce, getQuery, qs } from '../utils/alfa.js'
+import { ce, getQuery, qs, qsa } from '../utils/alfa.js'
 import SimpleWebSocket, { TYPES } from '../utils/webSocketManager.js'
 
 class ChatController {
@@ -53,7 +53,6 @@ class ChatController {
       qs('#msginput').focus()
       await this.showMessages()
       this.previewData()
-      qs('.history').scollTop = qs('.history').scrollHeight
     }
     let timeout = null
     qs('#msginput').oninput = e => {
@@ -83,6 +82,8 @@ class ChatController {
       )
       console.log(msg)
     })
+    let el = qsa('.history .msg').pop()
+    el.scrollIntoView()
   }
 
   async previewData() {
