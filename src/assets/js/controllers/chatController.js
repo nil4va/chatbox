@@ -54,7 +54,6 @@ class ChatController {
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
-        console.log(data)
         for (let [i, chat] of chronologicalOrder.entries()) {
             let chatElement = ce(
                 "div", {
