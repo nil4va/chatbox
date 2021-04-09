@@ -1,0 +1,22 @@
+.regField {
+    margin: 10px;
+}
+
+.form {
+    align-self: center;
+    padding-bottom: 20px;
+}
+
+#toLogin {
+    text-decoration: underline;
+
+}
+
+#toLogin:hover {
+    color: #c28899;
+    cursor: pointer;
+}
+
+#register {
+    background-color: #c28899;
+}
