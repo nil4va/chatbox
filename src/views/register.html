@@ -1,0 +1,41 @@
+<div class="row justify-content-md-center">
+<div class="col-sm-4 m-3">
+    <div class="form">
+        <h1> Register </h1>
+        <!-- Hier kan de gebruikers alle gevraagde gegevens invullen om zich te registreren -->
+        <form class="register">
+            <div id="registerErrorMessage"></div>
+            <div class="regField">
+                <label for="name">Username</label>
+                <input type="text" placeholder="Name" name="name" id="name" class="form-control"/>
+            </div>
+            <div id="nameErrorMessage"></div>
+
+            <div class="regField">
+                <label for="mail">Email adress</label>
+                <input type="text" placeholder="Email" name="mail" id="mail" class="form-control"/>
+            </div>
+            <div id="mailErrorMessage"></div>
+
+            <div class="regField">
+                <label for="password">Password</label>
+                <input type="password" placeholder="Password" name="password" id="password" class="form-control"/>
+            </div>
+            <div id="ww1ErrorMessage"></div>
+
+            <div class="regField">
+                <label for="repPassword">Repeat Password</label>
+                <input type="password" placeholder="Repeat password" name="repPassword" id="repPassword" class="form-control"/>
+            </div>
+            <div id="ww2ErrorMessage"></div>
+
+            <button id="register" class="btn submit">Register</button>
+
+            <!-- Indien een bezoeker al een account heeft kan deze via deze link naar het inlogscherm. -->
+            <p class="message">Already have an account?
+                <a id="toLogin" title="Go to login page">Log in</a>
+            </p>
+        </form>
+    </div>
+</div>
+</div>

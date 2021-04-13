@@ -81,15 +81,16 @@ app.post('/room_example', (req, res) => {
   )
 })
 
-app.post('/register', (req, res) => {
+app.post('/register/add', (req, res) => {
   const username = req.body.username
+  const email = req.body.email
   const password = req.body.password
 
   db.handleQuery(
     connectionPool,
     {
-      query: 'INSERT INTO user(username, password) VALUES(?,?)',
-      values: [req.body.username, req.body.password],
+      query: 'INSERT INTO user(username,email, password) VALUES(?,?,?)',
+      values: [username, email, password],
     },
     data => {
       if (data.insertId) {
@@ -101,6 +102,38 @@ app.post('/register', (req, res) => {
       }
     },
     err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
+app.post('/register/name', (req, res) => {
+  const username = req.body.username
+
+  db.handleQuery(
+      connectionPool,
+      {
+        query: 'SELECT * FROM user WHERE username = ?',
+        values: [username],
+      },
+      data => {
+        return res.status(httpOkCode).json(data.length !== 0);
+      },
+      err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
+app.post('/register/mail', (req, res) => {
+  const email = req.body.email
+
+  db.handleQuery(
+      connectionPool,
+      {
+        query: 'SELECT * FROM user WHERE email = ?',
+        values: [email],
+      },
+      data => {
+        return res.status(httpOkCode).json(data.length !== 0);
+      },
+      err => res.status(badRequestCode).json({ reason: err })
   )
 })
 

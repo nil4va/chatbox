@@ -15,7 +15,7 @@ const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
-const CONTROLLER_REGISTREREN ='register'
+const CONTROLLER_REGISTER ='register'
 const CONTROLLER_PROFILE = 'profile'
 
 const sessionManager = new SessionManager()
@@ -115,9 +115,9 @@ class App {
         new PostController(controllerData)
         break
 
-      case CONTROLLER_REGISTREREN:
+      case CONTROLLER_REGISTER:
         this.setCurrentController(name)
-        this.isRegisterd(
+        this.isLoggedIn(
           () => new WelcomeController(),
           () => new RegisterController()
         )
@@ -174,16 +174,6 @@ class App {
       whenNo()
     }
   }
-
-  isRegisterd(whenYes, whenNo) {
-    if (sessionManager.get('username')) {
-      whenYes()
-    } else {
-      whenNo()
-    }
-  }
-
-
 
   /**
    * Removes username via sessionManager and loads the login screen

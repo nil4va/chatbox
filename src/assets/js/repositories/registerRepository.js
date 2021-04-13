@@ -3,9 +3,17 @@ class RegisterRepository {
         this.route = "/register";
     }
 
-    async create(username,password){
+    async create(username,email, password){
         return await networkManager
-            .doRequest(this.route,{username: username, password: password});
+            .doRequest(this.route + '/add',{username: username, email: email, password: password});
 
+    }
+
+    async checkName(username){
+        return await networkManager.doRequest(this.route + '/name', {username: username});
+    }
+
+    async checkMail(email){
+        return await networkManager.doRequest(this.route + '/mail', {email: email});
     }
 }
