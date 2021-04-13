@@ -4,3 +4,8 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+.navbar {
+    background-color: #c28899;
+    height: 80px;
+}
