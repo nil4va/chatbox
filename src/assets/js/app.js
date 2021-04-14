@@ -15,7 +15,7 @@ const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
-const CONTROLLER_REGISTER ='register'
+const CONTROLLER_REGISTER = 'register'
 const CONTROLLER_PROFILE = 'profile'
 
 const sessionManager = new SessionManager()
@@ -126,8 +126,8 @@ class App {
       case CONTROLLER_PROFILE:
         this.setCurrentController(name)
         this.isLoggedIn(
-            () => new ProfileController(),
-            () => new LoginController()
+          () => new ProfileController(),
+          () => new LoginController()
         )
         break
 
@@ -167,7 +167,7 @@ class App {
    * @param whenYes - function to execute when user is logged in
    * @param whenNo - function to execute when user is logged in
    */
-  isLoggedIn(whenYes, whenNo) {
+  isLoggedIn(whenYes = Function(), whenNo = Function()) {
     if (sessionManager.get('username')) {
       whenYes()
     } else {
