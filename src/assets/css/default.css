@@ -11,3 +11,11 @@
 .grow {
     flex-grow: 1;
 }
+
+.content {
+    overflow-y: auto;
+}
+
+.row {
+    margin: 0 !important;
+}
