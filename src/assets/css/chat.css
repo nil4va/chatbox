@@ -118,3 +118,7 @@ body {
 .msg p {
   margin: 0;
 }
+
+.typing {
+  height: 1.5em;
+}

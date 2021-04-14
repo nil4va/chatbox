@@ -49,9 +49,10 @@ class ChatController {
           this.previewData()
           break
         case TYPES.TYPING:
-          if (data.to === this.chatRepository.getFrom()) {
+          console.log(data)
+          if (data.sender === this.chatRepository.getTo()) {
             if (data.typing) {
-              qs('.typing').textContent = `${data.from} is typing...`
+              qs('.typing').textContent = `${data.sender} is typing...`
             } else {
               qs('.typing').textContent = ''
             }

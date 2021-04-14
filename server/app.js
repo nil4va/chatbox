@@ -328,13 +328,6 @@ wss.on('connection', ws => {
 
 async function identifyWS(ws, data) {
   let fromId = await nameToId(data.name)
-  // check if there is already a connection using the id, and close it if there is
-  for (const client of wss.clients) {
-    if (client.id === fromId) {
-      client.close()
-    }
-  }
-  console.log('identify', fromId)
   ws.id = fromId
   db.handleQuery(
     connectionPool,
