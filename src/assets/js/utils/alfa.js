@@ -313,3 +313,24 @@ export class CustomEventTarget extends EventTarget {
     )
   }
 }
+
+export class CustomEventTarget2 {
+  #handlers = {}
+  on(ev, cb) {
+    if (!this.#handlers[ev]) this.#handlers[ev] = new Set()
+    this.#handlers[ev].add(cb)
+    console.log(this.#handlers)
+  }
+  off(ev, cb) {
+    this.#handlers[ev]?.remove(cb)
+  }
+  dispatch(ev, data, cancelable) {
+    if (!this.#handlers[ev]) return true
+    for (const cb of this.#handlers[ev]) {
+      if (false === cb.call(this, data) && cancelable) {
+        return false
+      }
+    }
+    return true
+  }
+}

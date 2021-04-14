@@ -1,4 +1,4 @@
-import { CustomEventTarget, fetchJSON } from './alfa.js'
+import { CustomEventTarget2, fetchJSON } from './alfa.js'
 /**
  * websocket abstraction
  * @author Alfa Saijers
@@ -12,13 +12,14 @@ export const TYPES = {
   TYPING: 'typing',
 }
 
-export default class SimpleWebSocket extends CustomEventTarget {
+export default class SimpleWebSocket extends CustomEventTarget2 {
   constructor() {
     super()
     this._ws = null
     this._connect()
   }
   send(type, data) {
+    console.log('WSSND', data)
     this._ws.send(JSON.stringify({ type, data }))
   }
   async _connect() {
@@ -28,8 +29,16 @@ export default class SimpleWebSocket extends CustomEventTarget {
       this._ws.onopen = e => {
         this._ws.onmessage = e => {
           let data = JSON.parse(e.data)
-          console.log('WSMSG', data)
-          this.dispatch('message', data)
+          console.log('WSRCV', data)
+          if (
+            data.type === TYPES.SUCCESS &&
+            data.data.type === TYPES.IDENTIFY
+          ) {
+            this.identifySuccess = 1
+          }
+          if (this.identifySuccess) {
+            this.dispatch('message', data)
+          }
         }
         this.send(TYPES.IDENTIFY, { name: sessionManager.get('username') })
       }
@@ -37,3 +46,5 @@ export default class SimpleWebSocket extends CustomEventTarget {
     return false
   }
 }
+
+window.SimpleWebSocket = SimpleWebSocket
