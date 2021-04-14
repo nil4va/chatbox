@@ -7,7 +7,7 @@ class ChatController {
     const from = sessionManager.get('username')
     this.chatRepository = new ChatRepository(from, to)
     this.chatListRepository = new ChatListRepository()
-    this.webSocket = new SimpleWebSocket()
+    // this.webSocket = new SimpleWebSocket()
     this._hasSelectedAChat = !!to
 
     this.init()
@@ -18,7 +18,9 @@ class ChatController {
     let html = await res.text()
     this.view = html
     qs('.content').innerHTML = html
+
     await this.previewData()
+    this.onceAfterSelectFirstChat()
 
     if (this._hasSelectedAChat) {
       this.showMessages()
@@ -30,17 +32,27 @@ class ChatController {
   onceAfterSelectFirstChat() {
     this._hasSelectedAChat = true
     qs('.chatwindow').style.display = ''
-    this.chatRepository.on('message', ({ detail: { type, data } }) => {
+    this.chatRepository.ws.on('message', ({ type, data }) => {
       if (!this._hasSelectedAChat) return
       switch (type) {
+        case TYPES.SUCCESS:
+          switch (data.type) {
+            case TYPES.MESSAGE:
+              this.addMessage(data.data)
+              this.scrollToLastMessage()
+              this.previewData()
+          }
+          break
         case TYPES.MESSAGE:
-          this.showMessages()
+          this.addMessage(data)
+          this.scrollToLastMessage()
           this.previewData()
           break
         case TYPES.TYPING:
-          if (data.to === this.chatRepository.getFrom()) {
+          console.log(data)
+          if (data.sender === this.chatRepository.getTo()) {
             if (data.typing) {
-              qs('.typing').textContent = `${data.from} is typing...`
+              qs('.typing').textContent = `${data.sender} is typing...`
             } else {
               qs('.typing').textContent = ''
             }
@@ -51,8 +63,6 @@ class ChatController {
       this.chatRepository.send(qs('#msginput').value)
       qs('#msginput').value = ''
       qs('#msginput').focus()
-      await this.showMessages()
-      this.previewData()
     }
     let timeout = null
     qs('#msginput').oninput = e => {
@@ -65,31 +75,45 @@ class ChatController {
   }
 
   async showMessages() {
+    console.log('getting all messages')
     // render all the messages
     qs('.username').textContent = this.chatRepository.getTo()
     qs('.history').innerHTML = ''
     const messages = await this.chatRepository.getAll()
-    messages.map(msg => {
-      qs('.history').append(
-        ce('div', {
-          className:
-            'msg ' +
-            (msg.from === this.chatRepository.getFrom()
-              ? 'msgself'
-              : 'msgother'),
-          innerHTML: `<p>${msg.content}</p>`,
-        })
-      )
-      console.log(msg)
-    })
+    messages.map(msg => this.addMessage(msg))
+    this.scrollToLastMessage()
+  }
+
+  addMessage(msg) {
+    qs('.history').append(
+      ce('div', {
+        className:
+          'msg ' +
+          (msg.sender === this.chatRepository.getFrom()
+            ? 'msgself'
+            : 'msgother'),
+        innerHTML: `
+            <p class="content">${msg.content}</p>
+            <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
+          `,
+      })
+    )
+  }
+
+  scrollToLastMessage() {
     let el = qsa('.history .msg').pop()
-    el.scrollIntoView()
+    el?.scrollIntoView()
   }
 
   async previewData() {
+    if (this.isWorking) return
+    this.isWorking = true
     qs('.pinnedList').innerHTML = ''
     qs('.chatList').innerHTML = ''
     const data = await this.chatListRepository.getAll()
+    if (data.length == 0) {
+      return
+    }
     const onlineList = [] || (await this.chatListRepository.getOnlineList())
     const chronologicalOrder = data.sort(function (a, b) {
       return new Date(b.timestamp) - new Date(a.timestamp)
@@ -154,6 +178,7 @@ class ChatController {
         $(this).addClass('selected')
       })
     }
+    this.isWorking = false
   }
 }
 
