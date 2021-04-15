@@ -1,5 +1,5 @@
 import ChatRepository from '../repositories/chatRepository.js'
-import {ce, getQuery, qs, qsa} from '../utils/alfa.js'
+import {ce, getQuery, LinkedList, qs, qsa} from '../utils/alfa.js'
 import SimpleWebSocket, {TYPES} from '../utils/webSocketManager.js'
 
 class ChatController {
@@ -92,9 +92,10 @@ class ChatController {
                     (msg.sender === this.chatRepository.getFrom()
                         ? 'msgself'
                         : 'msgother'),
-                innerHTML: `
+                innerHTML: `<div class="message">
             <p class="content">${msg.content}</p>
             <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
+            </div>
           `,
             })
         )
@@ -182,27 +183,47 @@ class ChatController {
 
         // searchbox for users
         $(".searchbox").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $(this).parent().parent().find('.previewChat').filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            const value = $(this).val().toLowerCase();
+            $(this).parent().parent().find('.userName').filter(function () {
+                $(this).parent().parent().parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
 
         // searchbox for messages
+
+        function classActive(message) {
+            $(".activeMessage").removeClass("activeMessage")
+            $(message).addClass("activeMessage")
+            message.scrollIntoView()
+        }
+
+        var matchedMessages;
         $(".searchbox1").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $(this).parent().parent().find('.msg').filter(function () {
-                var messages = $(this).text().toLowerCase().valueOf()
-                console.log(messages)
+            const value = new RegExp($(this).val().toLowerCase())
+            $(".activeMessage").removeClass("activeMessage")
+            if ($(this).val() === "")
+                return;
+            matchedMessages = $(this).parent().parent().find('.msg').filter(function () {
 
+                return value.test($(this).text().toLowerCase());
+            }).toArray();
 
-
-                // scroll(scrollToMessage.scrollLeft, scrollToMessage.scrollTop);
-                // console.log(inputMatchesText);
-                // console.log($(this).scrollTo($(this).text().toLowerCase().indexOf(value) > -1))
-                // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
+            console.log(matchedMessages)
+            matchedMessages = new LinkedList(...matchedMessages);
+            classActive(matchedMessages.tail.value);
         });
+
+        $("#buttonUp").on("click", function () {
+            const message = matchedMessages.prev.value;
+            classActive(message);
+
+        })
+
+        $("#buttonDown").on("click", function () {
+            const message = matchedMessages.next.value;
+
+            classActive(message);
+        })
     }
 }
 

@@ -39,13 +39,11 @@ body {
 }
 
 .msgself {
-    align-self: flex-end;
-    background-color: #dc98a9;
+    justify-content: flex-end;
 }
 
 .msgother {
-    align-self: flex-start;
-    background-color: #c28899;
+    justify-content: flex-start;
 }
 
 .chatList {
@@ -113,9 +111,8 @@ body {
 }
 
 .msg {
-    border-radius: 5px;
-    margin: 5px;
-    padding: 5px;
+    width: 100%;
+    display: flex;
 }
 
 .msg p {
@@ -128,5 +125,32 @@ body {
 
 .chatFilter {
     width: 20%;
-    margin-left: 800px;
+    margin-left: 600px;
+}
+
+.activeMessage {
+    background: rgba(8, 8, 0, 0.2);
+}
+
+.message {
+    flex-grow: 0;
+    width: auto;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.msgother .message {
+    background-color: #c28899;
+}
+
+.msgself .message {
+    background-color: #dc98a9;
+}
+
+#buttonUp, #buttonDown{
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 10px 20px;
 }
