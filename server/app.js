@@ -109,15 +109,15 @@ app.post('/register/name', (req, res) => {
   const username = req.body.username
 
   db.handleQuery(
-      connectionPool,
-      {
-        query: 'SELECT * FROM user WHERE username = ?',
-        values: [username],
-      },
-      data => {
-        return res.status(httpOkCode).json(data.length !== 0);
-      },
-      err => res.status(badRequestCode).json({ reason: err })
+    connectionPool,
+    {
+      query: 'SELECT * FROM user WHERE username = ?',
+      values: [username],
+    },
+    data => {
+      return res.status(httpOkCode).json(data.length !== 0)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
   )
 })
 
@@ -125,15 +125,15 @@ app.post('/register/mail', (req, res) => {
   const email = req.body.email
 
   db.handleQuery(
-      connectionPool,
-      {
-        query: 'SELECT * FROM user WHERE email = ?',
-        values: [email],
-      },
-      data => {
-        return res.status(httpOkCode).json(data.length !== 0);
-      },
-      err => res.status(badRequestCode).json({ reason: err })
+    connectionPool,
+    {
+      query: 'SELECT * FROM user WHERE email = ?',
+      values: [email],
+    },
+    data => {
+      return res.status(httpOkCode).json(data.length !== 0)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
   )
 })
 
@@ -232,6 +232,8 @@ app.post('/profile', (req, res) => {
   )
 })
 
+const USERIDMAP = {}
+// converts a name to an id
 function nameToId(name) {
   if (!name) return
   return new Promise(resolve => {
@@ -277,34 +279,8 @@ function sendSuccess(ws, type, data) {
   sendMsg(ws, MSGTYPES.SUCCESS, { type, data })
 }
 
-app.post('/history', async (req, res) => {
-  const id1 = await nameToId(req.body.personName1)
-  const id2 = await nameToId(req.body.personName2)
-
-  db.handleQuery(
-    connectionPool,
-    {
-      query:
-        'SELECT u1.username `from`, u2.username `to`, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
-      values: [id1, id2, id2, id1],
-    },
-    data => {
-      res.status(httpOkCode).json(data)
-    },
-    err => res.status(badRequestCode).json({ reason: err })
-  )
-})
-
 // create new websocket server
 const wss = new WebSocket.Server({ port: WSS_PORT, path: WSS_PATH })
-
-function sendMsg(ws, content, from) {
-  ws.send(JSON.stringify({ content, from }))
-}
-
-const USERIDMAP = {}
-
-// gets the id for a username
 
 // listen for new connections
 wss.on('connection', ws => {
@@ -317,12 +293,14 @@ wss.on('connection', ws => {
     })
   })
   ws.on('message', async msg => {
-    let { data, type } = JSON.parse(msg)
+    let { type, data } = JSON.parse(msg)
     console.log(type, data)
     let toId
-    if (data.to) toId = await nameToId(data.to)
+    if (data.receiver) toId = await nameToId(data.receiver)
     switch (type) {
       case MSGTYPES.MESSAGE:
+        // add a timestamp to the message
+        data = { ...data, timestamp: Date.now() }
         // put the messae in the database
         putMessageInDB(ws, data)
         // send the message to all clients that match toId
@@ -368,13 +346,14 @@ async function identifyWS(ws, data) {
 }
 
 async function putMessageInDB(ws, data) {
-  let fromId = await nameToId(data.from)
-  let toId = await nameToId(data.to)
+  let fromId = await nameToId(data.sender)
+  let toId = await nameToId(data.receiver)
   db.handleQuery(
     connectionPool,
     {
-      query: 'INSERT INTO message (`from`,`to`,content) VALUES (?,?,?)',
-      values: [fromId, toId, data.content],
+      query:
+        'INSERT INTO message (`from`,`to`,content,timestamp) VALUES (?,?,?,?)',
+      values: [fromId, toId, data.content, data.timestamp],
     },
     suc => {
       sendSuccess(ws, MSGTYPES.MESSAGE, data)
@@ -386,10 +365,27 @@ async function putMessageInDB(ws, data) {
   )
 }
 
+app.post('/history', async (req, res) => {
+  const id1 = await nameToId(req.body.receiver)
+  const id2 = await nameToId(req.body.sender)
+
+  db.handleQuery(
+    connectionPool,
+    {
+      query:
+        'SELECT u1.username sender, u2.username receiver, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+      values: [id1, id2, id2, id1],
+    },
+    data => {
+      res.status(httpOkCode).json(data)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
 app.post('/chatList', async (req, res) => {
   const loggedInName = req.body.userIdLoggedIn
   const id = await nameToId(loggedInName)
-  console.log(id)
   db.handleQuery(
     connectionPool,
     {
@@ -400,7 +396,6 @@ app.post('/chatList', async (req, res) => {
     data => {
       if (data) {
         let reg = new Set()
-        console.log(data)
         data = data.reduce((a, c) => {
           let other = c.receiver === loggedInName ? c.sender : c.receiver
           if (!reg.has(other)) {
