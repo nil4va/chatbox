@@ -41,6 +41,7 @@ class LoginController {
             const user = await this.userRepository.login(username, password);
 
             sessionManager.set("username", user.username);
+            app.loadController(CONTROLLER_SIDEBAR);
             app.loadController(CONTROLLER_WELCOME);
 
         } catch(e) {

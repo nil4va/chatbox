@@ -56,6 +56,7 @@ class App {
     //Always load the sidebar
     this.loadController(CONTROLLER_SIDEBAR)
 
+
     //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
     this.loadControllerFromUrl(CONTROLLER_WELCOME)
   }
@@ -182,6 +183,7 @@ class App {
     sessionManager.remove('username')
 
     //go to login screen
+    this.loadController(CONTROLLER_SIDEBAR)
     this.loadController(CONTROLLER_LOGIN)
   }
 }

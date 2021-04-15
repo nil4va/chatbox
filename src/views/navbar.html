@@ -23,22 +23,22 @@
         <li class="nav-item">
           <a class="nav-link" data-controller="upload" href="#">Upload</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-controller="register" href="#">Register</a>
+        <li class="nav-item hideWhenLoggedIn">
+          <a class="nav-link " data-controller="register" href="#">Register</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-controller="login" href="#">Login</a>
+        <li class="nav-item hideWhenLoggedIn">
+          <a class="nav-link " data-controller="login" href="#">Login</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-controller="logout" href="#">Logout</a>
+        <li class="nav-item hideWhenLoggedOut">
+          <a class="nav-link " data-controller="logout" href="#">Logout</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item  hideWhenLoggedOut">
           <a class="nav-link" data-controller="chat" href="#">Chat</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" data-controller="posts" href="#">Posts</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item hideWhenLoggedOut">
           <a class="nav-link" data-controller="profile" href="#">Profile</a>
         </li>
       </ul>
