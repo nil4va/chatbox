@@ -39,9 +39,7 @@ const authorizationErrCode = 401
 
 app.post('/user/login', (req, res) => {
   const username = req.body.username
-
-  //TODO: We shouldn't save a password unencrypted!! Improve this by using cryptoHelper :)
-  const password = req.body.password
+  const password = cryptoHelper.getHashedPassword(req.body.password);
 
   db.handleQuery(
     connectionPool,
@@ -84,13 +82,13 @@ app.post('/room_example', (req, res) => {
 app.post('/register/add', (req, res) => {
   const username = req.body.username
   const email = req.body.email
-  const password = req.body.password
+  const hashedPassword = cryptoHelper.getHashedPassword(req.body.password);
 
   db.handleQuery(
     connectionPool,
     {
       query: 'INSERT INTO user(username,email, password) VALUES(?,?,?)',
-      values: [username, email, password],
+      values: [username, email, hashedPassword],
     },
     data => {
       if (data.insertId) {

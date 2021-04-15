@@ -110,7 +110,7 @@ class RegisterController {
         ) {
             passwordField.addClass('is-invalid');
             this.createRegisterView.find("#pass1ErrorMessage").html("Password not valid. <br> " +
-                "Please choose Password containing: <br>" +
+                "Please choose a password containing: <br>" +
                 "- a number <br>- a lowercase letter <br>- an uppercase letter");
             return false;
         }
