@@ -23,6 +23,9 @@ export default class SimpleWebSocket extends CustomEventTarget2 {
     console.log('WSSND', data)
     this._ws.send(JSON.stringify({ type, data }))
   }
+  close() {
+    this._ws.close()
+  }
   async _connect() {
     let res = await fetchJSON(`//${location.hostname}:3000/gateway`)
     if (res.gateway) {

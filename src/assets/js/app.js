@@ -56,7 +56,6 @@ class App {
     //Always load the sidebar
     this.loadController(CONTROLLER_SIDEBAR)
 
-
     //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
     this.loadControllerFromUrl(CONTROLLER_WELCOME)
   }
@@ -68,6 +67,10 @@ class App {
    * @returns {boolean} - successful controller change
    */
   loadController(name, controllerData) {
+    if (this.getCurrentController() === CONTROLLER_CHAT) {
+      if (window.chatController) window.chatController.chatRepository.ws.close()
+    }
+
     switch (name) {
       case CONTROLLER_SIDEBAR:
         new NavbarController()

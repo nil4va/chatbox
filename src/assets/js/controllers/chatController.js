@@ -16,6 +16,7 @@ class ChatController {
     this._hasSelectedAChat = !!to
 
     this.init()
+    window.chatController = this
   }
 
   async init(data) {
@@ -25,7 +26,8 @@ class ChatController {
     qs('.content').innerHTML = html
 
     await this.previewData()
-    this.onceAfterSelectFirstChat()
+    let firstChat = qs('.previewChat')
+    if (firstChat) firstChat.click()
 
     if (this._hasSelectedAChat) {
       this.showMessages()
@@ -49,10 +51,13 @@ class ChatController {
           }
           break
         case TYPES.MESSAGE:
-          this.chatRepository.ws.send(TYPES.SEEN, data)
-          this.addMessage(data)
-          this.scrollToLastMessage()
-          this.previewData()
+          if (data.sender == this.chatRepository.getTo()) {
+            data.status = 1
+            this.chatRepository.ws.send(TYPES.SEEN, data)
+            this.addMessage(data)
+            this.scrollToLastMessage()
+            this.previewData()
+          }
           break
         case TYPES.TYPING:
           console.log(data)
@@ -62,6 +67,12 @@ class ChatController {
             } else {
               qs('.typing').textContent = ''
             }
+          }
+          break
+        case TYPES.SEEN:
+          if (data.receiver == this.chatRepository.getTo()) {
+            let el = qs('#msg_' + data.id)
+            if (el) el.$('.status').textContent = 'seen'
           }
       }
     })
@@ -88,11 +99,14 @@ class ChatController {
     const messages = await this.chatRepository.getAll()
     messages.map(msg => this.addMessage(msg))
     this.scrollToLastMessage()
+    return messages
   }
 
   addMessage(msg) {
+    qsa('.status').map(v => (v.textContent = ''))
     qs('.history').append(
       ce('div', {
+        id: 'msg_' + msg.id,
         className:
           'msg ' +
           (msg.sender === this.chatRepository.getFrom()
@@ -126,7 +140,7 @@ class ChatController {
     if (data.length == 0) {
       return
     }
-    const onlineList = [] || (await this.chatListRepository.getOnlineList())
+    const onlineList = (await this.chatListRepository.getOnlineList()) || []
     const chronologicalOrder = data.sort(function (a, b) {
       return new Date(b.timestamp) - new Date(a.timestamp)
     })
@@ -138,10 +152,17 @@ class ChatController {
           : chat.receiver
 
       let chatElement = ce('div', {
-        onclick: e => {
+        onclick: async e => {
           this.chatRepository.to = otherPerson
           if (!this._hasSelectedAChat) this.onceAfterSelectFirstChat()
-          this.showMessages()
+          let messages = await this.showMessages()
+
+          for (const m of messages.reverse()) {
+            if (m.sender == this.chatRepository.getTo()) {
+              this.chatRepository.ws.send(TYPES.SEEN, m)
+              break
+            }
+          }
         },
         className:
           'previewChat ' +
