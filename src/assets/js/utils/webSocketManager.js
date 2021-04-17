@@ -10,6 +10,7 @@ export const TYPES = {
   SUCCESS: 'success',
   IDENTIFY: 'identify',
   TYPING: 'typing',
+  SEEN: 'seen',
 }
 
 export default class SimpleWebSocket extends CustomEventTarget2 {
