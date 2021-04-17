@@ -3,7 +3,7 @@ class RegisterController {
         this.registerRepository = new RegisterRepository();
         $.get("views/register.html")
             .done((data) => this.setup((data))
-                .fail(() => this.error));
+                .fail(() => this.error()));
     }
 
     setup(data) {
@@ -33,7 +33,9 @@ class RegisterController {
         if (nameCheck && mailCheck && passCheck && repPassCheck){
             try {
                await this.registerRepository.create(username, email, password);
-               app.loadController(CONTROLLER_WELCOME);
+                sessionManager.set("username", username);
+                app.loadController(CONTROLLER_SIDEBAR);
+                app.loadController(CONTROLLER_WELCOME);
             } catch (e) {
                 console.log(e);
             }
@@ -41,43 +43,60 @@ class RegisterController {
     }
 
     async nameCheck() {
-        const nameField = this.createRegisterView.find("#name");
-        const username = nameField.val();
+        const username = this.createRegisterView.find("#name").val();
 
         if (username === "") {
-            nameField.addClass('is-invalid');
+            this.nameError("Please enter an username.");
             return false;
         }
 
         const nameInUse = await this.registerRepository.checkName(username);
 
         if (nameInUse){
-            nameField.addClass('is-invalid');
+            this.nameError("Name is already in use. Please choose another username.");
             return false;
         }
-        nameField.removeClass('is-invalid');
+
+        this.createRegisterView.find("#name").removeClass('is-invalid');
+        this.createRegisterView.find("#nameErrorMessage").empty();
         return true;
     }
 
+    nameError(message) {
+        this.createRegisterView.find("#name").addClass('is-invalid');
+        this.createRegisterView.find("#nameErrorMessage").text(message);
+    }
+
     async mailCheck() {
-        const emailField = this.createRegisterView.find("#mail");
-        const email = emailField.val();
+        const email = this.createRegisterView.find("#mail").val();
 
         if (email === ""){
-            emailField.addClass('is-invalid');
+            this.mailError("Please enter an email address.");
             return false;
         }
 
         const mailInUse = await this.registerRepository.checkMail(email);
 
-        var mailRegex = /^([_a-zA-Z0-9-]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+\.)+([a-zA-Z]{2,3})$/;
-
-        if (mailInUse || !mailRegex.test(email)) {
-            emailField.addClass('is-invalid');
+        if (mailInUse) {
+            this.mailError("An account with this email address already exists. Please log in.");
             return false;
         }
-        emailField.removeClass('is-invalid');
+
+        var mailRegex = /^([_a-zA-Z0-9-]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+\.)+([a-zA-Z]{2,3})$/;
+
+        if (!mailRegex.test(email)) {
+            this.mailError("Please enter a valid email address.");
+            return false;
+        }
+
+        this.createRegisterView.find("#mail").removeClass('is-invalid');
+        this.createRegisterView.find("#mailErrorMessage").empty();
         return true;
+    }
+
+    mailError(message) {
+        this.createRegisterView.find("#mail").addClass('is-invalid');
+        this.createRegisterView.find("#mailErrorMessage").text(message);
     }
 
     async passCheck() {
@@ -87,14 +106,17 @@ class RegisterController {
         if (password.length < 6 ||
             !password.match(/[0-9]/) ||
             !password.match(/[a-z]/) ||
-            !password.match(/[A-Z]/) ||
-            password.match(/["{}|<>]/)
+            !password.match(/[A-Z]/)
         ) {
             passwordField.addClass('is-invalid');
+            this.createRegisterView.find("#pass1ErrorMessage").html("Password not valid. <br> " +
+                "Please choose a password containing: <br>" +
+                "- a number <br>- a lowercase letter <br>- an uppercase letter");
             return false;
         }
 
         passwordField.removeClass('is-invalid');
+        this.createRegisterView.find("#pass1ErrorMessage").empty();
         return true;
     }
 
@@ -105,10 +127,12 @@ class RegisterController {
 
         if (password !== repeatedPassword) {
             repPasswordField.addClass('is-invalid');
+            this.createRegisterView.find("#pass2ErrorMessage").text("Passwords are not the same.");
             return false;
         }
 
         repPasswordField.removeClass('is-invalid');
+        this.createRegisterView.find("#pass2ErrorMessage").empty();
         return true;
     }
 }
