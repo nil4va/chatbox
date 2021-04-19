@@ -102,7 +102,18 @@ class RegisterController {
     async passCheck() {
         const passwordField = this.createRegisterView.find("#password");
         const password = passwordField.val();
-        
+
+        if (password.length < 6 ||
+            !password.match(/[0-9]/) ||
+            !password.match(/[a-z]/) ||
+            !password.match(/[A-Z]/)
+        ) {
+            passwordField.addClass('is-invalid');
+            this.createRegisterView.find("#pass1ErrorMessage").html("Password not valid. <br> " +
+                "Please choose a password of at least 6 characters containing: <br>" +
+                "- a number <br>- a lowercase letter <br>- an uppercase letter");
+            return false;
+        }
 
         passwordField.removeClass('is-invalid');
         this.createRegisterView.find("#pass1ErrorMessage").empty();
