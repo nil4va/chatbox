@@ -68,13 +68,25 @@ export default class ChatRepository extends CustomEventTarget {
   }
 
   async like(messageId) {
-    return await networkManager.doRequest('/liking/like', {
-      message: messageId,
+    this.ws.send(TYPES.LIKE, {
+      sender: this._sender,
+      receiver: this._receiver,
+      messageId,
+      like: true,
     })
+     await networkManager.doRequest('/liking/like', {
+       message: messageId,
+     })
   }
 
   async unlike(messageId) {
-    return await networkManager.doRequest('/liking/unlike', {
+    this.ws.send(TYPES.LIKE, {
+      sender: this._sender,
+      receiver: this._receiver,
+      messageId,
+      like: false,
+    })
+    await networkManager.doRequest('/liking/unlike', {
       message: messageId,
     })
   }

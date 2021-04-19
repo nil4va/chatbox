@@ -11,6 +11,7 @@ export const TYPES = {
   IDENTIFY: 'identify',
   TYPING: 'typing',
   SEEN: 'seen',
+  LIKE: 'like'
 }
 
 export default class SimpleWebSocket extends CustomEventTarget2 {
