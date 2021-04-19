@@ -39,7 +39,7 @@ const authorizationErrCode = 401
 
 app.post('/user/login', (req, res) => {
   const username = req.body.username
-  const password = cryptoHelper.getHashedPassword(req.body.password);
+  const password = cryptoHelper.getHashedPassword(req.body.password)
 
   db.handleQuery(
     connectionPool,
@@ -82,7 +82,7 @@ app.post('/room_example', (req, res) => {
 app.post('/register/add', (req, res) => {
   const username = req.body.username
   const email = req.body.email
-  const hashedPassword = cryptoHelper.getHashedPassword(req.body.password);
+  const hashedPassword = cryptoHelper.getHashedPassword(req.body.password)
 
   db.handleQuery(
     connectionPool,
@@ -263,6 +263,7 @@ const MSGTYPES = {
   SUCCESS: 'success',
   IDENTIFY: 'identify',
   TYPING: 'typing',
+  SEEN: 'seen',
 }
 
 function sendMsg(ws, type, data) {
@@ -293,17 +294,18 @@ wss.on('connection', ws => {
   ws.on('message', async msg => {
     let { type, data } = JSON.parse(msg)
     console.log(type, data)
-    let toId
-    if (data.receiver) toId = await nameToId(data.receiver)
+    let receiverID
+    if (data.receiver) receiverID = await nameToId(data.receiver)
+    if (data.sender) senderID = await nameToId(data.sender)
     switch (type) {
       case MSGTYPES.MESSAGE:
         // add a timestamp to the message
         data = { ...data, timestamp: Date.now() }
-        // put the messae in the database
-        putMessageInDB(ws, data)
+        // put the messae in the database, and get the id
+        data = await putMessageInDB(ws, data)
         // send the message to all clients that match toId
         for (const client of wss.clients) {
-          if (client.id === toId) {
+          if (client.id === receiverID) {
             sendMsg(client, MSGTYPES.MESSAGE, data)
           }
         }
@@ -313,8 +315,16 @@ wss.on('connection', ws => {
         break
       case MSGTYPES.TYPING:
         for (const client of wss.clients) {
-          if (client.id === toId) {
+          if (client.id === receiverID) {
             sendMsg(client, MSGTYPES.TYPING, data)
+          }
+        }
+        break
+      case MSGTYPES.SEEN:
+        for (const client of wss.clients) {
+          // let the sender of the message know it has been seen
+          if (client.id == senderID) {
+            sendMsg(client, MSGTYPES.SEEN, data)
           }
         }
     }
@@ -346,32 +356,40 @@ async function identifyWS(ws, data) {
 async function putMessageInDB(ws, data) {
   let fromId = await nameToId(data.sender)
   let toId = await nameToId(data.receiver)
-  db.handleQuery(
-    connectionPool,
-    {
-      query:
-        'INSERT INTO message (`from`,`to`,content,timestamp) VALUES (?,?,?,?)',
-      values: [fromId, toId, data.content, data.timestamp],
-    },
-    suc => {
-      sendSuccess(ws, MSGTYPES.MESSAGE, data)
-      //   sendMsg(ws, `server echo: ${data.content}`, 'server')
-    },
-    err => {
-      sendError(ws, MSGTYPES.MESSAGE, { ...data, err })
-    }
-  )
+  data.status = 0
+  return new Promise(resolve => {
+    db.handleQuery(
+      connectionPool,
+      {
+        query:
+          'INSERT INTO message (`from`,`to`,content,timestamp,status) VALUES (?,?,?,?,?)',
+        values: [fromId, toId, data.content, data.timestamp, 0],
+      },
+      suc => {
+        data.id = suc.insertId
+        sendSuccess(ws, MSGTYPES.MESSAGE, data)
+        resolve(data)
+        //   sendMsg(ws, `server echo: ${data.content}`, 'server')
+      },
+      err => {
+        sendError(ws, MSGTYPES.MESSAGE, { ...data, err })
+      }
+    )
+  })
 }
 
 app.post('/history', async (req, res) => {
   const id1 = await nameToId(req.body.receiver)
   const id2 = await nameToId(req.body.sender)
-
+  db.handleQuery(connectionPool, {
+    query: 'UPDATE message SET status = 1 WHERE `to` = ? AND `from` = ?',
+    values: [id2, id1],
+  })
   db.handleQuery(
     connectionPool,
     {
       query:
-        'SELECT u1.username sender, u2.username receiver, content, timestamp, liked FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+        'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
       values: [id1, id2, id2, id1],
     },
     data => {
