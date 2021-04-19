@@ -60,7 +60,6 @@ class ChatController {
                     }
                     break
                 case TYPES.TYPING:
-                    console.log(data)
                     if (data.sender === this.chatRepository.getTo()) {
                         if (data.typing) {
                             qs('.typing').textContent = `${data.sender} is typing...`
@@ -100,7 +99,6 @@ class ChatController {
     }
 
     async showMessages() {
-        console.log('getting all messages')
         // render all the messages
         qs('.username').textContent = this.chatRepository.getTo()
         qs('.history').innerHTML = ''
@@ -174,7 +172,6 @@ class ChatController {
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
-        console.log(data)
         for (let [i, chat] of chronologicalOrder.entries()) {
             let otherPerson =
                 chat.receiver === sessionManager.get('username')
@@ -268,7 +265,7 @@ class ChatController {
             message.scrollIntoView()
         }
 
-        var matchedMessages
+        let matchedMessages
         $('.searchbox1').on('keyup', function () {
             const value = new RegExp($(this).val().toLowerCase())
             $('.activeMessage').removeClass('activeMessage')
@@ -282,10 +279,25 @@ class ChatController {
                 })
                 .toArray()
 
-            console.log(matchedMessages)
             matchedMessages = new LinkedList(...matchedMessages)
             classActive(matchedMessages.tail.value)
+
+            if (matchedMessages.length === 0) {
+                $('#buttonUp').hide()
+                $('#buttonDown').hide()
+            } else {
+                $('#buttonUp').show()
+                $('#buttonDown').show()
+            }
         })
+
+        $('.searchbox1').on('input', function () {
+            if (!$('.searchbox1').val()){
+                $('#buttonUp').hide()
+                $('#buttonDown').hide()
+            }
+        })
+
 
         $('#buttonUp').on('click', function () {
             const message = matchedMessages.prev.value
@@ -294,9 +306,9 @@ class ChatController {
 
         $('#buttonDown').on('click', function () {
             const message = matchedMessages.next.value
-
             classActive(message)
         })
+
     }
 }
 
