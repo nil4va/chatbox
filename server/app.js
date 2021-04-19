@@ -264,6 +264,7 @@ const MSGTYPES = {
   IDENTIFY: 'identify',
   TYPING: 'typing',
   SEEN: 'seen',
+  LIKE: 'like',
 }
 
 function sendMsg(ws, type, data) {
@@ -323,8 +324,16 @@ wss.on('connection', ws => {
       case MSGTYPES.SEEN:
         for (const client of wss.clients) {
           // let the sender of the message know it has been seen
-          if (client.id == senderID) {
+          if (client.id === senderID) {
             sendMsg(client, MSGTYPES.SEEN, data)
+          }
+        }
+        break
+      case MSGTYPES.LIKE:
+        for (const client of wss.clients) {
+          // let the sender of the message know it has been seen
+          if (client.id === receiverID) {
+            sendMsg(client, MSGTYPES.LIKE, data)
           }
         }
     }
@@ -389,7 +398,7 @@ app.post('/history', async (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+        'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp, liked FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
       values: [id1, id2, id2, id1],
     },
     data => {
@@ -494,7 +503,7 @@ app.post('/liking/like', (req, res) => {
   db.handleQuery(
       connectionPool,
       {
-        query: 'UPDATE message SET like = 1 WHERE id=?',
+        query: 'UPDATE message SET liked = 1 WHERE id=?',
         values: [messageId],
       },
       data => {
@@ -509,7 +518,7 @@ app.post('/liking/unlike', (req, res) => {
   db.handleQuery(
       connectionPool,
       {
-        query: 'UPDATE message SET like = 0 WHERE id=?',
+        query: 'UPDATE message SET liked = 0 WHERE id=?',
         values: [messageId],
       },
       data => {
