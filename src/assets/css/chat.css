@@ -154,3 +154,11 @@ body {
     height: 40px;
     margin: 0 0 10px 20px;
 }
+
+.msgother .notLiked :hover{
+
+}
+
+.message img {
+    height: 10px;
+}

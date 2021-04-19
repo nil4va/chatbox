@@ -42,7 +42,7 @@ class LoginController {
 
             sessionManager.set("username", user.username);
             app.loadController(CONTROLLER_SIDEBAR);
-            app.loadController(CONTROLLER_WELCOME);
+            app.loadController(CONTROLLER_POSTS);
 
         } catch(e) {
             //if unauthorized error show error to user

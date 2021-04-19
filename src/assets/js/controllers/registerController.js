@@ -35,7 +35,7 @@ class RegisterController {
                await this.registerRepository.create(username, email, password);
                 sessionManager.set("username", username);
                 app.loadController(CONTROLLER_SIDEBAR);
-                app.loadController(CONTROLLER_WELCOME);
+                app.loadController(CONTROLLER_POSTS);
             } catch (e) {
                 console.log(e);
             }
@@ -110,7 +110,7 @@ class RegisterController {
         ) {
             passwordField.addClass('is-invalid');
             this.createRegisterView.find("#pass1ErrorMessage").html("Password not valid. <br> " +
-                "Please choose a password containing: <br>" +
+                "Please choose a password of at least 6 characters containing: <br>" +
                 "- a number <br>- a lowercase letter <br>- an uppercase letter");
             return false;
         }

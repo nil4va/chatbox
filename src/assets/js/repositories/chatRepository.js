@@ -66,4 +66,16 @@ export default class ChatRepository extends CustomEventTarget {
       typing: false,
     })
   }
+
+  async like(messageId) {
+    return await networkManager.doRequest('/liking/like', {
+      message: messageId,
+    })
+  }
+
+  async unlike(messageId) {
+    return await networkManager.doRequest('/liking/unlike', {
+      message: messageId,
+    })
+  }
 }

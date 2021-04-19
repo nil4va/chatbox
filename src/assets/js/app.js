@@ -10,7 +10,6 @@
 const CONTROLLER_SIDEBAR = 'sidebar'
 const CONTROLLER_LOGIN = 'login'
 const CONTROLLER_LOGOUT = 'logout'
-const CONTROLLER_WELCOME = 'welcome'
 const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
@@ -58,7 +57,7 @@ class App {
 
 
     //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-    this.loadControllerFromUrl(CONTROLLER_WELCOME)
+    this.loadControllerFromUrl(CONTROLLER_POSTS)
   }
 
   /**
@@ -84,14 +83,6 @@ class App {
       case CONTROLLER_LOGOUT:
         this.setCurrentController(name)
         this.handleLogout()
-        break
-
-      case CONTROLLER_WELCOME:
-        this.setCurrentController(name)
-        this.isLoggedIn(
-          () => new WelcomeController(),
-          () => new LoginController()
-        )
         break
 
       case CONTROLLER_UPLOAD:

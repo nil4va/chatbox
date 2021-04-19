@@ -371,7 +371,7 @@ app.post('/history', async (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT u1.username sender, u2.username receiver, content, timestamp FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+        'SELECT u1.username sender, u2.username receiver, content, timestamp, liked FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
       values: [id1, id2, id2, id1],
     },
     data => {
@@ -468,6 +468,36 @@ app.post('/isOnlineList', (req, res) => {
       }
     },
     err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
+app.post('/liking/like', (req, res) => {
+  const messageId = req.body.message;
+  db.handleQuery(
+      connectionPool,
+      {
+        query: 'UPDATE message SET like = 1 WHERE id=?',
+        values: [messageId],
+      },
+      data => {
+          res.status(httpOkCode).json(data)
+      },
+      err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
+app.post('/liking/unlike', (req, res) => {
+  const messageId = req.body.message;
+  db.handleQuery(
+      connectionPool,
+      {
+        query: 'UPDATE message SET like = 0 WHERE id=?',
+        values: [messageId],
+      },
+      data => {
+        res.status(httpOkCode).json(data)
+      },
+      err => res.status(badRequestCode).json({ reason: err })
   )
 })
 

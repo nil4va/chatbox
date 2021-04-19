@@ -15,8 +15,6 @@ class NavbarController {
         //Load the sidebar-content into memory
         const sidebarView = $(data);
 
-
-
         //Find all anchors and register the click-event
         sidebarView.find("a").on("click", this.handleClickMenuItem);
 

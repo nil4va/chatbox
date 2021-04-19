@@ -90,15 +90,31 @@ class ChatController {
                 className:
                     'msg ' +
                     (msg.sender === this.chatRepository.getFrom()
-                        ? 'msgself'
-                        : 'msgother'),
+                        ? 'msgself '
+                        : 'msgother ') +
+                    (msg.liked === 0 ? 'notLiked' : 'liked'),
                 innerHTML: `<div class="message">
-            <p class="content">${msg.content}</p>
+            <p class="content">${msg.content}</p>` +
+                    (msg.liked === 1 ?
+                            `<img src="assets/img/likes/filledHeart.png" alt="liked" class="liked">` :
+                            (msg.sender !== this.chatRepository.getFrom() ?
+                                `<img src="assets/img/likes/emptyHeart.png" alt="not liked" class="notLiked">` :
+                                ``)
+                    ) + `
             <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
             </div>
           `,
             })
         )
+        if (msg.liked === 1){
+            qs('.liked').on("click", (event) => {
+                this.chatRepository.like()
+            })
+        } else {
+            qs('.notLiked').on("click", (event) => {
+                event.html('<img src="assets/img/likes/filledHeart.png" alt="liked" class="liked">')
+            })
+        }
     }
 
     scrollToLastMessage() {
@@ -112,7 +128,7 @@ class ChatController {
         qs('.pinnedList').innerHTML = ''
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
-        if (data.length == 0) {
+        if (data.length === 0) {
             return
         }
         const onlineList = [] || (await this.chatListRepository.getOnlineList())
