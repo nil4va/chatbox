@@ -39,19 +39,23 @@ const authorizationErrCode = 401
 
 app.post('/user/login', (req, res) => {
   const username = req.body.username
-  const password = cryptoHelper.getHashedPassword(req.body.password)
 
   db.handleQuery(
     connectionPool,
     {
       query:
-        'SELECT username, password FROM user WHERE username = ? AND password = ?',
-      values: [username, password],
+        'SELECT username, password, salt FROM user WHERE username = ?',
+      values: [username],
     },
     data => {
       if (data.length === 1) {
-        //return just the username for now, never send password back!
-        res.status(httpOkCode).json({ username: data[0].username })
+        if (cryptoHelper.validatePassword(data[0].password, req.body.password, data[0].salt)){
+          res.status(httpOkCode).json({ username: data[0].username })
+        } else {
+          res
+              .status(authorizationErrCode)
+              .json({ reason: 'Wrong username or password' })
+        }
       } else {
         //wrong username
         res
@@ -82,13 +86,15 @@ app.post('/room_example', (req, res) => {
 app.post('/register/add', (req, res) => {
   const username = req.body.username
   const email = req.body.email
-  const hashedPassword = cryptoHelper.getHashedPassword(req.body.password)
+  const passwordAndSalt = cryptoHelper.hashPassword(req.body.password)
+  const hashedPassword = passwordAndSalt.passwordHash;
+  const salt = passwordAndSalt.salt;
 
   db.handleQuery(
     connectionPool,
     {
-      query: 'INSERT INTO user(username,email, password) VALUES(?,?,?)',
-      values: [username, email, hashedPassword],
+      query: 'INSERT INTO user(username,email, password, salt) VALUES(?,?,?,?)',
+      values: [username, email, hashedPassword, salt],
     },
     data => {
       if (data.insertId) {
