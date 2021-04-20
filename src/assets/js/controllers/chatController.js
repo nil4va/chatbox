@@ -212,10 +212,10 @@ class ChatController {
                     chat.timestamp
                 ).toLocaleString()}</div>
                         <div class="chatOptions"><span>${
-                    sessionManager.get('pinList').includes(otherPerson)
-                        ? '📌'
-                        : 'pin chat'
-                }</span></div>
+                          sessionManager.get('pinList').includes(otherPerson)
+                            ? '<i class="fa fas fa-thumbtack"  style="color:red"></i>'
+                            : '<i class="fa far fa-thumbtack"></i>'
+                        }</span></div>
                     </div>
                 </div>`,
             })
