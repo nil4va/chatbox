@@ -51,7 +51,7 @@ class ChatController {
                     }
                     break
                 case TYPES.MESSAGE:
-                    if (data.sender == this.chatRepository.getTo()) {
+                    if (data.sender === this.chatRepository.getTo()) {
                         data.status = 1
                         this.chatRepository.ws.send(TYPES.SEEN, data)
                         this.addMessage(data)
@@ -70,7 +70,7 @@ class ChatController {
                     }
                     break
                 case TYPES.SEEN:
-                    if (data.receiver == this.chatRepository.getTo()) {
+                    if (data.receiver === this.chatRepository.getTo()) {
                         let el = qs('#msg_' + data.id)
                         if (el) el.$('.status').textContent = 'seen'
                     }
@@ -100,7 +100,6 @@ class ChatController {
     }
 
     async showMessages() {
-        console.log('getting all messages')
         // render all the messages
         qs('.username').textContent = this.chatRepository.getTo()
         qs('.history').innerHTML = ''
@@ -147,10 +146,12 @@ class ChatController {
             if (like === 1 && msg.sender !== this.chatRepository.getFrom()) {
                 this.chatRepository.unlike(msg.id)
                 messageElement.$('img').src = "assets/img/likes/emptyHeart.png"
+                messageElement.classList.replace('liked', 'notLiked');
                 like = 0;
             } else {
                 this.chatRepository.like(msg.id)
                 messageElement.$('img').src = "assets/img/likes/filledHeart.png"
+                messageElement.classList.replace('notLiked', 'liked');
                 like = 1;
             }
         })
@@ -167,7 +168,7 @@ class ChatController {
         qs('.pinnedList').innerHTML = ''
         qs('.chatList').innerHTML = ''
         const data = await this.chatListRepository.getAll()
-        if (data.length == 0) {
+        if (data.length === 0) {
             return
         }
         const onlineList = (await this.chatListRepository.getOnlineList()) || []
@@ -188,7 +189,7 @@ class ChatController {
                     let messages = await this.showMessages()
 
                     for (const m of messages.reverse()) {
-                        if (m.sender == this.chatRepository.getTo()) {
+                        if (m.sender === this.chatRepository.getTo()) {
                             this.chatRepository.ws.send(TYPES.SEEN, m)
                             break
                         }

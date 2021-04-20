@@ -78,7 +78,7 @@ class App {
       case CONTROLLER_LOGIN:
         this.setCurrentController(name)
         this.isLoggedIn(
-          () => new WelcomeController(),
+          () => new PostsController(),
           () => new LoginController()
         )
         break

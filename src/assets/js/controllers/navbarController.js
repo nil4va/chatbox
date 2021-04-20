@@ -29,11 +29,13 @@ class NavbarController {
     }
 
     hideWhenLoggedIn(){
+        $("#username").html("<p class='nav-link'> Hi there " +  sessionManager.get('username') + "</p>");
         $(".sidebar").find(".hideWhenLoggedIn").toggle(false);
         $(".sidebar").find(".hideWhenLoggedOut").toggle(true);
     }
 
     hideWhenLoggedOut(){
+        $("#username").html("");
         $(".sidebar").find(".hideWhenLoggedOut").toggle(false);
         $(".sidebar").find(".hideWhenLoggedIn").toggle(true);
     }

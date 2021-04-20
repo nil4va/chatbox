@@ -176,11 +176,16 @@ body {
     margin: 0 0 10px 20px;
 }
 
-.msgother .notLiked :hover{
-
+.message img {
+    height: 30px;
+    padding: 5px;
+    justify-self: center;
 }
 
-.message img {
-    height: 20px;
-    padding: 5px;
+.msg.notLiked img{
+display: none;
+}
+
+.msg.notLiked:hover img {
+    display: block;
 }
