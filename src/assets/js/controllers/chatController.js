@@ -96,15 +96,6 @@ class ChatController {
                 this.chatRepository.stopTyping()
             }, 1000)
         }
-
-        $('#msginput').on('keydown', function () {
-            if (!$('#msginput').val()) {
-                $('#msgsend').show()
-            } else {
-                $('#msgsend').hide()
-            }
-        })
-
     }
 
     async showMessages() {
