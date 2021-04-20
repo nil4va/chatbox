@@ -19,3 +19,10 @@
 .row {
     margin: 0 !important;
 }
+
+#username {
+    font-weight: bold;
+    color: black !important;
+    margin-left: 50px;
+    background: #f9f7f7;
+}
