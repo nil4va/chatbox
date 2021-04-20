@@ -177,7 +177,7 @@ class ChatController {
                 chat.receiver === sessionManager.get('username')
                     ? chat.sender
                     : chat.receiver
-
+            console.log(onlineList)
             let chatElement = ce('div', {
                 onclick: async e => {
                     this.chatRepository.to = otherPerson
@@ -198,7 +198,7 @@ class ChatController {
                     <div class="profilePicture"></div>
                     <div>
                         <div class="indicator ${
-                    onlineList.includes(otherPerson)
+                    onlineList.find(person => person.username === otherPerson) !== undefined
                         ? 'online'
                         : 'offline'
                 }"></div>
