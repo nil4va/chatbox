@@ -98,6 +98,18 @@ class ChatController {
                 this.chatRepository.stopTyping()
             }, 1000)
         }
+
+        qs('#msgsend').disabled = true
+
+        $('#msginput').on('input', function () {
+            if (!$('#msginput').val()) {
+                qs('#msgsend').disabled = true
+            } else {
+                qs('#msgsend').disabled = false
+            }
+
+        })
+
     }
 
     async showMessages() {
@@ -212,10 +224,10 @@ class ChatController {
                     chat.timestamp
                 ).toLocaleString()}</div>
                         <div class="chatOptions"><span>${
-                          sessionManager.get('pinList').includes(otherPerson)
-                            ? '<i class="fa fas fa-thumbtack"  style="color:red"></i>'
-                            : '<i class="fa far fa-thumbtack"></i>'
-                        }</span></div>
+                    sessionManager.get('pinList').includes(otherPerson)
+                        ? '<i class="fa fas fa-thumbtack"  style="color:red"></i>'
+                        : '<i class="fa far fa-thumbtack"></i>'
+                }</span></div>
                     </div>
                 </div>`,
             })
@@ -227,6 +239,8 @@ class ChatController {
                     this.chatListRepository.unpinChat(otherPerson)
                 }
                 this.previewData()
+
+                e.stopPropagation()
             })
 
             if (sessionManager.get('pinList').includes(otherPerson)) {
@@ -263,7 +277,8 @@ class ChatController {
         function classActive(message) {
             $('.activeMessage').removeClass('activeMessage')
             $(message).addClass('activeMessage')
-            message.scrollIntoView()
+            if (message)
+                message.scrollIntoView()
         }
 
         let matchedMessages
