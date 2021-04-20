@@ -100,6 +100,12 @@ body {
     font-weight: 600;
 }
 
+.username {
+    -webkit-text-stroke: 1px #c28899;
+    -webkit-text-fill-color: #dc98a9;
+    font-size: 20px;
+}
+
 .lastMessage {
     flex-direction: column;
 }
@@ -123,9 +129,14 @@ body {
     height: 1.5em;
 }
 
-.chatFilter {
+.searchbox1 {
     width: 20%;
     margin-left: 600px;
+    border: hidden !important;
+}
+
+.searchbox {
+    border: hidden !important;
 }
 
 .activeMessage {
@@ -138,7 +149,6 @@ body {
     flex-grow: 0;
     width: auto;
     margin: 5px;
-
 }
 
 .message .content {
@@ -151,7 +161,7 @@ body {
 }
 
 .msgother .message {
-   align-items: flex-start;
+    align-items: flex-start;
 
 }
 
@@ -169,7 +179,7 @@ body {
     background-color: #dc98a9;
 }
 
-#buttonUp, #buttonDown{
+#buttonUp, #buttonDown {
     border-radius: 100%;
     width: 40px;
     height: 40px;
@@ -177,7 +187,7 @@ body {
     display: none;
 }
 
-.msgother .notLiked :hover{
+.msgother .notLiked :hover {
 
 }
 
