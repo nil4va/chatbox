@@ -196,7 +196,7 @@ class ChatController {
           (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
         innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
-                    <div>
+                    <div class="pcont">
                         <div class="indicator ${
                           onlineList.find(
                             person => person.username === otherPerson
@@ -214,8 +214,8 @@ class ChatController {
                         ).toLocaleString()}</div>
                         <div class="chatOptions"><span>${
                           sessionManager.get('pinList').includes(otherPerson)
-                            ? '📌'
-                            : 'pin chat'
+                            ? '<i class="fa fas fa-thumbtack"  style="color:red"></i>'
+                            : '<i class="fa far fa-thumbtack"></i>'
                         }</span></div>
                     </div>
                 </div>`,
