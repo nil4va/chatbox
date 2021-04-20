@@ -44,12 +44,12 @@ app.post('/user/login', (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT username, password, salt FROM user WHERE username = ?',
+        'SELECT username, password FROM user WHERE username = ?',
       values: [username],
     },
-    data => {
+    async data => {
       if (data.length === 1) {
-        if (cryptoHelper.validatePassword(data[0].password, req.body.password, data[0].salt)){
+        if (await cryptoHelper.validatePassword(req.body.password,data[0].password)){
           res.status(httpOkCode).json({ username: data[0].username })
         } else {
           res
@@ -83,18 +83,16 @@ app.post('/room_example', (req, res) => {
   )
 })
 
-app.post('/register/add', (req, res) => {
+app.post('/register/add', async( req, res) => {
   const username = req.body.username
   const email = req.body.email
-  const passwordAndSalt = cryptoHelper.hashPassword(req.body.password)
-  const hashedPassword = passwordAndSalt.passwordHash;
-  const salt = passwordAndSalt.salt;
+  const hashedPw = await cryptoHelper.hashPassword(req.body.password);
 
   db.handleQuery(
     connectionPool,
     {
-      query: 'INSERT INTO user(username,email, password, salt) VALUES(?,?,?,?)',
-      values: [username, email, hashedPassword, salt],
+      query: 'INSERT INTO user(username,email, password) VALUES(?,?,?,?)',
+      values: [username, email, hashedPw],
     },
     data => {
       if (data.insertId) {

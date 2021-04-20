@@ -5,6 +5,7 @@
     "private": true,
     "version": "1.0.0",
     "devDependencies": {
+        "bcrypt": "^5.0.1",
         "cypress": "4.4.0",
         "nodemon": "2.0.2"
     },
