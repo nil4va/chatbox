@@ -22,7 +22,22 @@ class NavbarController {
 
         //Empty the sidebar-div and add the resulting view to the page
         $(".sidebar").empty().append(sidebarView);
+        app.isLoggedIn(
+            () => this.hideWhenLoggedIn(),
+            () => this.hideWhenLoggedOut()
+        )
     }
+
+    hideWhenLoggedIn(){
+        $(".sidebar").find(".hideWhenLoggedIn").toggle(false);
+        $(".sidebar").find(".hideWhenLoggedOut").toggle(true);
+    }
+
+    hideWhenLoggedOut(){
+        $(".sidebar").find(".hideWhenLoggedOut").toggle(false);
+        $(".sidebar").find(".hideWhenLoggedIn").toggle(true);
+    }
+
 
     handleClickMenuItem() {
         //Get the data-controller from the clicked element (this)

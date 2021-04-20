@@ -20,3 +20,9 @@
 #register {
     background-color: #c28899;
 }
+
+.errorMessage {
+    font-style: italic;
+    color: #c28899;
+    margin-bottom: 10px;
+}

@@ -1,22 +1,27 @@
-<div class="container-fluid p-0">
-    <div class="row">
-        <div class="col-4">
+<div class="d-flex mahp100 grow">
+    <div class="col-4 p-0">
+        <input type="text" class="form-control searchbox" placeholder="🔍 search user">
         <div class="pinnedList"></div>
         <div class="chatList"></div>
-        </div>
-        <div class="chatwindow col-8">
-            <div class="username"></div>
-            <div class="history">
-            </div>
-            <div class="row">
-                <div>
-            <div class="row ">
-                <input id="msginput" placeholder="Type a message"/>
-                <button id="msgsend">Send</button>
-            </div>
-
-        </div>
-      </div>
     </div>
-  </div>
+    <div class="chatwindow col-8 p-2 grow">
+        <div class="row">
+            <div class="username" class="col-10">
+            </div>
+            <input type="text" class="form-control searchbox1 chatFilter col-2 float-right"
+                   placeholder="🔍 search message">
+            <button id="buttonUp">↑</button>
+            <button id="buttonDown">↓</button>
+        </div>
+        <div class="history"></div>
+        <div class="typing"></div>
+        <div class="d-flex">
+      <textarea
+              id="msginput"
+              class="grow"
+              placeholder="Type a message"
+      ></textarea>
+            <button id="msgsend">Send</button>
+        </div>
+    </div>
 </div>

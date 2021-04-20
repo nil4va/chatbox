@@ -10,12 +10,11 @@
 const CONTROLLER_SIDEBAR = 'sidebar'
 const CONTROLLER_LOGIN = 'login'
 const CONTROLLER_LOGOUT = 'logout'
-const CONTROLLER_WELCOME = 'welcome'
 const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
-const CONTROLLER_REGISTER ='register'
+const CONTROLLER_REGISTER = 'register'
 const CONTROLLER_PROFILE = 'profile'
 
 const sessionManager = new SessionManager()
@@ -57,7 +56,7 @@ class App {
     this.loadController(CONTROLLER_SIDEBAR)
 
     //Attempt to load the controller from the URL, if it fails, fall back to the welcome controller.
-    this.loadControllerFromUrl(CONTROLLER_WELCOME)
+    this.loadControllerFromUrl(CONTROLLER_POSTS)
   }
 
   /**
@@ -67,6 +66,10 @@ class App {
    * @returns {boolean} - successful controller change
    */
   loadController(name, controllerData) {
+    if (this.getCurrentController() === CONTROLLER_CHAT) {
+      if (window.chatController) window.chatController.chatRepository.ws.close()
+    }
+
     switch (name) {
       case CONTROLLER_SIDEBAR:
         new NavbarController()
@@ -83,14 +86,6 @@ class App {
       case CONTROLLER_LOGOUT:
         this.setCurrentController(name)
         this.handleLogout()
-        break
-
-      case CONTROLLER_WELCOME:
-        this.setCurrentController(name)
-        this.isLoggedIn(
-          () => new WelcomeController(),
-          () => new LoginController()
-        )
         break
 
       case CONTROLLER_UPLOAD:
@@ -126,8 +121,8 @@ class App {
       case CONTROLLER_PROFILE:
         this.setCurrentController(name)
         this.isLoggedIn(
-            () => new ProfileController(),
-            () => new LoginController()
+          () => new ProfileController(),
+          () => new LoginController()
         )
         break
 
@@ -167,7 +162,7 @@ class App {
    * @param whenYes - function to execute when user is logged in
    * @param whenNo - function to execute when user is logged in
    */
-  isLoggedIn(whenYes, whenNo) {
+  isLoggedIn(whenYes = Function(), whenNo = Function()) {
     if (sessionManager.get('username')) {
       whenYes()
     } else {
@@ -182,6 +177,7 @@ class App {
     sessionManager.remove('username')
 
     //go to login screen
+    this.loadController(CONTROLLER_SIDEBAR)
     this.loadController(CONTROLLER_LOGIN)
   }
 }

@@ -1,91 +1,187 @@
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.content {
+    flex-grow: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .chat {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  padding: 5rem;
-  min-height: 0;
-  justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    padding: 5rem;
+    min-height: 0;
+    justify-content: flex-end;
 }
 
 #msginput {
-  align-self: flex-start;
+    align-self: flex-start;
 }
 
 .history {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    flex-grow: 1;
+    border: 1px solid grey;
+}
+
+.m0 {
+    min-height: 0;
 }
 
 .msgself {
-  align-self: flex-end;
-  background-color: #dc98a9;
+    justify-content: flex-end;
 }
 
 .msgother {
-  align-self: flex-start;
-  background-color: #c28899;
+    justify-content: flex-start;
 }
 
 .chatList {
-  background-color: #f9f7f7;
-  height: auto;
-  max-width: 1010px;
+    background-color: #f9f7f7;
+    height: auto;
+    max-width: 1010px;
 }
 
 .previewChat {
-  background-color: #f9f7f7;
-  padding: 20px;
-  border-bottom: #c28899 solid 1px;
-  position: relative;
-  min-width: 350px;
+    background-color: #f9f7f7;
+    padding: 20px;
+    border-bottom: #c28899 solid 1px;
+    position: relative;
+    min-width: 350px;
 }
+
 .chatwindow {
-  height: 500px;
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
+
 .history {
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
 }
+
 .previewChat.selected {
-  background-color: #dc98a9;
+    background-color: #dc98a9;
 }
 
 .previewChat:hover {
-  background-color: #c28899;
+    background-color: #c28899;
 }
 
 .profilePicture {
-  background-color: #1d2124;
-  border-radius: 100%;
-  margin: 0 20px 0 20px;
-  height: 70px;
-  width: 70px;
+    background-color: #1d2124;
+    border-radius: 100%;
+    margin: 0 20px 0 20px;
+    height: 70px;
+    width: 70px;
 }
 
 .timeStamp {
-  font-style: italic;
-  font-size: 11px;
-  position: absolute;
-  right: 10px;
-  top: 10px;
+    font-style: italic;
+    font-size: 11px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 
 .userName {
-  flex-direction: column;
-  font-weight: 600;
+    flex-direction: column;
+    font-weight: 600;
 }
 
 .lastMessage {
-  flex-direction: column;
+    flex-direction: column;
 }
 
 .chatOptions {
-  position: absolute;
-  right: 15px;
-  cursor: pointer;
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+}
+
+.msg {
+    width: 100%;
+    display: flex;
+}
+
+.msg p {
+    margin: 0;
+}
+
+.typing {
+    height: 1.5em;
+}
+
+.chatFilter {
+    width: 20%;
+    margin-left: 600px;
+}
+
+.activeMessage {
+    background: rgba(8, 8, 0, 0.2);
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    width: auto;
+    margin: 5px;
+
+}
+
+.message .content {
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.message .timestamp {
+    font-size: 10px;
+}
+
+.msgother .message {
+   align-items: flex-start;
+
+}
+
+
+.msgself .message {
+    align-items: flex-end;
+
+}
+
+.msgother .message .content {
+    background-color: #c28899;
+}
+
+.msgself .message .content {
+    background-color: #dc98a9;
+}
+
+#buttonUp, #buttonDown{
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 10px 20px;
+    display: none;
+}
+
+.msgother .notLiked :hover{
+
+}
+
+.message img {
+    height: 20px;
+    padding: 5px;
 }

@@ -5,6 +5,8 @@
  */
 const crypto = require("crypto");
 
+var saltLength = 9;
+
 /**
  * Use this whenever you need a token. Eg. for a user when logged in
  *
@@ -18,14 +20,34 @@ function generateAuthToken () {
  * Gives you a SHA256 hashes string back
  *
  * @param password
+ * @param salt
  * @returns {string} hashed string in base64 format
  */
-function getHashedPassword(password) {
-    const sha256 = crypto.createHash("sha256");
-    return sha256.update(password).digest("base64");
+function getHashedPassword(password, salt) {
+    const hash = crypto.createHmac('sha512', salt);
+    hash.update(password);
+    const passwordHash = hash.digest('hex');
+    return {
+        salt,
+        passwordHash
+    };
+}
+
+function hashPassword(password) {
+    const salt = makeSalt();
+    return getHashedPassword(password, salt);
+}
+
+function makeSalt() {
+    return crypto.randomBytes(Math.ceil(saltLength/2)).toString('hex').slice(0, saltLength);
+}
+
+function validatePassword(hashedPass, password, salt){
+    return hashedPass === getHashedPassword(password, salt).passwordHash;
 }
 
 module.exports = {
     generateAuthToken,
-    getHashedPassword
+    hashPassword,
+    validatePassword
 };
