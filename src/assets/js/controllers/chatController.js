@@ -197,14 +197,13 @@ class ChatController {
                 innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
                     <div>
-                        <div class="indicator ${
+                        <div class="userName">${otherPerson} <div class="indicator ${
                     onlineList.find(
                         person => person.username === otherPerson
                     ) !== undefined
                         ? 'online'
                         : 'offline'
-                }"></div>
-                        <div class="userName">${otherPerson}</div>
+                }"></div></div>
                         <div class="lastMessage">${chat.content.slice(
                     0,
                     25
