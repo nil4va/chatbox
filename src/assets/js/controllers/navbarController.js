@@ -29,7 +29,7 @@ class NavbarController {
     }
 
     hideWhenLoggedIn(){
-        $("#profile").text(sessionManager.get('username'));
+        $("#profile").text("Hello, "+ sessionManager.get('username'));
         $(".sidebar").find(".hideWhenLoggedIn").toggle(false);
         $(".sidebar").find(".hideWhenLoggedOut").toggle(true);
     }

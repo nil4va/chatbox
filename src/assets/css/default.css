@@ -20,9 +20,8 @@
     margin: 0 !important;
 }
 
-#username {
+#profile {
     font-weight: bold;
     color: black !important;
-    margin-left: 50px;
-    background: #f9f7f7;
+    margin-left: 20px;
 }
