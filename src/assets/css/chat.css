@@ -200,3 +200,8 @@ display: none;
 .msg.notLiked:hover img {
     display: block;
 }
+.chatOptions {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
