@@ -26,10 +26,6 @@ body {
     align-self: flex-start;
 }
 
-#msgsend {
-    display: none;
-}
-
 .history {
     display: flex;
     flex-direction: column;

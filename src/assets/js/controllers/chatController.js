@@ -25,16 +25,17 @@ class ChatController {
         this.view = html
         qs('.content').innerHTML = html
 
-    await this.previewData()
-    let firstChat = qs('.previewChat')
-    if (firstChat && !this._hasSelectedAChat) {
-      console.log('click')
-      firstChat.click()
-    } else if (this._hasSelectedAChat) {
-      this.showMessages()
-      this.onceAfterSelectFirstChat()
-    } else {
-      qs('.chatwindow').style.display = 'none'
+        await this.previewData()
+        let firstChat = qs('.previewChat')
+        if (firstChat && !this._hasSelectedAChat) {
+            console.log('click')
+            firstChat.click()
+        } else if (this._hasSelectedAChat) {
+            this.showMessages()
+            this.onceAfterSelectFirstChat()
+        } else {
+            qs('.chatwindow').style.display = 'none'
+        }
     }
 
     onceAfterSelectFirstChat() {
