@@ -234,3 +234,7 @@ body {
 .blockUser {
     color: darkred;
 }
+
+.blockedUserMessage {
+    display: none;
+}

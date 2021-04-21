@@ -102,7 +102,9 @@ class ChatController {
         qs('#msgsend').disabled = true
 
         $('#msginput').on('input', function () {
-            if (!$('#msginput').val()) {
+            var msgInputField = $('#msginput').val();
+
+            if (msgInputField.length === 0 ||!msgInputField.trim()) {
                 qs('#msgsend').disabled = true
             } else {
                 qs('#msgsend').disabled = false
