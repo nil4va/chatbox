@@ -241,3 +241,6 @@ body {
     padding: 5px;
     justify-self: center;
 }
+.blockedUserMessage {
+    display: none;
+}
