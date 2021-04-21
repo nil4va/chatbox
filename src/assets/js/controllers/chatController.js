@@ -106,7 +106,9 @@ class ChatController {
         qs('#msgsend').disabled = true
 
         $('#msginput').on('input', function () {
-            if (!$('#msginput').val()) {
+            var msgInputField = $('#msginput').val();
+
+            if (msgInputField.length === 0 ||!msgInputField.trim()) {
                 qs('#msgsend').disabled = true
             } else {
                 qs('#msgsend').disabled = false
@@ -191,11 +193,19 @@ class ChatController {
         if (data.length === 0) {
             return
         }
+
         const onlineList = (await this.chatListRepository.getOnlineList()) || []
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
         for (let [i, chat] of chronologicalOrder.entries()) {
+            let sliceContent;
+            if (chat.content.length > 40) {
+                sliceContent = chat.content.slice(0, 40) + "..."
+            } else {
+                sliceContent = chat.content
+            }
+
             let otherPerson =
                 chat.receiver === sessionManager.get('username')
                     ? chat.sender
@@ -226,13 +236,9 @@ class ChatController {
                     ) !== undefined
                         ? 'online'
                         : 'offline'
-                }"></div>
-            </div>
-            <div class="lastMessage">${chat.content.slice(
-                    0,
-                    25
-                )}</div>
-            <div class="timeStamp">${new Date(
+                }"></div></div>
+                        <div class="lastMessage">${sliceContent}</div>
+                        <div class="timeStamp">${new Date(
                     chat.timestamp
                 ).toLocaleString()}</div>
             <div class="chatOptions">
@@ -266,6 +272,9 @@ class ChatController {
             $('.previewChat').on('click', function () {
                 $('.previewChat').removeClass('selected')
                 $(this).addClass('selected')
+                qs('.searchbox1').value = ''
+                $('#buttonDown').hide()
+                $('#buttonUp').hide()
             })
         }
         this.isWorking = false

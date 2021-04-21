@@ -235,6 +235,8 @@ body {
     color: darkred;
 }
 
+.blockedUserMessage {
+    display: none;
 .fas.fa-edit{
     background-color: transparent;
     height: 30px;
