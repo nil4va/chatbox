@@ -189,7 +189,7 @@ class ChatController {
         for (let [i, chat] of chronologicalOrder.entries()) {
             let sliceContent;
             if (chat.content.length > 40) {
-                sliceContent = chat.content.slice(0,40) + "..."
+                sliceContent = chat.content.slice(0, 40) + "..."
             } else {
                 sliceContent = chat.content
             }
@@ -257,6 +257,9 @@ class ChatController {
             $('.previewChat').on('click', function () {
                 $('.previewChat').removeClass('selected')
                 $(this).addClass('selected')
+                qs('.searchbox1').value = ''
+                $('#buttonDown').hide()
+                $('#buttonUp').hide()
             })
         }
         this.isWorking = false
