@@ -269,6 +269,7 @@ const MSGTYPES = {
   TYPING: 'typing',
   SEEN: 'seen',
   LIKE: 'like',
+  EDIT: 'edit',
 }
 
 function sendMsg(ws, type, data) {
