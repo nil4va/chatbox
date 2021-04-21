@@ -146,7 +146,7 @@ class ChatController {
                     : msg.sender !== this.chatRepository.getFrom()
                         ? `<img src="assets/img/likes/emptyHeart.png" alt="not liked" class="like">`
                         : ``) +
-                (msgFromUser ? `<p class="content">${msg.content}</p>` : ``) +
+                (msgFromUser ? `<div class="contentdiv"><p class="content">${msg.content}</p></div>` : ``) +
                 ` </span>
             <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
             ${
@@ -172,10 +172,14 @@ class ChatController {
             }
         })
         messageElement.$('.edit')?.on('click', () => {
-            window.alert('');
-            let edit = prompt('Type here');
-            this.chatRepository.edit(edit, msg.id)
-            messageElement.$('.content').textContent = edit;
+            messageElement.$('.contentdiv').innerHTML = `<input id="msgEdit" value=${msg.content}>`
+            messageElement.$('#msgEdit')?.on('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    msg.content = e.target.value
+                    this.chatRepository.edit(e.target.value, msg.id)
+                    messageElement.$('.contentdiv').innerHTML = `<p class="content">${e.target.value}</p>`
+                }
+            })
         })
     }
 
