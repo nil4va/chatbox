@@ -90,4 +90,15 @@ export default class ChatRepository extends CustomEventTarget {
       message: messageId,
     })
   }
+  async edit(content, id) {
+    this.ws.send(TYPES.EDIT,{
+      sender: this._sender,
+      receiver: this._receiver,
+      content, id
+        }
+    )
+    await networkManager.doRequest('/edit', {
+      content, id
+    })
+  }
 }

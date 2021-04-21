@@ -234,3 +234,10 @@ body {
 .blockUser {
     color: darkred;
 }
+
+.fas.fa-edit{
+    background-color: transparent;
+    height: 30px;
+    padding: 5px;
+    justify-self: center;
+}
