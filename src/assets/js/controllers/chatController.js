@@ -83,6 +83,10 @@ class ChatController {
                     } else if (el) {
                         el.$('img').src = 'assets/img/likes/emptyHeart.png'
                     }
+                    break
+                case TYPES.EDIT:
+                    let el2 = qs('#msg_' + data.id)
+                    el2.$('.content').textContent = data.content
             }
         })
         qs('#msgsend').onclick = async e => {
@@ -133,7 +137,7 @@ class ChatController {
                 (msg.liked === 0 ? 'notLiked' : 'liked'),
             innerHTML:
                 `<div class="message">
-    <span class="d-flex">` +
+    <span class="d-flex"> ${msgFromUser ? '<i class="fas fa-edit edit"></i>' : ''}` +
                 (msgFromUser ? `` : `<p class="content">${msg.content}</p>`) +
                 (msg.liked === 1
                     ? `<img src="assets/img/likes/filledHeart.png" alt="liked" class="like">`
@@ -141,7 +145,7 @@ class ChatController {
                         ? `<img src="assets/img/likes/emptyHeart.png" alt="not liked" class="like">`
                         : ``) +
                 (msgFromUser ? `<p class="content">${msg.content}</p>` : ``) +
-                `</span>
+                ` </span>
             <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
             ${
                     msg.sender === this.chatRepository.getFrom()
@@ -164,6 +168,12 @@ class ChatController {
                 messageElement.$('img').src = 'assets/img/likes/filledHeart.png'
                 like = 1
             }
+        })
+        messageElement.$('.edit')?.on('click', () => {
+            window.alert('');
+            let edit = prompt('Type here');
+            this.chatRepository.edit(edit, msg.id)
+            messageElement.$('.content').textContent = edit;
         })
     }
 
@@ -206,30 +216,34 @@ class ChatController {
                 className:
                     'previewChat ' +
                     (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
-                innerHTML: `<div class="row">
-                    <div class="profilePicture"></div>
-                    <div>
-                        <div class="userName">${otherPerson} <div class="indicator ${
+                innerHTML: ` <div class = "row">
+            <div class="profilePicture"></div>
+        <div>
+            <div class="userName">${otherPerson}
+                <div class="indicator ${
                     onlineList.find(
                         person => person.username === otherPerson
                     ) !== undefined
                         ? 'online'
                         : 'offline'
-                }"></div></div>
-                        <div class="lastMessage">${chat.content.slice(
+                }"></div>
+            </div>
+            <div class="lastMessage">${chat.content.slice(
                     0,
                     25
                 )}</div>
-                        <div class="timeStamp">${new Date(
+            <div class="timeStamp">${new Date(
                     chat.timestamp
                 ).toLocaleString()}</div>
-                        <div class="chatOptions"><span>${
+            <div class="chatOptions">
+                <span>${
                     sessionManager.get('pinList').includes(otherPerson)
                         ? '<i class="fa fas fa-thumbtack"  style="color:red"></i>'
                         : '<i class="fa far fa-thumbtack"></i>'
-                }</span></div>
-                    </div>
-                </div>`,
+                }</span>
+            </div>
+        </div>
+    </div>`,
             })
 
             chatElement.$('.chatOptions').on('click', e => {
