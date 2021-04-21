@@ -181,11 +181,19 @@ class ChatController {
         if (data.length === 0) {
             return
         }
+
         const onlineList = (await this.chatListRepository.getOnlineList()) || []
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
         for (let [i, chat] of chronologicalOrder.entries()) {
+            let sliceContent;
+            if (chat.content.length > 40) {
+                sliceContent = chat.content.slice(0,40) + "..."
+            } else {
+                sliceContent = chat.content
+            }
+
             let otherPerson =
                 chat.receiver === sessionManager.get('username')
                     ? chat.sender
@@ -216,10 +224,7 @@ class ChatController {
                         ? 'online'
                         : 'offline'
                 }"></div></div>
-                        <div class="lastMessage">${chat.content.slice(
-                    0,
-                    25
-                )}</div>
+                        <div class="lastMessage">${sliceContent}</div>
                         <div class="timeStamp">${new Date(
                     chat.timestamp
                 ).toLocaleString()}</div>
