@@ -269,6 +269,7 @@ const MSGTYPES = {
   TYPING: 'typing',
   SEEN: 'seen',
   LIKE: 'like',
+  EDIT: 'edit',
 }
 
 function sendMsg(ws, type, data) {
@@ -340,6 +341,13 @@ wss.on('connection', ws => {
             sendMsg(client, MSGTYPES.LIKE, data)
           }
         }
+        break
+      case MSGTYPES.EDIT:
+        for (const client of wss.clients) {
+          if (client.id === receiverID) {
+            sendMsg(client, MSGTYPES.EDIT, data)
+          }
+        }
     }
     // console.log(data)
   })
@@ -390,6 +398,22 @@ async function putMessageInDB(ws, data) {
     )
   })
 }
+
+app.post('/edit', (req, res) => {
+
+  db.handleQuery(
+      connectionPool,{
+        query:
+            'UPDATE message SET content = ? WHERE id = ?',
+        values: [req.body.content, req.body.id],
+      },
+      data => {
+        res.status(httpOkCode).json(data)
+      },
+      err => res.status(badRequestCode).json({ reason: err })
+  )
+})
+
 
 app.post('/history', async (req, res) => {
   const id1 = await nameToId(req.body.receiver)
