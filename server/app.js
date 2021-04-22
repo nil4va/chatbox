@@ -13,7 +13,7 @@ const app = express()
 const fileUpload = require('express-fileupload')
 const WebSocket = require('ws')
 
-const WSS_PORT = 8080
+const WSS_PORT = 80
 const WSS_PATH = '/'
 
 //logger lib  - 'short' is basic logging info

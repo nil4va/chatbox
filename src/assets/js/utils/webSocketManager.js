@@ -29,7 +29,7 @@ export default class SimpleWebSocket extends CustomEventTarget2 {
     this._ws.close()
   }
   async _connect() {
-    let res = await fetchJSON(`//${location.hostname}:3000/gateway`)
+    let res = await fetchJSON(`//${location.hostname}/api/gateway`)
     if (res.gateway) {
       this._ws = new WebSocket(res.gateway)
       this._ws.onopen = e => {

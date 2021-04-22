@@ -10,7 +10,6 @@
 const CONTROLLER_SIDEBAR = 'sidebar'
 const CONTROLLER_LOGIN = 'login'
 const CONTROLLER_LOGOUT = 'logout'
-const CONTROLLER_UPLOAD = 'upload'
 const CONTROLLER_CHAT = 'chat'
 const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
@@ -88,10 +87,6 @@ class App {
         this.handleLogout()
         break
 
-      case CONTROLLER_UPLOAD:
-        new UploadController()
-        break
-
       case CONTROLLER_CHAT:
         this.setCurrentController(name)
         this.isLoggedIn(
@@ -113,7 +108,7 @@ class App {
       case CONTROLLER_REGISTER:
         this.setCurrentController(name)
         this.isLoggedIn(
-          () => new WelcomeController(),
+          () => new PostsController(),
           () => new RegisterController()
         )
         break
