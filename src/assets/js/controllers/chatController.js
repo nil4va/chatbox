@@ -164,10 +164,12 @@ class ChatController {
             if (like === 1 && msg.sender !== this.chatRepository.getFrom()) {
                 this.chatRepository.unlike(msg.id)
                 messageElement.$('img').src = 'assets/img/likes/emptyHeart.png'
+                messageElement.classList.replace('liked', 'notLiked');
                 like = 0
             } else {
                 this.chatRepository.like(msg.id)
                 messageElement.$('img').src = 'assets/img/likes/filledHeart.png'
+                messageElement.classList.replace('notLiked', 'liked');
                 like = 1
             }
         })
