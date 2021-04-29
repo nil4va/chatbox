@@ -352,6 +352,16 @@ class ChatController {
             const message = matchedMessages.next.value
             classActive(message)
         })
+
+        $('.searchbox1').hide()
+        $('.searchMessage').on('click', function () {
+            $('.searchbox1').show().focus()
+            $('.searchbox1').on('focusout', function () {
+                $('.searchbox1').hide()
+                $('#buttonUp').hide()
+                $('#buttonDown').hide()
+            })
+        })
     }
 }
 

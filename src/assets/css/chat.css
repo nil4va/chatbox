@@ -238,7 +238,8 @@ body {
 .blockedUserMessage {
     display: none;
 }
-.fas.fa-edit{
+
+.fas.fa-edit {
     background-color: transparent;
     height: 30px;
     padding: 5px;
@@ -246,7 +247,7 @@ body {
     display: none;
 }
 
-.msgself:hover .edit{
+.msgself:hover .edit {
     display: block;
 }
 
