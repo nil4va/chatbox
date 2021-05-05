@@ -174,7 +174,7 @@ class ChatController {
             }
         })
         messageElement.$('.edit')?.on('click', () => {
-            messageElement.$('.contentdiv').innerHTML = `<input id="msgEdit" value=${msg.content}>`
+            messageElement.$('.contentdiv').innerHTML = `<input id="msgEdit" value="${msg.content}">`
             messageElement.$('#msgEdit')?.on('keydown', (e) => {
                 if (e.key === 'Enter') {
                     msg.content = e.target.value
