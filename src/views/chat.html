@@ -16,6 +16,7 @@
                 <div class="dropdown-content">
                     <p class="blockUser">block user 🚫</p>
                     <p class="searchMessage">search message</p>
+                    <p class="likedMsg">likes</p>
                 </div>
             </div>
             <input
@@ -38,8 +39,21 @@
               class="grow"
               placeholder="Type a message"
       ></textarea>
-            <div class="blockedUserMessage">you have blocked this user. <button>unblock</button></div>
+            <div class="blockedUserMessage">you have blocked this user.
+                <button>unblock</button>
+            </div>
             <button id="msgsend" class="">Send</button>
+        </div>
+    </div>
+
+    <div id="likesModal">
+        <div id="likesContent">
+            <div id="likesHeader">
+                <span id="likesClose">X</span>
+                <p>Liked messages: </p>
+
+            </div>
+            <div id="likesBody"></div>
         </div>
     </div>
 </div>

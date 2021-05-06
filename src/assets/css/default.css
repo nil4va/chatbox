@@ -1,4 +1,12 @@
+@font-face {
+    font-family: 'biotifLight';
+    src: url('../vendors/biotif/Biotif-Light.otf') format('otf'),
+    url('../vendors/biotif/Biotif-Light.ttf') format('ttf');
+}
 
+body{
+    font-family: 'biotifLight' !important;
+}
 .navbar {
     background-color: #c28899;
     height: 80px;
