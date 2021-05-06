@@ -8,8 +8,9 @@ body{
     font-family: 'biotifLight' !important;
 }
 .navbar {
-    background-color: #c28899;
+    background-color: #f9f7f7;
     height: 80px;
+    border-bottom: 1px solid black;
 }
 
 .mahp100 {
@@ -32,4 +33,10 @@ body{
     font-weight: bold;
     color: black !important;
     margin-left: 20px;
+}
+
+footer{
+    background-color: #f9f7f7;
+    border-top: 1px solid black;
+    color: black;
 }
