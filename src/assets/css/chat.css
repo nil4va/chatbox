@@ -251,3 +251,11 @@ body {
     display: block;
 }
 
+.searchTitle {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 5px;
+    color: #b9bbbe;
+    display: none;
+}
+
