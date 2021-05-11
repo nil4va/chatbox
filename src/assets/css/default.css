@@ -1,7 +1,16 @@
+@font-face {
+    font-family: 'biotifLight';
+    src: url('../vendors/biotif/Biotif-Light.otf') format('otf'),
+    url('../vendors/biotif/Biotif-Light.ttf') format('ttf');
+}
 
+body{
+    font-family: 'biotifLight' !important;
+}
 .navbar {
-    background-color: #c28899;
+    background-color: #f9f7f7;
     height: 80px;
+    border-bottom: 1px solid black;
 }
 
 .mahp100 {
@@ -24,4 +33,10 @@
     font-weight: bold;
     color: black !important;
     margin-left: 20px;
+}
+
+footer{
+    background-color: #f9f7f7;
+    border-top: 1px solid black;
+    color: black;
 }

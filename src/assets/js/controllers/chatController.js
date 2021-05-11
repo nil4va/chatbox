@@ -125,6 +125,39 @@ class ChatController {
         const messages = await this.chatRepository.getAll()
         messages.map(msg => this.addMessage(msg))
         this.scrollToLastMessage()
+
+        $('.likedMsg').on('click',  function () {
+            $('#likesModal').show();
+            $('#likesBody').html("");
+            // const messages = this.chatRepository.getAll()
+            let atLeastOneLiked = false;
+            for (let i = 0; i < messages.length; i++) {
+                let message = messages[i]
+                if (message.liked === 1 && message.receiver === sessionManager.get('username')) {
+                    atLeastOneLiked = true;
+                    $('#likesBody').append(
+                        `<div class="msgother"> 
+                            <div class="message ">
+                                <span class="d-flex"> <p class="content">${message.content}</p></span>
+                                <p class="timestamp">${new Date(message.timestamp).toLocaleString()}</p>
+                            </div>
+                        </div>`
+                    )
+                }
+            }
+            if (!atLeastOneLiked) {
+                $('#likesBody').html("You haven't yet liked anything in this chat.");
+            }
+        })
+        $('#likesClose').on("click", function () {
+            $('#likesModal').hide();
+        })
+        window.onclick = function (event) {
+            if (event.target === document.getElementById("likesModal")) {
+                $('#likesModal').hide();
+            }
+        }
+
         return messages
     }
 
@@ -174,7 +207,7 @@ class ChatController {
             }
         })
         messageElement.$('.edit')?.on('click', () => {
-            messageElement.$('.contentdiv').innerHTML = `<input id="msgEdit" value=${msg.content}>`
+            messageElement.$('.contentdiv').innerHTML = `<input id="msgEdit" value="${msg.content}">`
             messageElement.$('#msgEdit')?.on('keydown', (e) => {
                 if (e.key === 'Enter') {
                     msg.content = e.target.value
@@ -386,6 +419,7 @@ class ChatController {
                 $('#buttonDown').hide()
             })
         })
+
     }
 }
 
