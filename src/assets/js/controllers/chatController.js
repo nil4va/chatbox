@@ -320,22 +320,36 @@ class ChatController {
 
         // searchbox for users
         $('.searchbox').on('keyup', function () {
-            const value = $(this).val().toLowerCase()
-            $(this)
-                .parent()
-                .parent()
-                .find('.userName')
-                .filter(function () {
-                    $(this)
-                        .parent()
-                        .parent()
-                        .parent()
-                        .toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                })
-        })
+                const value = $(this).val().toLowerCase()
+                $(this)
+                    .parent()
+                    .parent()
+                    .find('.userName')
+                    .filter(function () {
+                        $(this)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        let previewChat = $('.previewChat')
+                        if ($(".chatList").find(previewChat).length > 0) {
+                            $('.chats').show()
+                            $(".messages").show()
+                        }
+                        if (value === '') {
+                            $('.chats').hide()
+                            $(".messages").hide()
+                        }
+
+                        if ($(".chatList, .pinnedList").children(":visible").length === 0){
+                            $('.chats').hide()
+                        }
+                    })
+
+            }
+        )
 
         // searchbox for messages
-
         function classActive(message) {
             $('.activeMessage').removeClass('activeMessage')
             $(message).addClass('activeMessage')
@@ -343,54 +357,64 @@ class ChatController {
                 message.scrollIntoView()
         }
 
-        let matchedMessages
+        let
+            matchedMessages
+
         $('.searchbox1').on('keyup', function () {
-            const value = new RegExp($(this).val().toLowerCase())
-            $('.activeMessage').removeClass('activeMessage')
-            if ($(this).val() === '') return
-            matchedMessages = $(this)
-                .parent()
-                .parent()
-                .find('.msg')
-                .filter(function () {
-                    return value.test($(this).text().toLowerCase())
-                })
-                .toArray()
+                const value = new RegExp($(this).val().toLowerCase())
+                $('.activeMessage').removeClass('activeMessage')
+                if ($(this).val() === '') return
+                matchedMessages = $(this)
+                    .parent()
+                    .parent()
+                    .find('.msg')
+                    .filter(function () {
+                        return value.test($(this).text().toLowerCase())
+                    })
+                    .toArray()
 
-            matchedMessages = new LinkedList(...matchedMessages)
-            classActive(matchedMessages.tail.value)
+                matchedMessages = new LinkedList(...matchedMessages)
+                classActive(matchedMessages.tail.value)
 
-            if (matchedMessages.length === 0) {
-                $('#buttonUp').hide()
-                $('#buttonDown').hide()
-            } else {
-                $('#buttonUp').show()
-                $('#buttonDown').show()
+                if (matchedMessages.length === 0) {
+                    $('#buttonUp').hide()
+                    $('#buttonDown').hide()
+                } else {
+                    $('#buttonUp').show()
+                    $('#buttonDown').show()
+                }
             }
-        })
+        )
 
-        $('.searchbox1').on('input', function () {
-            if (!$('.searchbox1').val()) {
-                $('#buttonUp').hide()
-                $('#buttonDown').hide()
+        $('.searchbox1').on(
+            'input'
+            , function () {
+                if (!$('.searchbox1').val()) {
+                    $('#buttonUp').hide()
+                    $('#buttonDown').hide()
+                }
             }
-        })
+        )
 
         $('#buttonUp').on('click', function () {
-            const message = matchedMessages.prev.value
-            classActive(message)
-        })
+                const message = matchedMessages.prev.value
+                classActive(message)
+            }
+        )
 
         $('#buttonDown').on('click', function () {
-            const message = matchedMessages.next.value
-            classActive(message)
-        })
+                const message = matchedMessages.next.value
+                classActive(message)
+            }
+        )
 
         $('.searchbox1').hide()
+
         $('.searchMessage').on('click', function () {
             $('.searchbox1').show().focus()
             $('.searchbox1').on('focusout', function () {
                 $('.searchbox1').hide()
+                $('.searchbox1').val('')
                 $('#buttonUp').hide()
                 $('#buttonDown').hide()
             })
