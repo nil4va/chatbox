@@ -26,6 +26,7 @@
     font-size: 30px;
     padding: 20px;
     display: none;
+    justify-content: center;
 }
 
 .badge:hover .badgeInfo {
@@ -33,7 +34,7 @@
     cursor: pointer;
 }
 
-.row {
+.row1 {
     display: flex;
     justify-content: center;
 }
