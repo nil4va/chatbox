@@ -83,3 +83,7 @@
     text-align: right;
     font-size: 30px;
 }
+
+.progress-bar {
+    background-color: #5a6268;
+}
