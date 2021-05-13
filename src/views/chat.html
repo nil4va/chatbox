@@ -12,9 +12,10 @@
         <div class="username" class="col">
         </div>
         <div class="dropdown-content">
-          <p class="blockUser">block user 🚫</p>
-          <p class="searchMessage">search message</p>
-          <p class="likedMsg">likes</p>
+          <button class="blockUser">block user 🚫</button>
+          <button class="searchMessage">search message</button>
+          <button class="likedMsg">likes</button>
+          <button id="openFileFolder">files</button>
         </div>
       </div>
       <div class=" flex-grow searchMessageContainer">
@@ -30,6 +31,12 @@
     </div>
 
     <div class="history"></div>
+    <div id="fileFolder" class="border" style="display: none;">
+      <h3><span id="fileCounter"></span> Files</h3>
+      <div class="files">
+
+      </div>
+    </div>
     <div class="typing"></div>
 
     <div class="d-flex">
@@ -54,6 +61,7 @@
       <div id="likesBody"></div>
     </div>
   </div>
+
 </div>
 
 <input type="file" id="upfile" class="d-none" multiple />

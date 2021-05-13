@@ -74,6 +74,27 @@ class ChatController {
       Array.from(file_paths).map(v => this.chatRepository.send(v))
     }
     qs('#uploadButton').onclick = e => upfile.click()
+    this.filesHidden = true
+    qs('#openFileFolder').onclick = _ => this.toggleFiles(this.filesHidden)
+  }
+
+  toggleFiles(filesHidden) {
+    if (filesHidden) {
+      qs('#fileFolder').style.display = ''
+      qs('.history').style.display = 'none'
+      qs('#openFileFolder').textContent = 'history'
+      let fc = qs('.files')
+      fc.innerHTML = ''
+      let files = qsa('.msg .content img').map(v => v.src)
+      qs('#fileCounter').textContent = files.length
+      files.reverse().map(v => fc.append(ce('img', { src: v })))
+      this.filesHidden = false
+    } else {
+      qs('#fileFolder').style.display = 'none'
+      qs('.history').style.display = ''
+      qs('#openFileFolder').textContent = 'files'
+      this.filesHidden = true
+    }
   }
 
   onceAfterSelectFirstChat() {
@@ -341,6 +362,7 @@ class ChatController {
               break
             }
           }
+          this.toggleFiles(false)
         },
         className:
           'previewChat ' +
