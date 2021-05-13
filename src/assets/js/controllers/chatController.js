@@ -256,8 +256,12 @@ class ChatController {
       id: 'msg_' + msg.id,
       className: `msg ${c_msg} ${c_like}`,
       innerHTML: `<div class="message">
-          <span class="d-flex"> 
-            ${e_edit} ${e_msg} ${e_like}
+          <span class="d-flex">
+            ${
+              msgFromSelf
+                ? `${e_edit} ${e_like} ${e_msg}`
+                : `${e_msg} ${e_like}`
+            }
           </span>
           <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
           ${e_status}
