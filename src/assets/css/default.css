@@ -12,7 +12,9 @@ body{
     height: 80px;
     border-bottom: 1px solid black;
 }
-
+ * {
+     outline: none !important;
+ }
 .mahp100 {
     max-height: 100%;
 }
@@ -51,5 +53,5 @@ button:active, button:focus {
     border: 0;
 }
 button:hover {
-    background: #f9f7f7da;
+    background: #c28899;
 }
