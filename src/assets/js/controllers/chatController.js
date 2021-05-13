@@ -163,6 +163,44 @@ class ChatController {
     const messages = await this.chatRepository.getAll()
     messages.map(msg => this.addMessage(msg))
     this.scrollToLastMessage()
+    $('.likedMsg').on('click', function () {
+      $('#likesModal').show()
+      $('#likesBody').html('')
+      // const messages = this.chatRepository.getAll()
+      let atLeastOneLiked = false
+      for (let i = 0; i < messages.length; i++) {
+        let message = messages[i]
+        if (
+          message.liked === 1 &&
+          message.receiver === sessionManager.get('username')
+        ) {
+          atLeastOneLiked = true
+          $('#likesBody').append(
+            `<div class="msgother"> 
+                            <div class="message ">
+                                <span class="d-flex"> <p class="content">${
+                                  message.content
+                                }</p></span>
+                                <p class="timestamp">${new Date(
+                                  message.timestamp
+                                ).toLocaleString()}</p>
+                            </div>
+                        </div>`
+          )
+        }
+      }
+      if (!atLeastOneLiked) {
+        $('#likesBody').html("You haven't yet liked anything in this chat.")
+      }
+    })
+    $('#likesClose').on('click', function () {
+      $('#likesModal').hide()
+    })
+    window.onclick = function (event) {
+      if (event.target === document.getElementById('likesModal')) {
+        $('#likesModal').hide()
+      }
+    }
     return messages
   }
 
@@ -338,7 +376,6 @@ class ChatController {
           this.chatListRepository.unpinChat(otherPerson)
         }
         this.previewData()
-
         e.stopPropagation()
       })
 
@@ -356,7 +393,6 @@ class ChatController {
         $('#buttonUp').hide()
       })
     }
-    this.isWorking = false
 
     // searchbox for users
     $('.searchbox').on('keyup', function () {
@@ -371,11 +407,23 @@ class ChatController {
             .parent()
             .parent()
             .toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          let previewChat = $('.previewChat')
+          if ($('.chatList').find(previewChat).length > 0) {
+            $('.chats').show()
+            $('.messages').show()
+          }
+          if (value === '') {
+            $('.chats').hide()
+            $('.messages').hide()
+          }
+
+          if ($('.chatList, .pinnedList').children(':visible').length === 0) {
+            $('.chats').hide()
+          }
         })
     })
 
     // searchbox for messages
-
     function classActive(message) {
       $('.activeMessage').removeClass('activeMessage')
       $(message).addClass('activeMessage')
@@ -383,14 +431,12 @@ class ChatController {
     }
 
     let matchedMessages
+
     $('.searchbox1').on('keyup', function () {
       const value = new RegExp($(this).val().toLowerCase())
       $('.activeMessage').removeClass('activeMessage')
       if ($(this).val() === '') return
-      matchedMessages = $(this)
-        .parent()
-        .parent()
-        .find('.msg')
+      matchedMessages = $('.msg')
         .filter(function () {
           return value.test($(this).text().toLowerCase())
         })
@@ -424,6 +470,19 @@ class ChatController {
       const message = matchedMessages.next.value
       classActive(message)
     })
+
+    $('.searchMessageContainer').hide()
+
+    $('.searchMessage').on('click', function () {
+      $('.searchMessageContainer').toggle()
+      $('.searchbox1').toggleFocus()
+      // $('.searchbox1').on('focusout', function () {
+      //   $('.searchMessageContainer').hide()
+
+      //   $('.searchbox1').val('')
+      // })
+    })
+    this.isWorking = false
   }
 }
 

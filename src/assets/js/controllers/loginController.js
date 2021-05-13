@@ -33,9 +33,8 @@ class LoginController {
         event.preventDefault();
 
         //Find the username and password
-        const username = this.loginView.find("[name='username']").val();
-        const password = this.loginView.find("[name='password']").val();
-        console.log("Opgehaald: " + username + " " + password)
+        const username = this.loginView.find("#exampleInputUsername").val();
+        const password = this.loginView.find("#exampleInputPassword").val();
 
         try{
             //await keyword 'stops' code until data is returned - can only be used in async function
