@@ -58,12 +58,10 @@ class ChatController {
     upzone.on('drop', async e => {
       e.preventDefault()
       e.stopPropagation()
-      console.log(e.dataTransfer.files)
       upzone.classList.remove('shown')
       let file_paths = await this.chatRepository.uploadFiles(
         e.dataTransfer.files
       )
-      console.log(file_paths)
       for (const path of file_paths) {
         this.chatRepository.send(path)
       }
@@ -211,7 +209,6 @@ class ChatController {
     for (const match of msg.content.match(rUrl)) {
       if (!match) continue
       let url = match
-      console.log(match)
       if (rImg.test(url)) {
         // remove image urls from content
         msg.content = msg.content.replace(match, '')
