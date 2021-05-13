@@ -12,8 +12,10 @@ const corsConfig = require('./utils/corsConfigHelper')
 const app = express()
 const fileUpload = require('express-fileupload')
 const WebSocket = require('ws')
+const path = require('path')
+const fs = require('fs')
 
-const WSS_PORT = 80
+const WSS_PORT = 8080
 const WSS_PATH = '/'
 
 //logger lib  - 'short' is basic logging info
@@ -37,24 +39,31 @@ const httpOkCode = 200
 const badRequestCode = 400
 const authorizationErrCode = 401
 
+if (!fs.existsSync(wwwrootPath + '/uploads/'))
+  fs.mkdirSync(wwwrootPath + '/uploads/')
+
 app.post('/user/login', (req, res) => {
   const username = req.body.username
 
   db.handleQuery(
     connectionPool,
     {
-      query:
-        'SELECT username, password FROM user WHERE username = ?',
+      query: 'SELECT username, password FROM user WHERE username = ?',
       values: [username],
     },
     async data => {
       if (data.length === 1) {
-        if (await cryptoHelper.validatePassword(req.body.password,data[0].password)){
+        if (
+          await cryptoHelper.validatePassword(
+            req.body.password,
+            data[0].password
+          )
+        ) {
           res.status(httpOkCode).json({ username: data[0].username })
         } else {
           res
-              .status(authorizationErrCode)
-              .json({ reason: 'Wrong username or password' })
+            .status(authorizationErrCode)
+            .json({ reason: 'Wrong username or password' })
         }
       } else {
         //wrong username
@@ -83,10 +92,10 @@ app.post('/room_example', (req, res) => {
   )
 })
 
-app.post('/register/add', async( req, res) => {
+app.post('/register/add', async (req, res) => {
   const username = req.body.username
   const email = req.body.email
-  const hashedPw = await cryptoHelper.hashPassword(req.body.password);
+  const hashedPw = await cryptoHelper.hashPassword(req.body.password)
 
   db.handleQuery(
     connectionPool,
@@ -139,22 +148,33 @@ app.post('/register/mail', (req, res) => {
   )
 })
 
-app.post('/upload', function (req, res) {
+app.post('/upload', (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res
       .status(badRequestCode)
       .json({ reason: 'No files were uploaded.' })
   }
+  let errOccured = false
+  let paths = []
+  for (const [key, file] of Object.entries(req.files)) {
+    let file_path = path.parse(file.name)
+    let server_path = `uploads/${new Date().getTime()}-${file_path.name}${
+      file_path.ext
+    }`
+    paths.push(server_path)
+    file.mv(wwwrootPath + server_path, err => console.log(err))
+  }
+  res.status(httpOkCode).json({ files: paths })
 
-  let sampleFile = req.files.sampleFile
+  // let sampleFile = req.files.sampleFile
 
-  sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
-    if (err) {
-      return res.status(badRequestCode).json({ reason: err })
-    }
+  // sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
+  //   if (err) {
+  //     return res.status(badRequestCode).json({ reason: err })
+  //   }
 
-    return res.status(httpOkCode).json('OK')
-  })
+  //   return res.status(httpOkCode).json('OK')
+  // })
 })
 //------- END ROUTES -------
 
@@ -400,20 +420,18 @@ async function putMessageInDB(ws, data) {
 }
 
 app.post('/edit', (req, res) => {
-
   db.handleQuery(
-      connectionPool,{
-        query:
-            'UPDATE message SET content = ? WHERE id = ?',
-        values: [req.body.content, req.body.id],
-      },
-      data => {
-        res.status(httpOkCode).json(data)
-      },
-      err => res.status(badRequestCode).json({ reason: err })
+    connectionPool,
+    {
+      query: 'UPDATE message SET content = ? WHERE id = ?',
+      values: [req.body.content, req.body.id],
+    },
+    data => {
+      res.status(httpOkCode).json(data)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
   )
 })
-
 
 app.post('/history', async (req, res) => {
   const id1 = await nameToId(req.body.receiver)
@@ -527,32 +545,32 @@ app.post('/isOnlineList', (req, res) => {
 })
 
 app.post('/liking/like', (req, res) => {
-  const messageId = req.body.message;
+  const messageId = req.body.message
   db.handleQuery(
-      connectionPool,
-      {
-        query: 'UPDATE message SET liked = 1 WHERE id=?',
-        values: [messageId],
-      },
-      data => {
-          res.status(httpOkCode).json(data)
-      },
-      err => res.status(badRequestCode).json({ reason: err })
+    connectionPool,
+    {
+      query: 'UPDATE message SET liked = 1 WHERE id=?',
+      values: [messageId],
+    },
+    data => {
+      res.status(httpOkCode).json(data)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
   )
 })
 
 app.post('/liking/unlike', (req, res) => {
-  const messageId = req.body.message;
+  const messageId = req.body.message
   db.handleQuery(
-      connectionPool,
-      {
-        query: 'UPDATE message SET liked = 0 WHERE id=?',
-        values: [messageId],
-      },
-      data => {
-        res.status(httpOkCode).json(data)
-      },
-      err => res.status(badRequestCode).json({ reason: err })
+    connectionPool,
+    {
+      query: 'UPDATE message SET liked = 0 WHERE id=?',
+      values: [messageId],
+    },
+    data => {
+      res.status(httpOkCode).json(data)
+    },
+    err => res.status(badRequestCode).json({ reason: err })
   )
 })
 
