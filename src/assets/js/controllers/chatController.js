@@ -1,5 +1,6 @@
 import ChatRepository from '../repositories/chatRepository.js'
 import { ce, getQuery, LinkedList, qs, qsa } from '../utils/alfa.js'
+import UrlPreview from '../utils/urlPreview.js'
 import SimpleWebSocket, { TYPES } from '../utils/webSocketManager.js'
 
 const MSG_STATUS = {
@@ -7,7 +8,7 @@ const MSG_STATUS = {
   1: 'seen',
 }
 
-const rUrl = /((ftp|http|https):\/\/[^ "]+|(?<!\/)uploads\/.*)/g,
+const rUrl = /((ftp|http|https):\/\/[^ "\n]+|(?<!\/)uploads\/.*)/g,
   rImg = /\.(jpg|png|gif)($|&)/i
 
 class ChatController {
@@ -230,6 +231,7 @@ class ChatController {
     for (const match of msg.content.match(rUrl)) {
       if (!match) continue
       let url = match
+      console.log(url)
       if (rImg.test(url)) {
         // remove image urls from content
         msg.content = msg.content.replace(match, '')
@@ -239,6 +241,14 @@ class ChatController {
         }
         img.src = url
         imgCont.append(img)
+      } else {
+        UrlPreview.load(url).then(v => {
+          let c = qs(`#msg_${msg.id} .content`)
+          c.$$('a')
+            .filter(v => v.href.trim() == url.trim())
+            .map(v => (v.outerHTML = ''))
+          c.append(v)
+        })
       }
     }
     msg.content = msg.content.replace(rUrl, '<a href="$1">$1</a>')
