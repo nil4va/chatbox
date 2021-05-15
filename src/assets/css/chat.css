@@ -341,3 +341,12 @@ body {
 .UrlPreview ~ .UrlPreview {
   margin-top: 5px;
 }
+
+.badgeArea {
+  overflow: hidden;
+}
+
+.badgeInChat {
+  top: 35px;
+  white-space: nowrap;
+}

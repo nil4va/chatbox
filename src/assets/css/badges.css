@@ -42,8 +42,6 @@
 .fas.fa-star {
     float: left;
     font-size: 30px;
-    -webkit-text-stroke-width: .2px;
-    -webkit-text-stroke-color: black;
 }
 
 .allBadges {
