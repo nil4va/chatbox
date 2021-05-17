@@ -1,53 +1,84 @@
 <div class="d-flex mahp100 grow">
     <div class="col-4 p-0">
-        <input
-                type="text"
-                class="form-control searchbox"
-                placeholder="Search User"
-        />
+        <input type="text" class="form-control searchbox" placeholder="Search User"/>
         <div class="searchTitle chats"> Chats</div>
         <div class="pinnedList"></div>
         <div class="chatList"></div>
         <div class="searchTitle messages"> Messages</div>
     </div>
     <div class="chatwindow col-8 p-2 grow">
-        <div class="row">
+        <div class="d-flex">
             <div class="dropdown">
-                <div class="username" class="col">
-                </div>
+                <div class="username col"></div>
                 <div class="dropdown-content">
-                    <p class="blockUser">block user 🚫</p>
-                    <p class="searchMessage">search message</p>
-                    <p class="likedMsg">likes</p>
+                    <button class="blockUser">block user 🚫</button>
+                    <button class="searchMessage">search message</button>
+                    <button class="likedMsg">likes</button>
+                    <button id="openFileFolder">files</button>
                 </div>
             </div>
-            <input
-                    type="text"
-                    class="form-control searchbox1 border chatFilter col-3 float-right"
-                    placeholder="Search Message"
-            />
-            <button id="buttonUp" class="form-control col">
-                <i class="fa fa-arrow-up"></i>
-            </button>
-            <button id="buttonDown" class="form-control col">
-                <i class="fa fa-arrow-down"></i>
-            </button>
+                <div class="dropdown">
+                    <i class="fas fa-star dailyLogIn badges" id="badge1"></i>
+                    <div class="dropdown-content badgeInChat">
+                        <h3>Daily Log In's</h3>
+                        <p>This user has been online for the past 7 days.</p>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <i class="fas fa-star popularUser badges" id="badge2"></i>
+                    <div class="dropdown-content badgeInChat">
+                        <h3>Popular User</h3>
+                        <p>This user has talked to 3+ user last month</p>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <i class="fas fa-star fastReplies badges" id="badge3"></i>
+                    <div class="dropdown-content badgeInChat">
+                        <h3>Fast Replies</h3>
+                        <p>This user replied within 1 hour last week.</p>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <i class="fas fa-star ogUser badges" id="badge4"></i>
+                    <div class="dropdown-content badgeInChat">
+                        <h3>OG user</h3>
+                        <p>This user has been a member for 1+ years</p>
+                    </div>
+                </div>
+
+            <div class=" flex-grow searchMessageContainer">
+                <input type="text" class="input searchbox1 border chatFilter" placeholder="Search Message"/>
+                <button id="buttonUp" class="">
+                    <i class="fa fa-arrow-up"></i>
+                </button>
+                <button id="buttonDown" class="">
+                    <i class="fa fa-arrow-down"></i>
+                </button>
+            </div>
+
         </div>
+
         <div class="history"></div>
+        <div id="fileFolder" class="border" style="display: none;">
+            <h3><span id="fileCounter"></span> Files</h3>
+            <div class="files">
+
+            </div>
+        </div>
         <div class="typing"></div>
+
         <div class="d-flex">
-      <textarea
-              id="msginput"
-              class="grow"
-              placeholder="Type a message"
-      ></textarea>
+            <button id="uploadButton" class="">
+                <i class="fas fa-plus"></i>
+            </button>
+            <textarea id="msginput" class="grow" placeholder="Type a message"></textarea>
             <div class="blockedUserMessage">you have blocked this user.
                 <button>unblock</button>
             </div>
             <button id="msgsend" class="">Send</button>
         </div>
+        <div id="upzone"></div>
     </div>
-
     <div id="likesModal">
         <div id="likesContent">
             <div id="likesHeader">
@@ -58,4 +89,7 @@
             <div id="likesBody"></div>
         </div>
     </div>
+
 </div>
+
+<input type="file" id="upfile" class="d-none" multiple/>
