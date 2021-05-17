@@ -154,6 +154,8 @@ body {
 
 .message .timestamp {
   font-size: 10px;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .msgother .message {
@@ -166,10 +168,12 @@ body {
 
 .msgother .message .content {
   background-color: #c28899;
+  box-shadow: 0 4px 2px -2px gray;
 }
 
 .msgself .message .content {
-  background-color: #dc98a9;
+  background-color: #f9f7f7;
+  box-shadow: 0 4px 2px -2px gray;
 }
 
 #buttonUp,
