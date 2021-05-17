@@ -19,13 +19,9 @@ class BadgesController {
         const earnedBadges = await this.badgeRepository.getBadgeInfo(sessionManager.get('username'))
 
         for (let i = 0; i < earnedBadges.length; i++) {
-            $('#badge' + (i + 1)).hide()
-        }
-
-        for (let i = 0; i < 4; i++) {
-            if (typeof earnedBadges[i] === "undefined") {
-                $('.badge' + (i + 1)).css("opacity", "50%")
-            }
+            const badgeNr = earnedBadges[i].badgeNr
+            $('#badge' + badgeNr).hide()
+            $('#badgeBorder' + badgeNr).css('opacity', '100%')
         }
 
         this.badgesView.find('.username').text(sessionManager.get('username') + ", you have " + earnedBadges.length + " out of 4 badges right now.")

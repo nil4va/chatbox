@@ -12,6 +12,7 @@
     position: relative;
     justify-content: center;
     align-items: center;
+    opacity: 50%;
 }
 
 .notEarned {

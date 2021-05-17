@@ -36,6 +36,7 @@ class ChatController {
             console.log('click')
             firstChat.click()
         } else if (this._hasSelectedAChat) {
+            this.showBadges()
             this.showMessages()
             this.onceAfterSelectFirstChat()
         } else {
@@ -350,7 +351,7 @@ class ChatController {
 
             if (chat.receiver === this.chatRepository.getTo()) {
                 Array.from(earnedBadges).forEach((elem, i) => {
-                    if (elem) $('#badge' + (i + 1)).show()
+                    if (elem) $('#badge' + earnedBadges[i].badgeNr).show()
                 })
             }
         }
