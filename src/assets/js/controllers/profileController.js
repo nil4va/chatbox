@@ -1,4 +1,5 @@
 class ProfileController{
+
     constructor() {
         this.profileRepository = new ProfileRepository();
         $.get("views/profile.html")
@@ -8,7 +9,7 @@ class ProfileController{
     setup(data) {
         this.createProfileView = $(data);
 
-        // this.createProfileView.find(".name").html(sessionManager.get("username"));
+        this.createProfileView.find(".name").html(sessionManager.get("username"));
 
         $(".content").empty().append(this.createProfileView);
 
@@ -37,3 +38,32 @@ class ProfileController{
         }
     }
 }
+
+addEventListener('CONTENT_LOAD', e => {
+    let userID = HBO-ICTCloud.session.get("id")
+})
+
+// $(document).ready(function() {
+//
+//
+//     var readURL = function(input) {
+//         if (input.files && input.files[0]) {
+//             var reader = new FileReader();
+//
+//             reader.onload = function (e) {
+//                 $('.profile-pic').attr('src', e.target.result);
+//             }
+//
+//             reader.readAsDataURL(input.files[0]);
+//         }
+//     }
+//
+//
+//     $(".file-upload").on('change', function(){
+//         readURL(this);
+//     });
+//
+//     $(".upload-button").on('click', function() {
+//         $(".file-upload").click();
+//     });
+// });

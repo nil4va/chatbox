@@ -1,0 +1,60 @@
+.box {
+    box-sizing: border-box;
+    width: 360px;
+    height: 600px;
+    border: 2px solid #494f54;
+    box-shadow: -3px -3px 7px #545b62;,
+                 3px 3px 5px rgba(94,104,121,0.128);
+    border-radius: 5px;
+    margin-top: 50px;
+    overflow: hidden;
+
+}
+
+body {
+    background-color: #efefef;
+}
+
+.profile-pic {
+    position: center;
+    right: -300px;
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+}
+
+.file-upload {
+    display: none;
+}
+.circle {
+    border-radius: 1000px !important;
+    overflow: hidden;
+    width: 128px;
+    height: 128px;
+    border: 8px solid rgba(255, 255, 255, 0.7);
+    position: absolute;
+    top: 72px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+.p-image {
+    position: absolute;
+    top: 167px;
+    right: 30px;
+    color: #666666;
+    transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+.p-image:hover {
+    transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+.upload-button {
+    font-size: 1.2em;
+}
+
+.upload-button:hover {
+    transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+    color: #999;
+}
+

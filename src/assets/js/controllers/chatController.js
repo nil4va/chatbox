@@ -13,6 +13,7 @@ class ChatController {
     this.init()
   }
 
+
   async init(data) {
     let res = await fetch('views/chat.html')
     let html = await res.text()
@@ -30,7 +31,7 @@ class ChatController {
   onceAfterSelectFirstChat() {
     this._hasSelectedAChat = true
     qs('.chatwindow').style.display = ''
-    this.chatRepository.on('message', ({ detail: { type, data } }) => {
+    this.chatRepository.on('message', ({detail: {type, data}}) => {
       if (!this._hasSelectedAChat) return
       switch (type) {
         case TYPES.MESSAGE:
@@ -71,14 +72,14 @@ class ChatController {
     const messages = await this.chatRepository.getAll()
     messages.map(msg => {
       qs('.history').append(
-        ce('div', {
-          className:
-            'msg ' +
-            (msg.from === this.chatRepository.getFrom()
-              ? 'msgself'
-              : 'msgother'),
-          innerHTML: `<p>${msg.content}</p>`,
-        })
+          ce('div', {
+            className:
+                'msg ' +
+                (msg.from === this.chatRepository.getFrom()
+                    ? 'msgself'
+                    : 'msgother'),
+            innerHTML: `<p>${msg.content}</p>`,
+          })
       )
       console.log(msg)
     })
@@ -97,9 +98,9 @@ class ChatController {
     console.log(data)
     for (let [i, chat] of chronologicalOrder.entries()) {
       let otherPerson =
-        chat.receiver === sessionManager.get('username')
-          ? chat.sender
-          : chat.receiver
+          chat.receiver === sessionManager.get('username')
+              ? chat.sender
+              : chat.receiver
 
       let chatElement = ce('div', {
         onclick: e => {
@@ -108,31 +109,32 @@ class ChatController {
           this.showMessages()
         },
         className:
-          'previewChat ' +
-          (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
+            'previewChat ' +
+            (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
         innerHTML: `<div class="row">
                     <div class="profilePicture"></div>
                     <div>
                         <div class="indicator ${
-                          onlineList.includes(otherPerson)
-                            ? 'online'
-                            : 'offline'
-                        }"></div>
+            onlineList.includes(otherPerson)
+                ? 'online'
+                : 'offline'
+        }"></div>
                         <div class="userName">${otherPerson}</div>
                         <div class="lastMessage">${
-                          chat.content.slice(0, 25) + '...'
-                        }</div>
+            chat.content.slice(0, 25) + '...'
+        }</div>
                         <div class="timeStamp">${new Date(
-                          chat.timestamp
-                        ).toLocaleString()}</div>
+            chat.timestamp
+        ).toLocaleString()}</div>
                         <div class="chatOptions"><span>${
-                          sessionManager.get('pinList').includes(otherPerson)
-                            ? '📌'
-                            : 'pin chat'
-                        }</span></div>
+            sessionManager.get('pinList').includes(otherPerson)
+                ? '📌'
+                : 'pin chat'
+        }</span></div>
                     </div>
                 </div>`,
       })
+
 
       chatElement.$('.chatOptions').on('click', e => {
         if (!sessionManager.get('pinList').includes(otherPerson)) {
