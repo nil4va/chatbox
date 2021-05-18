@@ -727,5 +727,20 @@ app.post('/badge/remove', async (req, res) => {
         err => res.status(badRequestCode).json({reason: err})
     )
 })
+
+app.post('/chat', async (req, res) => {
+    const stringValue = '%' + req.body.value + '%'
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp`, `content`, `to`.`username` AS `receiver`, `from`.`username` AS `sender` FROM message INNER JOIN `user` AS `to` ON `to`.`id` = `message`.`to` INNER JOIN `user` AS `from` ON `from`.`id` = `message`.`from` WHERE `CONTENT` LIKE ?",
+            values: [stringValue]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
 module.exports = app
 module.exports.wss = wss

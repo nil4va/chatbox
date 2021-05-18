@@ -113,4 +113,11 @@ export default class ChatRepository extends CustomEventTarget {
     let res = await fetchJSON(baseUrl + '/upload', { body: fd, method: 'POST' })
     return res.files
   }
+  allMessages(username, value) {
+    return networkManager
+        .doRequest(`/chat`, {
+          "username": username,
+          "value": value
+        }, "POST");
+  }
 }

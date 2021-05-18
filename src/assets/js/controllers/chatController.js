@@ -320,7 +320,7 @@ class ChatController {
             ).innerHTML = `<input id="msgEdit" value='${msg.content}'>`
             messageElement.$('#msgEdit')?.on('keydown', e => {
                 if (e.key === 'Enter') {
-                    if (e.target.value.length !== 0 && !!e.target.value.trim()){
+                    if (e.target.value.length !== 0 && !!e.target.value.trim()) {
                         msg.content = e.target.value
                         this.chatRepository.edit(e.target.value, msg.id)
                         messageElement.$(
@@ -328,7 +328,7 @@ class ChatController {
                         ).innerHTML = `<p class="content">${e.target.value}</p>`
 
                         const timestamp = messageElement.$('.timestamp')
-                        if (timestamp.innerHTML.indexOf("(edited)") === -1){
+                        if (timestamp.innerHTML.indexOf("(edited)") === -1) {
                             timestamp.append(" (edited)")
                         }
                     } else {
@@ -350,13 +350,13 @@ class ChatController {
     }
 
     async showBadges() {
-            let otherPerson = this.chatRepository.getTo();
+        let otherPerson = this.chatRepository.getTo();
 
-            const earnedBadges = await this.badgeRepository.getBadgeInfo(otherPerson)
-            $('.badges').hide()
-                Array.from(earnedBadges).forEach((elem, i) => {
-                    if (elem) $('#badge' + earnedBadges[i].badgeNr).show()
-                })
+        const earnedBadges = await this.badgeRepository.getBadgeInfo(otherPerson)
+        $('.badges').hide()
+        Array.from(earnedBadges).forEach((elem, i) => {
+            if (elem) $('#badge' + earnedBadges[i].badgeNr).show()
+        })
     }
 
     async previewData() {
@@ -538,6 +538,54 @@ class ChatController {
         })
         this.isWorking = false
 
+        $(".searchGlobalMessages").hide()
+
+        $('.searchbox').on('keyup', async e => {
+            const value = $('.searchbox').val()
+            const allMessages = await this.chatRepository.allMessages(sessionManager.get('username'), value)
+            console.log(allMessages)
+
+            $(".messages").html("")
+
+            let previewChatSearch = $('.previewChatSearch')
+
+            if (allMessages.length > 0) {
+                $(".searchGlobalMessages").show()
+            } else {
+                $(".searchGlobalMessages").hide()
+            }
+
+            if ($('.messages').find(previewChatSearch).length > 0) {
+                $('.searchGlobalMessages').show()
+            }
+            if (value === '') {
+                $('.searchGlobalMessages').hide()
+            }
+
+            if ($('.messages').length === 0) {
+                $('.searchGlobalMessages').hide()
+            }
+
+            for (const message of allMessages) {
+                //check who sent the message
+                const theirMessage = message.receiver
+                const ourMessage = allMessages.sender
+                const messageOf = theirMessage ? theirMessage : ourMessage
+
+                const content = message.content
+
+
+                $(".messages").append(`
+<div class = "row previewChatSearch previewChat">
+    <div class="profilePicture"></div>
+    <div>
+        <div class="userName">${messageOf}</div>
+        <div class="lastMessage">${content}</div>
+        <div class="timeStamp">${new Date(message.timestamp).toLocaleString()}</div>
+    </div>
+</div>`)
+            }
+        })
     }
 }
 

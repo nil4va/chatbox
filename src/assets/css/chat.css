@@ -368,3 +368,6 @@ body {
   height: .7em;
   border-radius: 50%;
 }
+.sideBarChats {
+  overflow-y: scroll;
+}
