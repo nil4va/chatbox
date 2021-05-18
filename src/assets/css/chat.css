@@ -360,3 +360,11 @@ body {
   top: 35px;
   white-space: nowrap;
 }
+
+.indicator.online {
+  background: #28B62C;
+  display: inline-block;
+  width: .7em;
+  height: .7em;
+  border-radius: 50%;
+}

@@ -425,7 +425,7 @@ app.post('/edit', (req, res) => {
   db.handleQuery(
     connectionPool,
     {
-      query: 'UPDATE message SET content = ? WHERE id = ?',
+      query: 'UPDATE message SET content = ?, edited = 1 WHERE id = ?',
       values: [req.body.content, req.body.id],
     },
     data => {
@@ -446,7 +446,7 @@ app.post('/history', async (req, res) => {
     connectionPool,
     {
       query:
-        'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp, liked FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+        'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp, liked, edited FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
       values: [id1, id2, id2, id1],
     },
     data => {

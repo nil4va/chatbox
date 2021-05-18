@@ -293,7 +293,7 @@ class ChatController {
                     : `${e_msg} ${e_like}`
             }
           </span>
-          <p class="timestamp">${new Date(msg.timestamp).toLocaleString()}</p>
+          <p class="timestamp">${new Date(msg.timestamp).toLocaleString()} ${msg.edited === 1 ? ` (edited)` : ``}</p>
           ${e_status}
         </div>
         `,
@@ -317,7 +317,7 @@ class ChatController {
         messageElement.$('.edit')?.on('click', () => {
             messageElement.$(
                 '.contentdiv'
-            ).innerHTML = `<input id="msgEdit" value=${msg.content}>`
+            ).innerHTML = `<input id="msgEdit" value='${msg.content}'>`
             messageElement.$('#msgEdit')?.on('keydown', e => {
                 if (e.key === 'Enter') {
                     msg.content = e.target.value
@@ -325,6 +325,11 @@ class ChatController {
                     messageElement.$(
                         '.contentdiv'
                     ).innerHTML = `<p class="content">${e.target.value}</p>`
+                    const timestamp = messageElement.$('.timestamp')
+                    if (timestamp.innerHTML.indexOf("(edited)") === -1){
+                        timestamp.append(" (edited)")
+                    }
+
                 }
             })
         })
