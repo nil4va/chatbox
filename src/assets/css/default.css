@@ -44,7 +44,7 @@ footer{
 }
 
 button {
-    background:#f9f7f7;
+    background:#ffffff;
     border: 0;
     padding: .5em;
 }
@@ -53,5 +53,5 @@ button:active, button:focus {
     border: 0;
 }
 button:hover {
-    background: #c28899;
+    background: #f9f7f7;
 }

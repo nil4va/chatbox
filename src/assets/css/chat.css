@@ -31,7 +31,6 @@ body {
   flex-direction: column;
   overflow-y: scroll;
   flex-grow: 1;
-  border: 1px solid grey;
 }
 
 .m0 {
@@ -53,7 +52,7 @@ body {
 }
 
 .previewChat {
-  background-color: #f9f7f7;
+  background-color: #ffffff;
   padding: 20px;
   border-bottom: #c28899 solid 1px;
   position: relative;
@@ -73,11 +72,11 @@ body {
 }
 
 .previewChat.selected {
-  background-color: #dc98a9;
+  background-color: #f9f7f7;
 }
 
 .previewChat:hover {
-  background-color: #c28899;
+  background-color: #f9f7f7;
 }
 
 .profilePicture {

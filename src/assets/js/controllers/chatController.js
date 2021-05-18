@@ -429,14 +429,17 @@ class ChatController {
 
         }
 
-        $('.previewChat').on('click', e => {
+        function selectChat(e) {
             $('.previewChat').removeClass('selected')
-            $(this).addClass('selected')
+            e.currentTarget.classList.add('selected')
+
             qs('.searchbox1').value = ''
             $('#buttonDown').hide()
             $('#buttonUp').hide()
             this.showBadges()
-        })
+        }
+
+        $('.previewChat').on('click', selectChat.bind(this))
         // searchbox for users
         $('.searchbox').on('keyup', function () {
             const value = $(this).val().toLowerCase()
@@ -521,6 +524,7 @@ class ChatController {
             $('.searchbox1').toggleFocus()
         })
         this.isWorking = false
+
     }
 }
 
