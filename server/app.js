@@ -41,7 +41,7 @@ const badRequestCode = 400
 const authorizationErrCode = 401
 
 if (!fs.existsSync(wwwrootPath + '/uploads/'))
-  fs.mkdirSync(wwwrootPath + '/uploads/')
+    fs.mkdirSync(wwwrootPath + '/uploads/')
 
 app.post('/user/login', (req, res) => {
   const username = req.body.username
@@ -94,27 +94,27 @@ app.post('/room_example', (req, res) => {
 })
 
 app.post('/register/add', async (req, res) => {
-  const username = req.body.username
-  const email = req.body.email
-  const hashedPw = await cryptoHelper.hashPassword(req.body.password)
+    const username = req.body.username
+    const email = req.body.email
+    const hashedPw = await cryptoHelper.hashPassword(req.body.password);
 
-  db.handleQuery(
-    connectionPool,
-    {
-      query: 'INSERT INTO user(username,email, password) VALUES(?,?,?)',
-      values: [username, email, hashedPw],
-    },
-    data => {
-      if (data.insertId) {
-        res.status(httpOkCode).json({ id: data.insertId })
-      } else {
-        res
-          .status(badRequestCode)
-          .json({ reason: 'Something went wrong, no record inserted' })
-      }
-    },
-    err => res.status(badRequestCode).json({ reason: err })
-  )
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'INSERT INTO user(username,email, password, dateJoined) VALUES(?,?,?,CURDATE())',
+            values: [username, email, hashedPw],
+        },
+        data => {
+            if (data.insertId) {
+                res.status(httpOkCode).json({id: data.insertId})
+            } else {
+                res
+                    .status(badRequestCode)
+                    .json({reason: 'Something went wrong, no record inserted'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
 })
 
 app.post('/register/name', (req, res) => {
@@ -150,32 +150,32 @@ app.post('/register/mail', (req, res) => {
 })
 
 app.post('/upload', (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res
-      .status(badRequestCode)
-      .json({ reason: 'No files were uploaded.' })
-  }
-  let errOccured = false
-  let paths = []
-  for (const [key, file] of Object.entries(req.files)) {
-    let file_path = path.parse(file.name)
-    let server_path = `uploads/${new Date().getTime()}-${file_path.name}${
-      file_path.ext
-    }`
-    paths.push(server_path)
-    file.mv(wwwrootPath + server_path, err => console.log(err))
-  }
-  res.status(httpOkCode).json({ files: paths })
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res
+            .status(badRequestCode)
+            .json({reason: 'No files were uploaded.'})
+    }
+    let errOccured = false
+    let paths = []
+    for (const [key, file] of Object.entries(req.files)) {
+        let file_path = path.parse(file.name)
+        let server_path = `uploads/${new Date().getTime()}-${file_path.name}${
+            file_path.ext
+        }`
+        paths.push(server_path)
+        file.mv(wwwrootPath + server_path, err => console.log(err))
+    }
+    res.status(httpOkCode).json({files: paths})
 
-  // let sampleFile = req.files.sampleFile
+    // let sampleFile = req.files.sampleFile
 
-  // sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
-  //   if (err) {
-  //     return res.status(badRequestCode).json({ reason: err })
-  //   }
+    // sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
+    //   if (err) {
+    //     return res.status(badRequestCode).json({ reason: err })
+    //   }
 
-  //   return res.status(httpOkCode).json('OK')
-  // })
+    //   return res.status(httpOkCode).json('OK')
+    // })
 })
 //------- END ROUTES -------
 
@@ -378,22 +378,22 @@ wss.on('connection', ws => {
 })
 
 async function identifyWS(ws, data) {
-  let fromId = await nameToId(data.name)
-  ws.id = fromId
-  db.handleQuery(
-    connectionPool,
-    {
-      query: 'UPDATE `user` SET `isOnline` = 1 WHERE id = ?',
-      values: [fromId],
-    },
-    suc => {
-      sendSuccess(ws, MSGTYPES.IDENTIFY, data)
-      //   sendMsg(ws, `server echo: ${data.content}`, 'server')
-    },
-    err => {
-      sendError(ws, MSGTYPES.IDENTIFY, { ...data, err })
-    }
-  )
+    let fromId = await nameToId(data.name)
+    ws.id = fromId
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'UPDATE `user` SET `isOnline` = 1 WHERE id = ?; INSERT IGNORE INTO online_badge VALUES (?, CURRENT_DATE)',
+            values: [fromId, fromId, fromId],
+        },
+        suc => {
+            sendSuccess(ws, MSGTYPES.IDENTIFY, data)
+            //   sendMsg(ws, `server echo: ${data.content}`, 'server')
+        },
+        err => {
+            sendError(ws, MSGTYPES.IDENTIFY, {...data, err})
+        }
+    )
 }
 
 async function putMessageInDB(ws, data) {
@@ -591,5 +591,141 @@ app.post('/badge', (req, res) => {
   )
 })
 
+app.post('/badge/online', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `date` FROM online_badge INNER JOIN `user` ON online_badge.userId = user.id WHERE user.username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            if (data.length === 7) {
+                res.status(httpOkCode).json({"earned": true})
+            } else {
+                res.status(httpOkCode).json({"earned": false})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/badge/popular', async (req, res) => {
+    console.log(req.body.username + " ueserre")
+    const userId = await nameToId(req.body.username);
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp`, DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) AS diff FROM message WHERE (`from` = ? OR `to` = ?) AND (DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 31)",
+            values: [userId, userId]
+        },
+        data => {
+            console.log(data.length + " !!!!!")
+            const users = new Set();
+            for (let entry of data) {
+                users.add(entry.from)
+                users.add(entry.to)
+            }
+            console.log(users.size + "users")
+            if (users.size > 3) {
+                res.status(httpOkCode).json({"earned": true})
+            } else {
+                res.status(httpOkCode).json({"earned": false})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/badge/fast', async (req, res) => {
+    const userId = await nameToId(req.body.username);
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp` FROM message WHERE DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 7 AND (`from` = ? OR `to` = ?)",
+            values: [userId, userId]
+        },
+        data => {
+            const from = [];
+            const to = []
+            for (let message of data) {
+                if (message.from === userId) {
+                    from.push(message)
+                } else {
+                    to.push(message)
+                }
+            }
+            console.log(from.length + " vvvvvvv" + to.length)
+
+            let repliedFast = false;
+            for (let msgTo of to) {
+                for (let msgFrom of from) {
+                    const replyTime = new Date(msgFrom.timestamp).setHours(new Date(msgFrom.timestamp).getHours() + 1);
+                    console.log(replyTime + " DDDDD " + new Date(msgTo.timestamp));
+
+                    if (new Date(msgTo.timestamp) < replyTime) {
+                        repliedFast = true;
+                    }
+                }
+            }
+                res.status(httpOkCode).json({"earned": repliedFast})
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/badge/og', (req, res) => {
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT dateJoined FROM user WHERE username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            var oneYearAgo = new Date();
+            oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+            console.log(oneYearAgo)
+            if (data[0].dateJoined < oneYearAgo) {
+                res.status(httpOkCode).json({"earned": true})
+            } else {
+                res.status(httpOkCode).json({"earned": false})
+            }
+
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/badge/add', async (req, res) => {
+    const userId = await nameToId(req.body.username);
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "INSERT IGNORE INTO badge VALUES (?,?)",
+            values: [req.body.badgeNr, userId]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+app.post('/badge/remove', async (req, res) => {
+    const userId = await nameToId(req.body.username);
+    console.log(userId)
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "DELETE FROM badge WHERE user = ? AND badgeNr = ?",
+            values: [userId, req.body.badgeNr]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
 module.exports = app
 module.exports.wss = wss

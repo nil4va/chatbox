@@ -337,24 +337,13 @@ class ChatController {
     }
 
     async showBadges() {
-        const chats = await this.chatListRepository.getAll()
-
-        for (let chat of chats) {
-            let otherPerson =
-                chat.receiver === sessionManager.get('username')
-                    ? chat.sender
-                    : chat.receiver
+            let otherPerson = this.chatRepository.getTo();
 
             const earnedBadges = await this.badgeRepository.getBadgeInfo(otherPerson)
-
             $('.badges').hide()
-
-            if (chat.receiver === this.chatRepository.getTo()) {
                 Array.from(earnedBadges).forEach((elem, i) => {
                     if (elem) $('#badge' + earnedBadges[i].badgeNr).show()
                 })
-            }
-        }
     }
 
     async previewData() {
@@ -371,13 +360,9 @@ class ChatController {
         const chronologicalOrder = data.sort(function (a, b) {
             return new Date(b.timestamp) - new Date(a.timestamp)
         })
+
         for (let [i, chat] of chronologicalOrder.entries()) {
-            let sliceContent
-            if (chat.content.length > 40) {
-                sliceContent = chat.content.slice(0, 40) + '...'
-            } else {
-                sliceContent = chat.content
-            }
+            let sliceContent = chat.content
 
             let otherPerson =
                 chat.receiver === sessionManager.get('username')
@@ -441,16 +426,17 @@ class ChatController {
                 qs('.chatList').append(chatElement)
             }
 
-            $('.previewChat').on('click', e => {
-                $('.previewChat').removeClass('selected')
-                $(this).addClass('selected')
-                qs('.searchbox1').value = ''
-                $('#buttonDown').hide()
-                $('#buttonUp').hide()
-                this.showBadges()
-            })
+
         }
 
+        $('.previewChat').on('click', e => {
+            $('.previewChat').removeClass('selected')
+            $(this).addClass('selected')
+            qs('.searchbox1').value = ''
+            $('#buttonDown').hide()
+            $('#buttonUp').hide()
+            this.showBadges()
+        })
         // searchbox for users
         $('.searchbox').on('keyup', function () {
             const value = $(this).val().toLowerCase()

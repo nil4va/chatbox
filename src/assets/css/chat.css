@@ -58,6 +58,7 @@ body {
   border-bottom: #c28899 solid 1px;
   position: relative;
   min-width: 350px;
+  word-break: break-all;
 }
 
 .chatwindow {
@@ -108,6 +109,11 @@ body {
 
 .lastMessage {
   flex-direction: column;
+  text-overflow: ellipsis;
+  height: 35px;
+  overflow:hidden;
+  white-space:nowrap;
+  width: 300px;
 }
 
 .chatOptions {
@@ -148,6 +154,8 @@ body {
 
 .message .timestamp {
   font-size: 10px;
+  margin-top: 5px;
+  font-style: italic;
 }
 
 .msgother .message {
@@ -160,10 +168,12 @@ body {
 
 .msgother .message .content {
   background-color: #c28899;
+  box-shadow: 0 4px 2px -2px gray;
 }
 
 .msgself .message .content {
-  background-color: #dc98a9;
+  background-color: #f9f7f7;
+  box-shadow: 0 4px 2px -2px gray;
 }
 
 #buttonUp,
@@ -253,7 +263,8 @@ body {
   max-height: 200px;
   max-width: 100%;
 }
-.content {
+
+.msg .content {
   word-break: break-all;
 }
 .fcol {
