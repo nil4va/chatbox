@@ -320,15 +320,23 @@ class ChatController {
             ).innerHTML = `<input id="msgEdit" value='${msg.content}'>`
             messageElement.$('#msgEdit')?.on('keydown', e => {
                 if (e.key === 'Enter') {
-                    msg.content = e.target.value
-                    this.chatRepository.edit(e.target.value, msg.id)
-                    messageElement.$(
-                        '.contentdiv'
-                    ).innerHTML = `<p class="content">${e.target.value}</p>`
-                    const timestamp = messageElement.$('.timestamp')
-                    if (timestamp.innerHTML.indexOf("(edited)") === -1){
-                        timestamp.append(" (edited)")
+                    if (e.target.value.length !== 0 && !!e.target.value.trim()){
+                        msg.content = e.target.value
+                        this.chatRepository.edit(e.target.value, msg.id)
+                        messageElement.$(
+                            '.contentdiv'
+                        ).innerHTML = `<p class="content">${e.target.value}</p>`
+
+                        const timestamp = messageElement.$('.timestamp')
+                        if (timestamp.innerHTML.indexOf("(edited)") === -1){
+                            timestamp.append(" (edited)")
+                        }
+                    } else {
+                        messageElement.$(
+                            '.contentdiv'
+                        ).innerHTML = `<p class="content">${msg.content}</p>`
                     }
+
 
                 }
             })
