@@ -251,6 +251,7 @@ class ChatController {
             .filter(v => v.href.trim() == url.trim())
             .map(v => (v.outerHTML = ''))
           c.append(v)
+          this.scrollToLastMessage()
         })
       }
     }
