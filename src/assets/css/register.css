@@ -7,18 +7,18 @@
     padding-bottom: 20px;
 }
 
-#toLogin {
+#toLogin, #toReg{
     text-decoration: underline;
-
 }
 
-#toLogin:hover {
+#toLogin:hover, #toReg:hover{
     color: #c28899;
     cursor: pointer;
 }
 
 #register {
-    background-color: #c28899;
+    background-color: #292929;
+    color: #f9f7f7;
 }
 
 .errorMessage {

@@ -18,6 +18,7 @@ class LoginController {
         //Load the login-content into memory
         this.loginView = $(data);
 
+        this.loginView.find("#toReg").on("click", () => app.loadController(CONTROLLER_REGISTER));
         this.loginView.find(".login-form").on("submit", (e) => this.handleLogin(e));
 
         //Empty the content-div and add the resulting view to the page
