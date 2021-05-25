@@ -525,45 +525,17 @@ class ChatController {
             classActive(message)
         })
 
-    $('#buttonUp').on('click', function () {
-      const message = matchedMessages.prev.value
-      classActive(message)
-    })
+        $('#buttonUp').on('click', function () {
+            const message = matchedMessages.prev.value
+            classActive(message)
+        })
 
-    $('#buttonDown').on('click', function () {
-      const message = matchedMessages.next.value
-      classActive(message)
-    })
-
-    $('.searchMessageContainer').hide()
-
-    $('.searchGlobalMessages').hide()
-
-    $('.searchbox').on('keyup', async e => {
-      const value = $('.searchbox').val()
-      const allMessages = await this.chatRepository.allMessages(
-        sessionManager.get('username'),
-        value
-      )
-      console.log(allMessages)
-
-      $('.messages').html('')
-
-      let previewChatSearch = $('.previewChatSearch')
-
-      if (allMessages.length > 0) {
-        $('.searchGlobalMessages').show()
-      } else {
-        $('.searchGlobalMessages').hide()
-      }
+        $('#buttonDown').on('click', function () {
+            const message = matchedMessages.next.value
+            classActive(message)
+        })
 
         $('.searchMessageContainer').hide()
-
-        $('.searchMessage').on('click', function () {
-            $('.searchMessageContainer').toggle()
-            $('.searchbox1').toggleFocus()
-        })
-        this.isWorking = false
 
         $('.searchGlobalMessages').hide()
 
@@ -573,6 +545,7 @@ class ChatController {
                 sessionManager.get('username'),
                 value
             )
+            console.log(allMessages)
 
             $('.messages').html('')
 
@@ -584,27 +557,54 @@ class ChatController {
                 $('.searchGlobalMessages').hide()
             }
 
-            if ($('.messages').find(previewChatSearch).length > 0) {
-                $('.searchGlobalMessages').show()
-            }
-            if (value === '') {
-                $('.searchGlobalMessages').hide()
-            }
+            $('.searchMessageContainer').hide()
 
-            if ($('.messages').length === 0) {
-                $('.searchGlobalMessages').hide()
-            }
+            $('.searchMessage').on('click', function () {
+                $('.searchMessageContainer').toggle()
+                $('.searchbox1').toggleFocus()
+            })
+            this.isWorking = false
 
-            for (const message of allMessages) {
-                //check who sent the message
-                let otherPerson =
-                    message.receiver === sessionManager.get('username')
-                        ? message.sender
-                        : message.receiver
+            $('.searchGlobalMessages').hide()
 
-                const content = message.content
+            $('.searchbox').on('keyup', async e => {
+                const value = $('.searchbox').val()
+                const allMessages = await this.chatRepository.allMessages(
+                    sessionManager.get('username'),
+                    value
+                )
 
-                $('.messages').append(`
+                $('.messages').html('')
+
+                let previewChatSearch = $('.previewChatSearch')
+
+                if (allMessages.length > 0) {
+                    $('.searchGlobalMessages').show()
+                } else {
+                    $('.searchGlobalMessages').hide()
+                }
+
+                if ($('.messages').find(previewChatSearch).length > 0) {
+                    $('.searchGlobalMessages').show()
+                }
+                if (value === '') {
+                    $('.searchGlobalMessages').hide()
+                }
+
+                if ($('.messages').length === 0) {
+                    $('.searchGlobalMessages').hide()
+                }
+
+                for (const message of allMessages) {
+                    //check who sent the message
+                    let otherPerson =
+                        message.receiver === sessionManager.get('username')
+                            ? message.sender
+                            : message.receiver
+
+                    const content = message.content
+
+                    $('.messages').append(`
 <div class = "row previewChatSearch previewChat">
     <div class="profilePicture"></div>
     <div>
@@ -612,16 +612,12 @@ class ChatController {
         <span class="lastMessage d-flex">${message.sender}:&nbsp; <div>${content}</div></span>
         <div class="d-none messageId">${message.id}</div>
         <div class="timeStamp">${new Date(
-                    message.timestamp
-                ).toLocaleString()}</div>
+                        message.timestamp
+                    ).toLocaleString()}</div>
     </div>
 </div>`)
-      }
-    })
-
-    this.isWorking = false
-  }
-            }
+                }
+            })
 
             $('.previewChatSearch').on('click', async e => {
                 let userName = e.currentTarget.$('.userName').textContent
@@ -636,7 +632,7 @@ class ChatController {
             })
         })
 
-
+        this.isWorking = false
     }
 }
 
