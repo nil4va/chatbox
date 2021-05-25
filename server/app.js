@@ -689,6 +689,7 @@ app.post('/badge/og', (req, res) => {
             if (data[0].dateJoined < oneYearAgo) {
                 res.status(httpOkCode).json({"earned": true})
             } else {
+                badgeRemove(req.body.username, 4)
                 res.status(httpOkCode).json({"earned": false})
             }
 
@@ -711,8 +712,7 @@ app.post('/badge/add', async (req, res) => {
         err => res.status(badRequestCode).json({reason: err})
     )
 })
-
-app.post('/badge/remove', async (req, res) => {
+const badgeRemove = async (req, res) => {
     const userId = await nameToId(req.body.username);
     console.log(userId)
     db.handleQuery(
@@ -726,7 +726,7 @@ app.post('/badge/remove', async (req, res) => {
         },
         err => res.status(badRequestCode).json({reason: err})
     )
-})
+}
 
 app.post('/chat', async (req, res) => {
     const stringValue = '%' + req.body.value + '%'
