@@ -525,10 +525,37 @@ class ChatController {
             classActive(message)
         })
 
-        $('#buttonDown').on('click', function () {
-            const message = matchedMessages.next.value
-            classActive(message)
-        })
+    $('#buttonUp').on('click', function () {
+      const message = matchedMessages.prev.value
+      classActive(message)
+    })
+
+    $('#buttonDown').on('click', function () {
+      const message = matchedMessages.next.value
+      classActive(message)
+    })
+
+    $('.searchMessageContainer').hide()
+
+    $('.searchGlobalMessages').hide()
+
+    $('.searchbox').on('keyup', async e => {
+      const value = $('.searchbox').val()
+      const allMessages = await this.chatRepository.allMessages(
+        sessionManager.get('username'),
+        value
+      )
+      console.log(allMessages)
+
+      $('.messages').html('')
+
+      let previewChatSearch = $('.previewChatSearch')
+
+      if (allMessages.length > 0) {
+        $('.searchGlobalMessages').show()
+      } else {
+        $('.searchGlobalMessages').hide()
+      }
 
         $('.searchMessageContainer').hide()
 
@@ -589,6 +616,11 @@ class ChatController {
                 ).toLocaleString()}</div>
     </div>
 </div>`)
+      }
+    })
+
+    this.isWorking = false
+  }
             }
 
             $('.previewChatSearch').on('click', async e => {

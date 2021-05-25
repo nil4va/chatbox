@@ -24,10 +24,11 @@ class BadgesController {
             $('#badgeBorder' + badgeNr).css('opacity', '100%')
         }
 
-        this.badgesView.find('.username').text(sessionManager.get('username') + ", you have " + earnedBadges.length + " out of 4 badges right now.")
+        document.querySelector('.username').textContent = sessionManager.get('username') + ", you have " + earnedBadges.length + " out of 4 badges right now."
 
         const earnedPercentage = earnedBadges.length / 4 * 100 + "%"
-        this.badgesView.find('.progress-bar').css("width", earnedPercentage)
+        document.querySelector('.progress-bar').style.width =  earnedPercentage
+        console.log(earnedBadges)
     }
 
     error() {
