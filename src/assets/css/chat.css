@@ -393,3 +393,16 @@ body {
   padding: 0 10%;
   gap: 10px;
 }
+
+.searchbox {
+  width: 100%;
+}
+
+.inputbar {
+  height: 50px;
+}
+#msginput:focus {
+  height: 300px;
+  position: relative;
+  top: -246px;
+}
