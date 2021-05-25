@@ -491,35 +491,6 @@ class ChatController {
 
     let matchedMessages
 
-    $('.searchbox1').on('keyup', function () {
-      const value = new RegExp($(this).val().toLowerCase())
-      $('.activeMessage').removeClass('activeMessage')
-      if ($(this).val() === '') return
-      matchedMessages = $('.msg')
-        .filter(function () {
-          return value.test($(this).text().toLowerCase())
-        })
-        .toArray()
-
-      matchedMessages = new LinkedList(...matchedMessages)
-      classActive(matchedMessages.tail.value)
-
-      if (matchedMessages.length === 0) {
-        $('#buttonUp').hide()
-        $('#buttonDown').hide()
-      } else {
-        $('#buttonUp').show()
-        $('#buttonDown').show()
-      }
-    })
-
-    $('.searchbox1').on('input', function () {
-      if (!$('.searchbox1').val()) {
-        $('#buttonUp').hide()
-        $('#buttonDown').hide()
-      }
-    })
-
     $('#buttonUp').on('click', function () {
       const message = matchedMessages.prev.value
       classActive(message)
@@ -531,12 +502,6 @@ class ChatController {
     })
 
     $('.searchMessageContainer').hide()
-
-    $('.searchMessage').on('click', function () {
-      $('.searchMessageContainer').toggle()
-      $('.searchbox1').toggleFocus()
-    })
-    this.isWorking = false
 
     $('.searchGlobalMessages').hide()
 
@@ -590,6 +555,8 @@ class ChatController {
 </div>`)
       }
     })
+
+    this.isWorking = false
   }
 }
 
