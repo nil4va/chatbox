@@ -600,9 +600,12 @@ app.post('/badge/online', (req, res) => {
         },
         data => {
             if (data.length === 7) {
-                res.status(httpOkCode).json({"earned": true})
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 1}, res)
+
             } else {
-                res.status(httpOkCode).json({"earned": false})
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 1}, res)
             }
         },
         err => res.status(badRequestCode).json({reason: err})
@@ -610,7 +613,6 @@ app.post('/badge/online', (req, res) => {
 })
 
 app.post('/badge/popular', async (req, res) => {
-    console.log(req.body.username + " ueserre")
     const userId = await nameToId(req.body.username);
 
     db.handleQuery(
@@ -620,7 +622,6 @@ app.post('/badge/popular', async (req, res) => {
             values: [userId, userId]
         },
         data => {
-            console.log(data.length + " !!!!!")
             const users = new Set();
             for (let entry of data) {
                 users.add(entry.from)
@@ -628,9 +629,12 @@ app.post('/badge/popular', async (req, res) => {
             }
             console.log(users.size + "users")
             if (users.size > 3) {
-                res.status(httpOkCode).json({"earned": true})
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 2}, res)
+
             } else {
-                res.status(httpOkCode).json({"earned": false})
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 2}, res)
             }
         },
         err => res.status(badRequestCode).json({reason: err})
@@ -655,20 +659,19 @@ app.post('/badge/fast', async (req, res) => {
                     to.push(message)
                 }
             }
-            console.log(from.length + " vvvvvvv" + to.length)
 
             let repliedFast = false;
             for (let msgTo of to) {
                 for (let msgFrom of from) {
                     const replyTime = new Date(msgFrom.timestamp).setHours(new Date(msgFrom.timestamp).getHours() + 1);
-                    console.log(replyTime + " DDDDD " + new Date(msgTo.timestamp));
 
                     if (new Date(msgTo.timestamp) < replyTime) {
                         repliedFast = true;
                     }
                 }
             }
-                res.status(httpOkCode).json({"earned": repliedFast})
+            res.status(httpOkCode)
+            return repliedFast ? badgeAdd({'username': req.body.username, 'badgeNr': 3}, res) : badgeRemove({"username": req.body.username, "badgeNr": 3}, res)
         },
         err => res.status(badRequestCode).json({reason: err})
     )
@@ -687,10 +690,12 @@ app.post('/badge/og', (req, res) => {
             oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
             console.log(oneYearAgo)
             if (data[0].dateJoined < oneYearAgo) {
-                res.status(httpOkCode).json({"earned": true})
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 4}, res)
+
             } else {
-                badgeRemove(req.body.username, 4)
-                res.status(httpOkCode).json({"earned": false})
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 4}, res)
             }
 
         },
@@ -698,28 +703,29 @@ app.post('/badge/og', (req, res) => {
     )
 })
 
-app.post('/badge/add', async (req, res) => {
-    const userId = await nameToId(req.body.username);
+const badgeAdd = async (req, res) => {
+    const userId = await nameToId(req.username);
     db.handleQuery(
         connectionPool,
         {
             query: "INSERT IGNORE INTO badge VALUES (?,?)",
-            values: [req.body.badgeNr, userId]
+            values: [req.badgeNr, userId]
         },
         data => {
             res.status(httpOkCode).json(data)
         },
         err => res.status(badRequestCode).json({reason: err})
     )
-})
+}
+
 const badgeRemove = async (req, res) => {
-    const userId = await nameToId(req.body.username);
+    const userId = await nameToId(req.username);
     console.log(userId)
     db.handleQuery(
         connectionPool,
         {
             query: "DELETE FROM badge WHERE user = ? AND badgeNr = ?",
-            values: [userId, req.body.badgeNr]
+            values: [userId, req.badgeNr]
         },
         data => {
             res.status(httpOkCode).json(data)
