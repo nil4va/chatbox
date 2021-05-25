@@ -107,7 +107,7 @@ body {
 }
 
 .lastMessage {
-  flex-direction: column;
+  /*flex-direction: column;*/
   text-overflow: ellipsis;
   height: 35px;
   overflow:hidden;
@@ -135,7 +135,7 @@ body {
 }
 
 .activeMessage {
-  background: rgba(8, 8, 0, 0.2);
+  background: #f9f7f7;
 }
 
 .message {

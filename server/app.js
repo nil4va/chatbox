@@ -733,7 +733,10 @@ app.post('/chat', async (req, res) => {
     db.handleQuery(
         connectionPool,
         {
-            query: "SELECT `from`, `to`, `timestamp`, `content`, `to`.`username` AS `receiver`, `from`.`username` AS `sender` FROM message INNER JOIN `user` AS `to` ON `to`.`id` = `message`.`to` INNER JOIN `user` AS `from` ON `from`.`id` = `message`.`from` WHERE `CONTENT` LIKE ? AND (`to`.`username` = ? OR `from`.`username` = ?)",
+            query: "SELECT `from`, `to`, `timestamp`, `content`, `to`.`username` AS `receiver`, `from`.`username` AS" +
+                " `sender`, `message`.`id` FROM message INNER JOIN `user` AS `to` ON `to`.`id` = `message`.`to` INNER" +
+                " JOIN" +
+                " `user` AS `from` ON `from`.`id` = `message`.`from` WHERE `CONTENT` LIKE ? AND (`to`.`username` = ? OR `from`.`username` = ?)",
             values: [stringValue, req.body.username, req.body.username]
         },
         data => {
