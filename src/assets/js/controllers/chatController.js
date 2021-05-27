@@ -148,7 +148,9 @@ class ChatController {
           break
         case TYPES.EDIT:
           let el2 = qs('#msg_' + data.id)
-          el2.$('.content').textContent = data.content
+          el2.$('.content').textContent = data.content;
+          el2.$('.timestamp').textContent += ' (edited)';
+          
       }
     })
     qs('#msgsend').onclick = async e => {

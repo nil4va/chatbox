@@ -91,8 +91,8 @@ export default class ChatRepository extends CustomEventTarget {
     })
   }
   async edit(content, id) {
-    this.ws.send(TYPES.EDIT, {
-      sender: this._sender,
+      this.ws.send(TYPES.EDIT, {
+        sender: this._sender,
       receiver: this._receiver,
       content,
       id,
