@@ -9,7 +9,8 @@ const MSG_STATUS = {
 }
 
 const rUrl = /((ftp|http|https):\/\/[^ "\n]+|(?<!\/)uploads\/.*)/g,
-  rImg = /\.(jpg|png|gif)($|&)/i
+  rImg = /\.(jpg|png|gif)($|&)/i,
+  rVid = /\.(webm|mov|mp4)($|&)/i
 
 class ChatController {
   constructor(to) {
@@ -243,6 +244,12 @@ class ChatController {
         }
         img.src = url
         imgCont.append(img)
+      } else if (rVid.test(url)) {
+        let vid = ce('video', { src: url })
+        vid.onload = _ => {
+          this.scrollToLastMessage()
+        }
+        imgCont.append(vid)
       } else {
         UrlPreview.load(url).then(v => {
           console.log(v)
