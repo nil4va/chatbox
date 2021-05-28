@@ -751,5 +751,19 @@ app.post('/chat', async (req, res) => {
         err => res.status(badRequestCode).json({reason: err})
     )
 })
+
+app.post('/profile/info', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT voornaam, achternaam, bio FROM user WHERE username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
 module.exports = app
 module.exports.wss = wss

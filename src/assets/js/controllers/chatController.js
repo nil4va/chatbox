@@ -186,6 +186,11 @@ class ChatController {
         const messages = await this.chatRepository.getAll()
         messages.map(msg => this.addMessage(msg))
         this.scrollToLastMessage()
+
+        $('#profileUser').on('click', function () {
+            app.loadController(CONTROLLER_PROFILE, qs('.username').textContent);
+        })
+
         $('.likedMsg').on('click', function () {
             $('#likesModal').show()
             $('#likesBody').html('')

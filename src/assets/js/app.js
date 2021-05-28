@@ -117,7 +117,7 @@ class App {
       case CONTROLLER_PROFILE:
         this.setCurrentController(name)
         this.isLoggedIn(
-          () => new ProfileController(),
+          () => new ProfileController(controllerData),
           () => new LoginController()
         )
         break
