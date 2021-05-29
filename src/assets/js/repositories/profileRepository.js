@@ -12,4 +12,14 @@ class ProfileRepository {
     async getPersonalInfo(username){
         return await networkManager.doRequest(this.route + "/info", {username: username})
     }
+
+    async updateFirstName(firstname, username){
+        await networkManager.doRequest(this.route + "/firstname", {firstName: firstname, username: username})
+    }
+    async updateLastName(lastname, username){
+        await networkManager.doRequest(this.route + "/lastname", {lastName: lastname, username: username})
+    }
+    async updateBio(bio, username){
+        await networkManager.doRequest(this.route + "/bio", {bio: bio, username: username})
+    }
 }

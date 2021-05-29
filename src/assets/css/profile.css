@@ -13,7 +13,7 @@
     text-align: left;
 }
 
-#changeProfile{
+#changeProfile, #saveProfile{
     background-color: #292929;
     color: #f9f7f7;
     margin-bottom: 20px;

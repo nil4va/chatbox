@@ -756,11 +756,50 @@ app.post('/profile/info', (req, res) => {
     db.handleQuery(
         connectionPool,
         {
-            query: "SELECT voornaam, achternaam, bio FROM user WHERE username = ?",
+            query: "SELECT firstName, lastName, bio FROM user WHERE username = ?",
             values: [req.body.username]
         },
         data => {
             res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+app.post('/profile/firstname', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET firstName = ? WHERE username = ?",
+            values: [req.body.firstName, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+app.post('/profile/lastname', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET lastName = ? WHERE username = ?",
+            values: [req.body.lastName, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+app.post('/profile/bio', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET bio = ? WHERE username = ?",
+            values: [req.body.bio, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
         },
         err => res.status(badRequestCode).json({reason: err})
     )

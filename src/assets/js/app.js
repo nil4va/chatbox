@@ -15,7 +15,7 @@ const CONTROLLER_POST = 'post'
 const CONTROLLER_POSTS = 'posts'
 const CONTROLLER_REGISTER = 'register'
 const CONTROLLER_PROFILE = 'profile'
-const CONTROLLER_BADGES = 'badges'
+const CONTROLLER_UPDATEPROFILE = 'updateProfile'
 
 const sessionManager = new SessionManager()
 const networkManager = new NetworkManager()
@@ -122,11 +122,11 @@ class App {
         )
         break
 
-      case CONTROLLER_BADGES:
+      case CONTROLLER_UPDATEPROFILE:
         this.setCurrentController(name)
         this.isLoggedIn(
-          () => new BadgesController(),
-          () => new LoginController()
+            () => new UpdateProfileController(),
+            () => new LoginController()
         )
         break
 
