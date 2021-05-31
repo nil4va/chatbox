@@ -50,7 +50,6 @@
     float: right;
     justify-content: center;
     display: flex;
-    margin-top: 100px;
 }
 
 .dailyLogIn {
@@ -87,4 +86,8 @@
 
 .progress-bar {
     background-color: #5a6268;
+}
+
+.progressText{
+    color: #c28899;
 }

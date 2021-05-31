@@ -1,39 +1,46 @@
 class ProfileController{
-    constructor() {
+    constructor(person) {
         this.profileRepository = new ProfileRepository();
-        $.get("views/profile.html")
-            .done((data) => this.setup((data))
-                .fail(() => this.error));
+        this.badgeRepository = new badgeRepository();
+        this.person = person === undefined ? sessionManager.get('username') : person;
+        $.get('views/profile.html')
+            .done(htmlData => this.setup(htmlData))
+            .fail(() => this.error())
     }
-    setup(data) {
-        this.createProfileView = $(data);
 
-        // this.createProfileView.find(".name").html(sessionManager.get("username"));
+    async setup(htmlData) {
+        this.profileView = $(htmlData);
+        $(".content").empty().append(this.profileView);
 
-        $(".content").empty().append(this.createProfileView);
+        const personInfo = (await this.profileRepository.getPersonalInfo(this.person))[0];
+        $("#name").text(personInfo.firstName === '' ? this.person :
+            personInfo.firstName + (personInfo.lastName === '' ? '' : ' ' + personInfo.lastName));
+        $(".bio").text(personInfo.bio);
 
-        this.createProfileView.find(".btn").on("click", (event) => this.onAddEvent(event))
+        const earnedBadges = await this.badgeRepository.getBadgeInfo(this.person)
+        for (let i = 0; i < earnedBadges.length; i++) {
+            const badgeNr = earnedBadges[i].badgeNr
+            $('#badge' + badgeNr).hide()
+            $('#badgeBorder' + badgeNr).css('opacity', '100%')
+        }
+        if (this.person === sessionManager.get("username")){
+            $('.progressText').text(sessionManager.get('username') + ", you have " + earnedBadges.length + " out of 4 badges right now.");
+            $('.progress-bar').css('width',  earnedBadges.length / 4 * 100 + "%");
+            if ($(".bio").text() === ''){
+                $(".bio").text('You do not have a bio yet, create one by pressing "edit profile"')
+            }
+            $('#changeProfile').on('click', function () {
+                app.loadController(CONTROLLER_UPDATEPROFILE);
+            })
+        } else {
+            $('#changeProfile').hide();
+            $('#badgeOverview').hide();
+
+        }
 
     }
 
     error() {
-        $(".content").html("Failed to load content!");
-    }
-
-    async onAddEvent(event) {
-        event.preventDefault();
-        const firstname = this.createProfileView.find("#inputFirstname").val();
-        const lastname = this.createProfileView.find("#inputLastname").val();
-        const emailadress = this.createProfileView.find("#inputEmailadress").val();
-        const phoneNumber = this.createProfileView.find("#inputPhoneNumber").val();
-        const bio = this.createProfileView.find("#inputBio").val();
-
-
-        try{
-            const registerId = await this.profileRepository.create(firstname, lastname, emailadress, phoneNumber, bio);
-            app.loadController(CONTROLLER_PROFILE);
-        } catch (e) {
-            console.log(e);
-        }
+        $(".content").html("failed to load content")
     }
 }

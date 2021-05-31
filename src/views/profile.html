@@ -1,32 +1,61 @@
-<div class="row justify-content-md-center">
-    <div class="col-sm-4 m-3">
-        <h2 class="mb-3">Profile</h2>
-        <img src="assets/img/pf.png" alt="Profile" width="100" height="100">
-            <form class="login-form">
-                <div class="form-group">
-                    <label for="inputFirstname">Voornaam</label>
-                    <input type="text" name="firstname" class="form-control" id="inputFirstname" placeholder="Vul je voornaam in">
-                </div>
-                <div class="form-group">
-                    <label for="inputLastname">Achternaam</label>
-                    <input type="text" name="lastname" class="form-control" id="inputLastname" placeholder="Vul je achternaam in">
-                </div>
-                <div class="form-group">
-                    <label for="inputEmailadress">Email</label>
-                    <input type="text" name="emailadress" class="form-control" id="inputEmailadress" placeholder="Vul je emailadres in">
-                </div>
-                <div class="form-group">
-                    <label for="inputPhoneNumber">Telefoonnummer</label>
-                    <input type="number" name="phoneNumber" class="form-control" id="inputPhoneNumber" placeholder="Vul je telefoonnummer in">
-                </div>
-                <div class="form-group">
-                    <label for="inputBio">Bio</label>
-                    <input type="text" name="bio" class="form-control" id="inputBio" placeholder="Vul je bio in">
-                </div>
-
-                <div class="error mb-3 text-danger"></div>
-
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+<div class="row justify-content-md-center profilePage">
+    <div class="col-4 profilePicCol">
+        <img class="profilePic" src="../assets/img/profilepic.jpg" alt="profile picture">
     </div>
+    <div class="col-8 profileInfo">
+        <h2 id="name"></h2>
+        <p class="bio"></p>
+        <button id="changeProfile" class="btn">Edit profile</button>
+    </div>
+</div>
+<div class="container" id="badgeOverview">
+    <div class="row">
+        <div class="badgesMainInfo col">
+            <h1>What Are Badges?</h1>
+            <p>With badges, users are shown more often to other users. Badges are
+                collected automatically when a certain goal is reached. </p>
+            <hr>
+            <p>You can always check your profile page to see which badges you can earn.
+                By hovering over a badge you can see what you have to do to get that badge. </p>
+        </div>
+
+        <div class="badgeWelcome col">
+            <span class="progressText"></span>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar"
+                     aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="allBadges">
+        <div class="badge" id="badgeBorder1">
+            <p class="notEarned" id="badge1">not earned</p>
+            <i class="fas fa-star dailyLogIn"></i>
+            <h3>Daily Log In's</h3>
+            <p class="badgeInfo">This user has been online for the past 7 days.</p>
+        </div>
+        <div class="badge" id="badgeBorder2">
+            <i class="fas fa-star popularUser"></i>
+            <p class="notEarned" id="badge2">not earned</p>
+            <h3>Popular User</h3>
+            <p class="badgeInfo">This user has talked to 3+ user last month</p>
+        </div>
+    </div>
+<div class="row1">
+    <div class="badge" id="badgeBorder3">
+        <i class="fas fa-star fastReplies"></i>
+        <p class="notEarned" id="badge3">not earned</p>
+        <h3>Fast Replies</h3>
+        <p class="badgeInfo">This user replied within 1 hour last week.</p>
+    </div>
+    <div class="badge" id="badgeBorder4">
+        <i class="fas fa-star ogUser"></i>
+        <p class="notEarned" id="badge4">not earned</p>
+        <h3>OG user</h3>
+        <p class="badgeInfo">This user has been a member for 1+ years</p>
+    </div>
+</div>
 </div>
