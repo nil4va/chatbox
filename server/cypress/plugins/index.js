@@ -1,9 +1,9 @@
-const express = require("express");
-const app = express();
+const express = require('express')
+const app = express()
 
-app.use(express.static("../src"));
-app.listen(8080);
+app.use(express.static('../src'))
+app.listen(8081)
 
-console.log("Server running on port 8080");
+console.log('Server running on port 8081')
 
-module.exports = (on, config) => {};
+module.exports = (on, config) => {}
