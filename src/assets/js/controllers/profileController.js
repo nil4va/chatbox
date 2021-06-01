@@ -12,7 +12,7 @@ class ProfileController{
         this.profileView = $(htmlData);
         $(".content").empty().append(this.profileView);
 
-        const personInfo = (await this.profileRepository.getPersonalInfo(this.person))[0];
+        const personInfo = await this.profileRepository.getPersonalInfo(this.person);
         $("#name").text(personInfo.firstName === '' ? this.person :
             personInfo.firstName + (personInfo.lastName === '' ? '' : ' ' + personInfo.lastName));
         $(".bio").text(personInfo.bio);

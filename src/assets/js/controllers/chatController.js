@@ -231,8 +231,6 @@ class ChatController {
             }
         }
         return messages
-    }
-    return messages
   }
 
   transformUrls(msg) {
@@ -595,7 +593,7 @@ class ChatController {
 
                 $('.messages').append(`
 <div class = "row previewChatSearch previewChat">
-    <div class="profilePicture"></div>
+    <img class="profilePicture" src="uploads/profile/${otherPerson}.dat" onerror="this.src =  'assets/img/profilepic.jpg'">
     <div class="fcol">
         <div class="userName">${otherPerson}</div>
         <span class="lastMessage">${message.sender}: ${content}</span>
@@ -605,6 +603,7 @@ class ChatController {
                 ).toLocaleString()}</div>
     </div>
 </div>`)
+
             }
             $('.previewChatSearch').on('click', async e => {
                 let userName = e.currentTarget.$('.userName').textContent
