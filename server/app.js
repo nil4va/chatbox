@@ -230,31 +230,6 @@ app.post('/posts', (req, res) => {
   )
 })
 
-app.post('/profile', (req, res) => {
-  db.handleQuery(
-    connectionPool,
-    {
-      query:
-        'INSERT INTO profile(firstname,lastname,emailadress,phoneNumber,bio) VALUES (?,?,?,?,?)',
-      values: [
-        req.body.firstname,
-        req.body.lastname,
-        req.body.emailadress,
-        req.body.phoneNumber,
-        req.body.bio,
-      ],
-    },
-    data => {
-      if (data.insertId) {
-        res.status(httpOkCode).json({ id: data.insertId })
-      } else {
-        res.status(badRequestCode).json({ reason: 'Profile is not complete' })
-      }
-    },
-    err => res.status(badRequestCode).json({ reason: err })
-  )
-})
-
 const USERIDMAP = {}
 
 // converts a name to an id
@@ -760,7 +735,10 @@ app.post('/profile/info', (req, res) => {
             values: [req.body.username]
         },
         data => {
-            res.status(httpOkCode).json(data)
+            if (data.length > 0){
+                res.status(httpOkCode).json(data[0])
+            }
+            res.status(500).json({reason: 'no data returned'})
         },
         err => res.status(badRequestCode).json({reason: err})
     )
