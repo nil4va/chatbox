@@ -12,7 +12,7 @@ class ProfileController{
         this.profileView = $(htmlData);
         $(".content").empty().append(this.profileView);
 
-        const personInfo = (await this.profileRepository.getPersonalInfo(this.person))[0];
+        const personInfo = await this.profileRepository.getPersonalInfo(this.person);
         $("#name").text(personInfo.firstName === '' ? this.person :
             personInfo.firstName + (personInfo.lastName === '' ? '' : ' ' + personInfo.lastName));
         $(".bio").text(personInfo.bio);
@@ -37,6 +37,11 @@ class ProfileController{
             $('#badgeOverview').hide();
 
         }
+
+        $('.profilePic').attr("src", "uploads/profile/" + sessionManager.get("username") + ".dat")
+        $('.profilePic').on("error", e => {
+            $('.profilePic').attr("src", "assets/img/profilepic.jpg")
+        })
 
     }
 
