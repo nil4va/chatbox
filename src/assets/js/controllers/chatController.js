@@ -233,14 +233,13 @@ class ChatController {
     return messages
   }
 
-  getImages(msg) {
+  transformUrls(msg) {
     msg.content = decodeURIComponent(msg.content)
-    let imgCont = ce('div', { className: 'fcol' })
-    if (!rUrl.test(msg.content)) return imgCont
+    let urlCont = ce('div', { className: 'fcol' })
+    if (!rUrl.test(msg.content)) return urlCont
     for (const match of msg.content.match(rUrl)) {
       if (!match) continue
       let url = match
-      console.log(url)
       msg.content = msg.content.replace(match, '')
       if (rImg.test(url)) {
         // remove image urls from content
@@ -249,16 +248,19 @@ class ChatController {
           this.scrollToLastMessage()
         }
         img.src = url
-        imgCont.append(img)
+        urlCont.append(img)
       } else if (rVid.test(url)) {
-        let vid = ce('video', { src: url })
+        let vid = ce('video', {
+          src: url,
+          style: 'max-width:100%;max-height:100%',
+          controls: true,
+        })
         vid.onload = _ => {
           this.scrollToLastMessage()
         }
-        imgCont.append(vid)
+        urlCont.append(vid)
       } else {
         UrlPreview.load(url).then(v => {
-          console.log(v)
           let c = qs(`#msg_${msg.id} .content`)
           c.$$('a')
             .filter(v => v.href.trim() == url.trim())
@@ -268,6 +270,7 @@ class ChatController {
         })
       }
     }
+    return urlCont
   }
 
   // transformUrls(msg) {
@@ -275,7 +278,7 @@ class ChatController {
   // }
 
   addMessage(msg) {
-    let imageContainer = this.getImages(msg)
+    let urlContainer = this.transformUrls(msg)
     // this.transformUrls(msg)
     qsa('.status').map(v => (v.textContent = ''))
     const msgFromSelf = msg.sender === this.chatRepository.getFrom()
@@ -353,7 +356,7 @@ class ChatController {
         }
       })
     })
-    messageElement.$('.content').append(imageContainer)
+    messageElement.$('.content').append(urlContainer)
   }
 
   scrollToLastMessage() {
