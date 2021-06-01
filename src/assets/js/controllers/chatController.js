@@ -232,72 +232,72 @@ class ChatController {
         }
         return messages
     }
+    return messages
+  }
 
-    getImages(msg) {
-        msg.content = decodeURIComponent(msg.content)
-        let imgCont = ce('div', {className: 'fcol'})
-        if (!rUrl.test(msg.content)) return imgCont
-        for (const match of msg.content.match(rUrl)) {
-            if (!match) continue
-            let url = match
-            console.log(url)
-            msg.content = msg.content.replace(match, '')
-            if (rImg.test(url)) {
-                // remove image urls from content
-                let img = new Image()
-                img.onload = e => {
-                    this.scrollToLastMessage()
-                }
-                img.src = url
-                imgCont.append(img)
-            } else if (rVid.test(url)) {
-                let vid = ce('video', {src: url})
-                vid.onload = _ => {
-                    this.scrollToLastMessage()
-                }
-                imgCont.append(vid)
-            } else {
-                UrlPreview.load(url).then(v => {
-                    console.log(v)
-                    let c = qs(`#msg_${msg.id} .content`)
-                    c.$$('a')
-                        .filter(v => v.href.trim() == url.trim())
-                        .map(v => (v.outerHTML = ''))
-                    c.append(v)
-                    this.scrollToLastMessage()
-                })
-            }
-        }
+  transformUrls(msg) {
+    msg.content = decodeURIComponent(msg.content)
+    let urlCont = ce('div', { className: 'fcol' })
+    if (!rUrl.test(msg.content)) return urlCont
+    for (const match of msg.content.match(rUrl)) {
+      if (!match) continue
+      let url = match
+      msg.content = msg.content.replace(match, '')
+      if (rImg.test(url)) {
+        // remove image urls from content
+        let img = new Image()
+        img.onload = e => {}
+        img.src = url
+        urlCont.append(img)
+      } else if (rVid.test(url)) {
+        let vid = ce('video', {
+          src: url,
+          style: 'max-width:100%;max-height:100%',
+          controls: true,
+        })
+        vid.onload = _ => {}
+        urlCont.append(vid)
+      } else {
+        UrlPreview.load(url).then(v => {
+          let c = qs(`#msg_${msg.id} .content`)
+          c.$$('a')
+            .filter(v => v.href.trim() == url.trim())
+            .map(v => (v.outerHTML = ''))
+          c.append(v)
+        })
+      }
     }
+    return urlCont
+  }
 
-    // transformUrls(msg) {
-    // for (const match of msg.content.match)
-    // }
+  // transformUrls(msg) {
+  // for (const match of msg.content.match)
+  // }
 
-    addMessage(msg) {
-        let imageContainer = this.getImages(msg)
-        // this.transformUrls(msg)
-        qsa('.status').map(v => (v.textContent = ''))
-        const msgFromSelf = msg.sender === this.chatRepository.getFrom()
-        const c_msg = msgFromSelf ? 'msgself' : 'msgother'
-        const c_like = msg.liked === 0 ? 'notLiked' : 'liked'
-        const e_edit = msgFromSelf ? '<i class="fas fa-edit edit"></i>' : ''
-        const e_msg = msgFromSelf
-            ? `<div class="contentdiv"><p class="content">${msg.content}</p></div>`
-            : `<p class="content">${msg.content}</p>`
-        const e_like =
-            msg.liked === 1
-                ? `<img src="assets/img/likes/filledHeart.png" alt="liked" class="like">`
-                : !msgFromSelf
-                ? `<img src="assets/img/likes/emptyHeart.png" alt="not liked" class="like">`
-                : ``
-        const e_status = msgFromSelf
-            ? `<p class="status">${MSG_STATUS[msg.status]}</p>`
-            : ''
-        const messageElement = ce('div', {
-            id: 'msg_' + msg.id,
-            className: `msg ${c_msg} ${c_like}`,
-            innerHTML: `<div class="message">
+  addMessage(msg) {
+    let urlContainer = this.transformUrls(msg)
+    // this.transformUrls(msg)
+    qsa('.status').map(v => (v.textContent = ''))
+    const msgFromSelf = msg.sender === this.chatRepository.getFrom()
+    const c_msg = msgFromSelf ? 'msgself' : 'msgother'
+    const c_like = msg.liked === 0 ? 'notLiked' : 'liked'
+    const e_edit = msgFromSelf ? '<i class="fas fa-edit edit"></i>' : ''
+    const e_msg = msgFromSelf
+      ? `<div class="contentdiv"><p class="content">${msg.content}</p></div>`
+      : `<p class="content">${msg.content}</p>`
+    const e_like =
+      msg.liked === 1
+        ? `<img src="assets/img/likes/filledHeart.png" alt="liked" class="like">`
+        : !msgFromSelf
+        ? `<img src="assets/img/likes/emptyHeart.png" alt="not liked" class="like">`
+        : ``
+    const e_status = msgFromSelf
+      ? `<p class="status">${MSG_STATUS[msg.status]}</p>`
+      : ''
+    const messageElement = ce('div', {
+      id: 'msg_' + msg.id,
+      className: `msg ${c_msg} ${c_like}`,
+      innerHTML: `<div class="message">
           <span class="d-flex">
             ${
                 msgFromSelf
@@ -596,11 +596,9 @@ class ChatController {
                 $('.messages').append(`
 <div class = "row previewChatSearch previewChat">
     <div class="profilePicture"></div>
-    <div>
+    <div class="fcol">
         <div class="userName">${otherPerson}</div>
-        <span class="lastMessage d-flex">${
-                    message.sender
-                }:&nbsp; <div>${content}</div></span>
+        <span class="lastMessage">${message.sender}: ${content}</span>
         <div class="d-none messageId">${message.id}</div>
         <div class="timeStamp">${new Date(
                     message.timestamp
