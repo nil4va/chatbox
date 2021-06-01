@@ -3,7 +3,19 @@ describe('Login', function () {
   //Run before each test in this context
   beforeEach(() => {
     //Go to the specified URL
-    cy.visit('http://localhost:3000/#posts')
+    cy.visit('http://localhost:8081/#posts')
+    cy.server()
+    cy.route({
+      method: 'POST',
+      url: '/posts',
+      response: [
+        { postId: 1, title: '3D Jewelry' },
+        { postId: 2, title: 'Po Rack' },
+        { postId: 3, title: 'Moove' },
+        { postId: 4, title: 'Torii Stool' },
+      ],
+      status: 200,
+    }).as('post')
   })
 
   before(() => {
@@ -23,9 +35,17 @@ describe('Login', function () {
   })
 
   it('Open Post', function () {
-    cy.server()
-
-    cy.route('POST', '/posts/1').as('post')
+    cy.route({
+      method: 'POST',
+      url: '/posts/1',
+      response: {
+        context:
+          'Eve creates her pieces using a combination of digital manufacturing and hand skills, bringing 3d printed nylon and precious metals together in unique, captivating compositions',
+        creator: 'EvgeniiaBalashova',
+        title: '3D Jewelry',
+      },
+      status: 200,
+    }).as('post')
 
     cy.get('#1').click()
 
@@ -41,8 +61,6 @@ describe('Login', function () {
   })
 
   it('Open Post fail', function () {
-    cy.server()
-
     cy.route({
       method: 'POST',
       url: '/posts/1',
