@@ -417,3 +417,14 @@ body {
 .chatPreviewInfo {
   padding-right: 10px;
 }
+.previewChat.row {
+  flex-wrap: nowrap !important;
+}
+.lastMessage {
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profilePicture {
+  flex-shrink: 0;
+}

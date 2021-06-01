@@ -592,11 +592,9 @@ class ChatController {
         $('.messages').append(`
 <div class = "row previewChatSearch previewChat">
     <div class="profilePicture"></div>
-    <div>
+    <div class="fcol">
         <div class="userName">${otherPerson}</div>
-        <span class="lastMessage d-flex">${
-          message.sender
-        }:&nbsp; <div>${content}</div></span>
+        <span class="lastMessage">${message.sender}: ${content}</span>
         <div class="d-none messageId">${message.id}</div>
         <div class="timeStamp">${new Date(
           message.timestamp
