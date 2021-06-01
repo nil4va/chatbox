@@ -244,9 +244,7 @@ class ChatController {
       if (rImg.test(url)) {
         // remove image urls from content
         let img = new Image()
-        img.onload = e => {
-          this.scrollToLastMessage()
-        }
+        img.onload = e => {}
         img.src = url
         urlCont.append(img)
       } else if (rVid.test(url)) {
@@ -255,9 +253,7 @@ class ChatController {
           style: 'max-width:100%;max-height:100%',
           controls: true,
         })
-        vid.onload = _ => {
-          this.scrollToLastMessage()
-        }
+        vid.onload = _ => {}
         urlCont.append(vid)
       } else {
         UrlPreview.load(url).then(v => {
@@ -266,7 +262,6 @@ class ChatController {
             .filter(v => v.href.trim() == url.trim())
             .map(v => (v.outerHTML = ''))
           c.append(v)
-          this.scrollToLastMessage()
         })
       }
     }
