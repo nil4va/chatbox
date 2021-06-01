@@ -3,7 +3,7 @@ describe("Login", function () {
     //Run before each test in this context
     beforeEach(() => {
         //Go to the specified URL
-        cy.visit("http://localhost:8080");
+        cy.visit("http://localhost:8080/#login");
     });
 
     //Test: Validate login form
@@ -50,13 +50,14 @@ describe("Login", function () {
         });
 
         //After a successful login, the URL should now contain #welcome.
-        cy.url().should("contain", "#welcome");
+        cy.url().should("contain", "#posts");
     });
 
     //Test: Failed login
     it("Failed login", function () {
         //Start a fake server
         cy.server();
+
 
         //Add a stub with the URL /user/login as a POST
         //Respond with a JSON-object when requested and set the status-code tot 401.
