@@ -413,9 +413,9 @@ class ChatController {
         className:
           'previewChat ' +
           (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
-        innerHTML: ` <div class = "row">
-            <div class="profilePicture"></div>
-        <div>
+        innerHTML: ` <div class = "d-flex">
+            <div class="profilePicture flex-shrink-0 "></div>
+        <div class="chatPreviewInfo">
             <div class="userName">${otherPerson}
                 <div class="indicator ${
                   onlineList.find(person => person.username === otherPerson) !==

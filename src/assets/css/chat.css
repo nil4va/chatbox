@@ -82,7 +82,7 @@ body {
 .profilePicture {
   background-color: #1d2124;
   border-radius: 100%;
-  margin: 0 20px 0 20px;
+  margin-right: 20px;
   height: 70px;
   width: 70px;
 }
@@ -378,11 +378,12 @@ body {
   flex-grow: 1;
   overflow-y: auto;
   padding: 10%;
+  padding-bottom: 0;
   gap: 10px;
 }
 
 .msg {
-  max-width: 50%;
+  max-width: 75%;
 }
 
 .msgself {
@@ -402,9 +403,17 @@ body {
   gap: 10px;
 }
 
+.inputbar {
+  padding: 0 10%;
+  margin-bottom: 20px;
+}
+
 .searchbox {
   width: 100%;
 }
 .msg .content {
   padding: 8px;
+}
+.chatPreviewInfo {
+  padding-right: 10px;
 }
