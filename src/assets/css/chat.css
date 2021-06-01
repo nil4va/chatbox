@@ -82,7 +82,7 @@ body {
 .profilePicture {
   background-color: #1d2124;
   border-radius: 100%;
-  margin: 0 20px 0 20px;
+  margin-right: 20px;
   height: 70px;
   width: 70px;
 }
@@ -377,6 +377,17 @@ body {
 .history {
   flex-grow: 1;
   overflow-y: auto;
+  padding: 10%;
+  padding-bottom: 0;
+  gap: 10px;
+}
+
+.message {
+  max-width: 75%;
+}
+
+.msgself {
+  align-self: flex-end;
 }
 
 .topbar {
@@ -389,20 +400,31 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  margin: 10% 0;
-  padding: 0 10%;
   gap: 10px;
+}
+
+.inputbar {
+  padding: 0 10%;
+  margin-bottom: 20px;
 }
 
 .searchbox {
   width: 100%;
 }
-
-.inputbar {
-  height: 50px;
+.msg .content {
+  padding: 8px;
 }
-#msginput:focus {
-  height: 300px;
-  position: relative;
-  top: -246px;
+.chatPreviewInfo {
+  padding-right: 10px;
+}
+.previewChat.row {
+  flex-wrap: nowrap !important;
+}
+.lastMessage {
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profilePicture {
+  flex-shrink: 0;
 }
