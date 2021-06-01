@@ -22,4 +22,11 @@ class ProfileRepository {
     async updateBio(bio, username){
         await networkManager.doRequest(this.route + "/bio", {bio: bio, username: username})
     }
+
+    async updateProfilePicture(profilePicture, username){
+        let fd = new FormData()
+        fd.append("username", username)
+        fd.append("profilePicture", profilePicture)
+        await networkManager.sendFormData(this.route + "/profilePicture", fd)
+    }
 }

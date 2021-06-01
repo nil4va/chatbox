@@ -43,6 +43,9 @@ const authorizationErrCode = 401
 if (!fs.existsSync(wwwrootPath + '/uploads/'))
     fs.mkdirSync(wwwrootPath + '/uploads/')
 
+if (!fs.existsSync(wwwrootPath + '/uploads/profile'))
+    fs.mkdirSync(wwwrootPath + '/uploads/profile')
+
 app.post('/user/login', (req, res) => {
   const username = req.body.username
 
@@ -804,5 +807,17 @@ app.post('/profile/bio', (req, res) => {
         err => res.status(badRequestCode).json({reason: err})
     )
 })
+
+app.post('/profile/profilePicture', (req, res) => {
+    let profilePicture = req.files.profilePicture
+
+    profilePicture.mv(wwwrootPath + '/uploads/profile/' + req.body.username + '.dat', function (err) {
+      if (err) {
+        return res.status(badRequestCode).json({ reason: err })
+      }
+      return res.status(httpOkCode).json('OK')
+    })
+})
+
 module.exports = app
 module.exports.wss = wss

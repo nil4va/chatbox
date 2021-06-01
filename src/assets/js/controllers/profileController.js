@@ -38,6 +38,11 @@ class ProfileController{
 
         }
 
+        $('.profilePic').attr("src", "uploads/profile/" + sessionManager.get("username") + ".dat")
+        $('.profilePic').on("error", e => {
+            $('.profilePic').attr("src", "assets/img/profilepic.jpg")
+        })
+
     }
 
     error() {

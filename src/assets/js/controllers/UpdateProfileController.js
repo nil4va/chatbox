@@ -12,10 +12,11 @@ class UpdateProfileController{
         $(".content").empty().append(this.profileView);
 
         const personInfo = (await this.profileRepository.getPersonalInfo(this.user))[0];
-        
+
         $('#inputFirstname').val(personInfo.firstName);
         $('#inputLastname').val(personInfo.lastName);
         $("#inputBio").val(personInfo.bio);
+        this.updateProfilePicture()
 
         $('#saveProfile').on('click', async () => {
             this.updateFirstname().then(
@@ -23,8 +24,29 @@ class UpdateProfileController{
                     this.updateBio().then(
                         app.loadController(CONTROLLER_PROFILE))));
         })
+
+        $("#image").click(function() {
+            $("input[id='my_file']").click();
+        });
+
+        my_file.onchange = async e => {
+            const [file] = my_file.files
+            if (file) {
+                $('#image').attr("src", "uploads/profile/" + this.user + ".dat")
+
+                await this.profileRepository.updateProfilePicture(file, this.user)
+                this.updateProfilePicture()
+            }
+        }
     }
 
+    async updateProfilePicture() {
+        const profilePicture = $('#image')
+        profilePicture.attr("src", "uploads/profile/" + this.user + ".dat")
+        profilePicture.on("error", e => {
+            profilePicture.attr("src", "assets/img/profilepic.jpg")
+        })
+    }
 
     async updateFirstname(){
         const firstname = $('#inputFirstname').val();
