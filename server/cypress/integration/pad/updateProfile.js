@@ -11,7 +11,7 @@ describe("updateProfile", function () {
             response: {firstName: "Xiaosu", lastName: "", bio: ""}
         }).as("profileInfo")
 
-        cy.visit("http://localhost:8080/#updateProfile");
+        cy.visit("http://localhost:8081/#updateProfile");
 
         //Login
         localStorage.setItem("session", JSON.stringify({"username": "test"}));
