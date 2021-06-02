@@ -74,7 +74,7 @@ app.post('/user/login', (req, res) => {
                 //wrong username
                 res
                     .status(authorizationErrCode)
-                    .json({reason: 'Wrong username or password'})
+                    .json({reason: "Username doesn't exist"})
             }
         },
         err => res.status(badRequestCode).json({reason: err})
