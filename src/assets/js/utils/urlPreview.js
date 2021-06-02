@@ -6,12 +6,24 @@ const rTitle = /title/,
   rDomain = /(site_name|domain)/
 const defUrl = v => ce('a', { href: v, textContent: v })
 export default class UrlPreview {
+  static cache = {}
+  static mkPreview(url, { title, description }) {
+    return ce('div', {
+      className: 'UrlPreview',
+      innerHTML: `
+            <a href="${url}">${url.hostname} / ${title}</a>  
+        <p>${description}</p>
+    `,
+    })
+  }
   static async load(url) {
     try {
       url = new URL(url)
     } catch (e) {
       return defUrl(url)
     }
+    let cached = UrlPreview.cache[url.toString()]
+    if (cached) return UrlPreview.mkPreview(url, cached)
     // console.log(url)
     let head = await fetch(CORS_PROXY + url, { method: 'HEAD' })
     // if url content is not html return
@@ -41,13 +53,8 @@ export default class UrlPreview {
       }
     })
     // console.log(metas)
-
-    return ce('div', {
-      className: 'UrlPreview',
-      innerHTML: `
-            <a href="${url}">${url.hostname} / ${title}</a>  
-        <p>${description}</p>
-    `,
-    })
+    data = { title, description, domain }
+    UrlPreview.cache[url.toString()] = data
+    return UrlPreview.mkPreview(url, data)
   }
 }
