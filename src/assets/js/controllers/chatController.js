@@ -9,7 +9,8 @@ const MSG_STATUS = {
 }
 
 const rUrl = /((ftp|http|https):\/\/[^ "\n]+|(?<!\/)uploads\/.*)/g,
-  rImg = /\.(jpg|png|gif)($|&)/i,
+  rImg =
+    /\.(jpg|jpeg|jfif|pjpeg|pjp|svg|tif|tiff|webp|ico|cur|png|bmp|gif)($|&)/i,
   rVid = /\.(webm|mov|mp4)($|&)/i
 
 class ChatController {
@@ -408,9 +409,9 @@ class ChatController {
         className:
           'previewChat ' +
           (this.chatRepository.getTo() === otherPerson ? 'selected' : ''),
-        innerHTML: ` <div class = "row">
+        innerHTML: ` <div class = "d-flex">
             <img class="profilePicture" src="uploads/profile/${otherPerson}.dat">
-        <div>
+        <div class="fcol previewChatInfo">
             <div class="userName">${otherPerson}
                 <div class="indicator ${
                   onlineList.find(person => person.username === otherPerson) !==
