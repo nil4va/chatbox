@@ -1,7 +1,7 @@
 import ChatRepository from '../repositories/chatRepository.js'
-import {ce, getQuery, LinkedList, qs, qsa, sleep} from '../utils/alfa.js'
+import { ce, getQuery, LinkedList, qs, qsa, sleep } from '../utils/alfa.js'
 import UrlPreview from '../utils/urlPreview.js'
-import SimpleWebSocket, {TYPES} from '../utils/webSocketManager.js'
+import SimpleWebSocket, { TYPES } from '../utils/webSocketManager.js'
 
 const MSG_STATUS = {
     0: 'sent',
@@ -19,13 +19,14 @@ class ChatController {
         this.chatRepository = new ChatRepository(from, to)
         this.chatListRepository = new ChatListRepository()
         this.badgeRepository = new badgeRepository()
+        // this.webSocket = new SimpleWebSocket()
         this._hasSelectedAChat = !!to
 
         this.init()
         window.chatController = this
     }
 
-    async init() {
+    async init(data) {
         let res = await fetch('views/chat.html')
         let html = await res.text()
         this.view = html
@@ -91,7 +92,7 @@ class ChatController {
             fc.innerHTML = ''
             let files = qsa('.msg .content img').map(v => v.src)
             qs('#fileCounter').textContent = files.length
-            files.reverse().map(v => fc.append(ce('img', {src: v})))
+            files.reverse().map(v => fc.append(ce('img', { src: v })))
             this.filesHidden = false
         } else {
             qs('#fileFolder').style.display = 'none'
@@ -104,7 +105,7 @@ class ChatController {
     onceAfterSelectFirstChat() {
         this._hasSelectedAChat = true
         qs('.chatwindow').style.display = ''
-        this.chatRepository.ws.on('message', ({type, data}) => {
+        this.chatRepository.ws.on('message', ({ type, data }) => {
             if (!this._hasSelectedAChat) return
             switch (type) {
                 case TYPES.SUCCESS:
@@ -192,16 +193,13 @@ class ChatController {
             app.loadController(CONTROLLER_PROFILE, qs('.username').textContent)
         })
 
-        $('.likedMsg').on('click',  async() => {
+        $('.likedMsg').on('click', async () => {
             $('#likesModal').show()
             $('#likesBody').html('')
-
             const messages = await this.chatRepository.getAll()
-
             let atLeastOneLiked = false
             for (let i = 0; i < messages.length; i++) {
                 let message = messages[i]
-
                 if (
                     message.liked === 1 &&
                     message.receiver === sessionManager.get('username')
@@ -221,16 +219,13 @@ class ChatController {
                     )
                 }
             }
-
             if (!atLeastOneLiked) {
                 $('#likesBody').html("You haven't yet liked anything in this chat.")
             }
         })
-
         $('#likesClose').on('click', function () {
             $('#likesModal').hide()
         })
-
         window.onclick = function (event) {
             if (event.target === document.getElementById('likesModal')) {
                 $('#likesModal').hide()
@@ -241,18 +236,16 @@ class ChatController {
 
     transformUrls(msg) {
         msg.content = decodeURIComponent(msg.content)
-        let urlCont = ce('div', {className: 'fcol'})
+        let urlCont = ce('div', { className: 'fcol' })
         if (!rUrl.test(msg.content)) return urlCont
         for (const match of msg.content.match(rUrl)) {
             if (!match) continue
             let url = match
             msg.content = msg.content.replace(match, '')
-
             if (rImg.test(url)) {
                 // remove image urls from content
                 let img = new Image()
-                img.onload = e => {
-                }
+                img.onload = e => {}
                 img.src = url
                 urlCont.append(img)
             } else if (rVid.test(url)) {
@@ -261,8 +254,7 @@ class ChatController {
                     style: 'max-width:100%;max-height:100%',
                     controls: true,
                 })
-                vid.onload = _ => {
-                }
+                vid.onload = _ => {}
                 urlCont.append(vid)
             } else {
                 UrlPreview.load(url).then(v => {
@@ -276,6 +268,10 @@ class ChatController {
         }
         return urlCont
     }
+
+    // transformUrls(msg) {
+    // for (const match of msg.content.match)
+    // }
 
     addMessage(msg) {
         let urlContainer = this.transformUrls(msg)
@@ -463,66 +459,61 @@ class ChatController {
         function selectChat(e) {
             $('.previewChat').removeClass('selected')
             e.currentTarget.classList.add('selected')
-
-            qs('.searchbox1').value = ''
-            $('#buttonDown').hide()
-            $('#buttonUp').hide()
             this.showBadges()
         }
 
-    function selectChat(e) {
-      $('.previewChat').removeClass('selected')
-      e.currentTarget.classList.add('selected')
-      this.showBadges()
-    }
+        $('.previewChat').on('click', selectChat.bind(this))
+        // searchbox for users
+        $('.searchbox').on('keyup', function () {
+            const value = $(this).val().toLowerCase()
+            $(this)
+                .parent()
+                .parent()
+                .find('.userName')
+                .filter(function () {
+                    $(this)
+                        .parent()
+                        .parent()
+                        .parent()
+                        .toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    let previewChat = $('.previewChat')
+                    if ($('.chatList').find(previewChat).length > 0) {
+                        $('.chats').show()
+                        $('.messages').show()
+                    }
+                    if (value === '') {
+                        $('.chats').hide()
+                        $('.messages').hide()
+                    }
 
-        $('.searchbox1').on('input', function () {
-            if (!$('.searchbox1').val()) {
-                $('#buttonUp').hide()
-                $('#buttonDown').hide()
-            }
+                    if ($('.chatList, .pinnedList').children(':visible').length === 0) {
+                        $('.chats').hide()
+                    }
+                })
         })
 
-        $('#buttonUp').on('click', function () {
-            const message = matchedMessages.prev.value
-            classActive(message)
+        // searchbox for messages
+        function classActive(message) {
+            $('.activeMessage').removeClass('activeMessage')
+            $(message).addClass('activeMessage')
+            if (message) message.scrollIntoView()
+        }
+
+        let matchedMessages
+
+        $('.searchbox1').on('keyup', function () {
+            const value = new RegExp($(this).val().toLowerCase())
+            $('.activeMessage').removeClass('activeMessage')
+            if ($(this).val() === '') return
+            matchedMessages = $('.msg')
+                .filter(function () {
+                    return value.test($(this).text().toLowerCase())
+                })
+                .toArray()
+
+            matchedMessages = new LinkedList(...matchedMessages)
+            classActive(matchedMessages.tail.value)
         })
-
-        $('#buttonUp').on('click', function () {
-            const message = matchedMessages.prev.value
-            classActive(message)
-        })
-
-        $('#buttonDown').on('click', function () {
-            const message = matchedMessages.next.value
-            classActive(message)
-        })
-        .toArray()
-
-      matchedMessages = new LinkedList(...matchedMessages)
-      classActive(matchedMessages.tail.value)
-    })
-
-    $('.searchMessageContainer').hide()
-
-    $('.searchGlobalMessages').hide()
-
-    $('.searchbox').on('keyup', async e => {
-      const value = $('.searchbox').val()
-      const allMessages = await this.chatRepository.allMessages(
-        sessionManager.get('username'),
-        value
-      )
-
-      $('.messages').html('')
-
-      let previewChatSearch = $('.previewChatSearch')
-
-      if (allMessages.length > 0) {
-        $('.searchGlobalMessages').show()
-      } else {
-        $('.searchGlobalMessages').hide()
-      }
 
         $('.searchMessageContainer').hide()
 
