@@ -1,39 +1,33 @@
 /**
- * Helper functions for generating cryptographic hashes
+ * Helper function that salts a password or checks if the salted pw is the same as unsalted version
  *
- * @author Pim Meijer
+ * @author Maud de Jong
  */
-const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
 var saltRounds = 10;
 
 /**
- * Use this whenever you need a token. Eg. for a user when logged in
- *
- * @returns {string} - randomized hex encoded string
- */
-function generateAuthToken () {
-    return crypto.randomBytes(30).toString("hex");
-}
-
-/**
  * Gives you a SHA256 hashes string back
  *
- * @param password
- * @param salt
- * @returns {string} hashed string in base64 format
+ * @param password the unsalted password
+ * @returns {string} salted password
  */
 function hashPassword(password) {
     return bcrypt.hash(password, saltRounds);
 }
 
+/**
+ *
+ * @param input the unsalted string you want to compare
+ * @param hashedPw the salted password you want to compare the string with
+ * @returns {void|Promise<never>|Promise<unknown>|*}
+ */
 function validatePassword(input, hashedPw){
     return bcrypt.compare(input, hashedPw);
 }
 
 module.exports = {
-    generateAuthToken,
     hashPassword,
     validatePassword,
 };

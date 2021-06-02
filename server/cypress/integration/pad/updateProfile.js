@@ -1,23 +1,23 @@
 //Context: Update profile
 describe("updateProfile", function () {
-    //Run before each test in this context
 
+    //setup page with standard sub and set session
     beforeEach(() => {
         cy.server();
 
         cy.route({
             method: "POST",
             url: "/profile/info",
-            response: {firstName: "Xiaosu", lastName: "", bio: ""}
+            response: {firstName: "Xiaosu", lastName: "Yu", bio: "hi!"}
         }).as("profileInfo")
 
         cy.visit("http://localhost:8081/#updateProfile");
 
         //Login
-        localStorage.setItem("session", JSON.stringify({"username": "test"}));
+        localStorage.setItem("session", JSON.stringify({"username": "XiaosuYu"}));
     });
 
-    //Test: Validate login form
+    //Test: Validate update form
     it("Valid profile update form", () => {
         cy.get("#inputFirstname").should("exist");
         cy.get("#inputLastname").should("exist");
@@ -25,25 +25,28 @@ describe("updateProfile", function () {
         cy.get("#saveProfile").should("exist");
     });
 
-    //Test: test values are inserted
-    it("test values are inserted", () => {
+    //Test: old saved values are inserted
+    it("old saved values are inserted", () => {
         cy.wait("@profileInfo")
         cy.get("#inputFirstname").should("have.value", "Xiaosu");
+        cy.get("#inputLastname").should("have.value", "Yu");
+        cy.get("#inputBio").should("have.value", "hi!");
     });
 
     //Test: Successful update first name
     it("Successful update first name", () => {
-        cy.route("POST", "/profile/firstname", {firstName: "testName", username: "test"})
+        cy.route("POST", "/profile/firstname")
             .as("firstNameUpdate");
 
         cy.get("#inputFirstname").type("new");
+
         cy.get("#saveProfile").click();
 
         cy.wait("@firstNameUpdate");
 
         cy.get("@firstNameUpdate").should((xhr) => {
             expect(xhr.request.body.firstName).equals("Xiaosunew");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.url().should("contain", "#profile");
@@ -51,17 +54,17 @@ describe("updateProfile", function () {
 
     //Test: Successful update last name
     it("Successful update last name", () => {
-        cy.server();
-        cy.get("#inputLastname").type("testLastName");
-        cy.route("POST", "/profile/lastname", {lastName: "testLastName", username: "test"}).as("lastNameUpdate");
+        cy.get("#inputLastname").type("new");
+
+        cy.route("POST", "/profile/lastname").as("lastNameUpdate");
 
         cy.get("#saveProfile").click();
 
         cy.wait("@lastNameUpdate");
 
         cy.get("@lastNameUpdate").should((xhr) => {
-            expect(xhr.request.body.lastName).equals("testLastName");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.lastName).equals("Yunew");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.url().should("contain", "#profile");
@@ -69,19 +72,17 @@ describe("updateProfile", function () {
 
     //Test: Successful update bio
     it("Successful update bio",  ()  => {
-        cy.server();
+        cy.get("#inputBio").type("new");
 
-        cy.get("#inputBio").type("test test bio");
-
-        cy.route("POST", "/profile/bio", {bio: "test test bio", username: "test"}).as("bioUpdate");
+        cy.route("POST", "/profile/bio").as("bioUpdate");
 
         cy.get("#saveProfile").click();
 
         cy.wait("@bioUpdate");
 
         cy.get("@bioUpdate").should((xhr) => {
-            expect(xhr.request.body.bio).equals("test test bio");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.bio).equals("hi!new");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.url().should("contain", "#profile");
@@ -89,39 +90,35 @@ describe("updateProfile", function () {
 
     //Test: Successful update everything
     it("Successful update everything",  () => {
-        cy.server();
-        cy.get("#inputFirstname").type("New");
-        cy.get("#inputLastname").type("testLastName");
-        cy.get("#inputBio").type("test test bio");
 
-        cy.route("POST", "/profile/firstname", {firstName: "XiaosuNew", username: "test"}).as("firstNameUpdate");
-        cy.route("POST", "/profile/lastname", {lastName: "testLastName", username: "test"}).as("lastNameUpdate");
-        cy.route("POST", "/profile/bio", {bio: "test test bio", username: "test"}).as("bioUpdate");
+        cy.get("#inputFirstname").type("new");
+        cy.get("#inputLastname").type("new");
+        cy.get("#inputBio").type("new");
 
-        //Find the button to login and click it.
+        cy.route("POST", "/profile/firstname").as("firstNameUpdate");
+        cy.route("POST", "/profile/lastname").as("lastNameUpdate");
+        cy.route("POST", "/profile/bio").as("bioUpdate");
+
         cy.get("#saveProfile").click();
 
         cy.wait("@firstNameUpdate");
         cy.get("@firstNameUpdate").should((xhr) => {
-            expect(xhr.request.body.firstName).equals("XiaosuNew");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.firstName).equals("Xiaosunew");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.wait("@lastNameUpdate");
         cy.get("@lastNameUpdate").should((xhr) => {
-            expect(xhr.request.body.lastName).equals("testLastName");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.lastName).equals("Yunew");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.wait("@bioUpdate");
         cy.get("@bioUpdate").should((xhr) => {
-            expect(xhr.request.body.bio).equals("test test bio");
-            expect(xhr.request.body.username).equals("test");
+            expect(xhr.request.body.bio).equals("hi!new");
+            expect(xhr.request.body.username).equals("XiaosuYu");
         });
 
         cy.url().should("contain", "#profile");
     });
-
-
-
 });

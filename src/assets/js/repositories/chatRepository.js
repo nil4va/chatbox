@@ -11,7 +11,6 @@ export default class ChatRepository extends CustomEventTarget {
     this._sender = sender
     this._receiver = receiver
     this.ws = new SimpleWebSocket()
-    // this.initWebSocket()
   }
 
   // get all messages sent in this session
@@ -44,10 +43,7 @@ export default class ChatRepository extends CustomEventTarget {
     var d = new Date()
     var a = d.toLocaleString()
 
-    // content = content + ' <br> ' + a
-    // console.log('msg out:', content)
     let data = { content, sender: this._sender, receiver: this._receiver }
-    // this._messages.push(data)
     this.ws.send(TYPES.MESSAGE, data)
   }
 

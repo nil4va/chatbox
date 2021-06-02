@@ -1,7 +1,7 @@
 /**
  * Server application - contains all server config and api endpoints
  *
- * @author Pim Meijer
+ * @author Pim Meijer, Alfa sayers, Maud de Jong and Nilava Kazal
  */
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -46,6 +46,7 @@ if (!fs.existsSync(wwwrootPath + '/uploads/'))
 if (!fs.existsSync(wwwrootPath + '/uploads/profile'))
     fs.mkdirSync(wwwrootPath + '/uploads/profile')
 
+// checks if credentials for login are correct. returns the username
 app.post('/user/login', (req, res) => {
     const username = req.body.username
 
@@ -80,22 +81,7 @@ app.post('/user/login', (req, res) => {
     )
 })
 
-//dummy data example - rooms
-app.post('/room_example', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: 'SELECT id, surface FROM room_example WHERE id = ?',
-            values: [req.body.id],
-        },
-        data => {
-            //just give all data back as json
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
+// adds a user to the db with a salted version of the pw. returns the userid
 app.post('/register/add', async (req, res) => {
     const username = req.body.username
     const email = req.body.email
@@ -120,6 +106,7 @@ app.post('/register/add', async (req, res) => {
     )
 })
 
+// checks if the username is already in use. Returns true if there is no one with that username
 app.post('/register/name', (req, res) => {
     const username = req.body.username
 
@@ -136,6 +123,7 @@ app.post('/register/name', (req, res) => {
     )
 })
 
+// checks if the email is already in use. Returns true if there is no one with that email
 app.post('/register/mail', (req, res) => {
     const email = req.body.email
 
@@ -152,13 +140,13 @@ app.post('/register/mail', (req, res) => {
     )
 })
 
+// saves a file in the uploads folder
 app.post('/upload', (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res
             .status(badRequestCode)
             .json({reason: 'No files were uploaded.'})
     }
-    let errOccured = false
     let paths = []
     for (const [key, file] of Object.entries(req.files)) {
         let file_path = path.parse(file.name)
@@ -169,25 +157,9 @@ app.post('/upload', (req, res) => {
         file.mv(wwwrootPath + server_path, err => console.log(err))
     }
     res.status(httpOkCode).json({files: paths})
-
-    // let sampleFile = req.files.sampleFile
-
-    // sampleFile.mv(wwwrootPath + '/uploads/test.jpg', function (err) {
-    //   if (err) {
-    //     return res.status(badRequestCode).json({ reason: err })
-    //   }
-
-    //   return res.status(httpOkCode).json('OK')
-    // })
-})
-//------- END ROUTES -------
-
-app.get('/gateway', (req, res) => {
-    res
-        .status(httpOkCode)
-        .json({gateway: `ws://localhost:${WSS_PORT}${WSS_PATH}`})
 })
 
+// Returns the values that belong to a certain post
 app.post('/posts/:id', (req, res) => {
     db.handleQuery(
         connectionPool,
@@ -211,6 +183,7 @@ app.post('/posts/:id', (req, res) => {
     )
 })
 
+// Returns the id and title of every post in the db
 app.post('/posts', (req, res) => {
     db.handleQuery(
         connectionPool,
@@ -231,6 +204,381 @@ app.post('/posts', (req, res) => {
         },
         err => res.status(badRequestCode).json({reason: err})
     )
+})
+
+// edits the content of a message and sets the edited value to 1
+app.post('/edit', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'UPDATE message SET content = ?, edited = 1 WHERE id = ?',
+            values: [req.body.content, req.body.id],
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// gets the previous messages from a certain chat
+app.post('/history', async (req, res) => {
+    const id1 = await nameToId(req.body.receiver)
+    const id2 = await nameToId(req.body.sender)
+    db.handleQuery(connectionPool, {
+        query: 'UPDATE message SET status = 1 WHERE `to` = ? AND `from` = ?',
+        values: [id2, id1],
+    })
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp, liked, edited FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
+            values: [id1, id2, id2, id1],
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// gets the last message from every chat the logged in user is a part of
+app.post('/chatList', async (req, res) => {
+    const loggedInName = req.body.userIdLoggedIn
+    const id = await nameToId(loggedInName)
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT a.timestamp, a.content, u1.username receiver, u2.username sender FROM `message` a INNER JOIN(SELECT MAX(id) id FROM `message` WHERE `to` = ? or `from` = ? group by `to`, `from`) b ON a.id = b.id INNER JOIN user u1 ON a.`to` = u1.id INNER JOIN user u2 ON a.`from` = u2.id ORDER BY b.id desc',
+            values: [id, id],
+        },
+        data => {
+            if (data) {
+                let reg = new Set()
+                data = data.reduce((a, c) => {
+                    let other = c.receiver === loggedInName ? c.sender : c.receiver
+                    if (!reg.has(other)) {
+                        reg.add(other)
+                        a.push(c)
+                    }
+                    return a
+                }, [])
+                res.status(httpOkCode).json(data)
+            }
+        },
+        err => {
+            res.status(badRequestCode).json({reason: err})
+        }
+    )
+})
+
+// gets a list of all online users
+app.post('/isOnlineList', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'SELECT `username` FROM `user` WHERE `isOnline` = 1',
+        },
+        data => {
+            if (data) {
+                res.status(httpOkCode).json(data)
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// likes a certain message
+app.post('/liking/like', (req, res) => {
+    const messageId = req.body.message
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'UPDATE message SET liked = 1 WHERE id=?',
+            values: [messageId],
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// unlikes a certain message
+app.post('/liking/unlike', (req, res) => {
+    const messageId = req.body.message
+    db.handleQuery(
+        connectionPool,
+        {
+            query: 'UPDATE message SET liked = 0 WHERE id=?',
+            values: [messageId],
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// gets all badges a certain user has earned
+app.post('/badge', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query:
+                'SELECT `badgeNr` FROM `badge` INNER JOIN `user` ON badge.user = user.id WHERE user.username = ?',
+            values: [req.body.username],
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// checks if user has been online for the past 7 days
+app.post('/badge/online', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `date` FROM online_badge INNER JOIN `user` ON online_badge.userId = user.id WHERE user.username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            if (data.length === 7) {
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 1}, res)
+
+            } else {
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 1}, res)
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+//checks if a user has talked to min 3 users last month
+app.post('/badge/popular', async (req, res) => {
+    const userId = await nameToId(req.body.username);
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp`, DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) AS diff FROM message WHERE (`from` = ? OR `to` = ?) AND (DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 31)",
+            values: [userId, userId]
+        },
+        data => {
+            const users = new Set();
+            for (let entry of data) {
+                users.add(entry.from)
+                users.add(entry.to)
+            }
+            if (users.size > 3) {
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 2}, res)
+
+            } else {
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 2}, res)
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// checks if a user has replied within an hour in the last 7 days
+app.post('/badge/fast', async (req, res) => {
+    const userId = await nameToId(req.body.username);
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp` FROM message WHERE DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 7 AND (`from` = ? OR `to` = ?)",
+            values: [userId, userId]
+        },
+        data => {
+            const from = [];
+            const to = []
+            for (let message of data) {
+                if (message.from === userId) {
+                    from.push(message)
+                } else {
+                    to.push(message)
+                }
+            }
+
+            let repliedFast = false;
+            for (let msgTo of to) {
+                for (let msgFrom of from) {
+                    const replyTime = new Date(msgFrom.timestamp).setHours(new Date(msgFrom.timestamp).getHours() + 1);
+
+                    if (new Date(msgTo.timestamp) < replyTime) {
+                        repliedFast = true;
+                    }
+                }
+            }
+            res.status(httpOkCode)
+            return repliedFast ? badgeAdd({
+                'username': req.body.username,
+                'badgeNr': 3
+            }, res) : badgeRemove({"username": req.body.username, "badgeNr": 3}, res)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// checks if user joined over a year ago
+app.post('/badge/og', (req, res) => {
+
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT dateJoined FROM user WHERE username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            var oneYearAgo = new Date();
+            oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+            if (data[0].dateJoined < oneYearAgo) {
+                res.status(httpOkCode)
+                return badgeAdd({'username': req.body.username, 'badgeNr': 4}, res)
+
+            } else {
+                res.status(httpOkCode)
+                return badgeRemove({'username': req.body.username, 'badgeNr': 4}, res)
+            }
+
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// adds a badge to the db
+const badgeAdd = async (req, res) => {
+    const userId = await nameToId(req.username);
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "INSERT IGNORE INTO badge VALUES (?,?)",
+            values: [req.badgeNr, userId]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+}
+
+// removes a badge from the db
+const badgeRemove = async (req, res) => {
+    const userId = await nameToId(req.username);
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "DELETE FROM badge WHERE user = ? AND badgeNr = ?",
+            values: [userId, req.badgeNr]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+}
+
+//get all chats from/to the user that contain a certain string
+app.post('/chat', async (req, res) => {
+    const stringValue = '%' + req.body.value + '%'
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT `from`, `to`, `timestamp`, `content`, `to`.`username` AS `receiver`, `from`.`username` AS" +
+                " `sender`, `message`.`id` FROM message INNER JOIN `user` AS `to` ON `to`.`id` = `message`.`to` INNER" +
+                " JOIN" +
+                " `user` AS `from` ON `from`.`id` = `message`.`from` WHERE `CONTENT` LIKE ? AND (`to`.`username` = ? OR `from`.`username` = ?)",
+            values: [stringValue, req.body.username, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode).json(data)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// get the firstname , lastname and bio from a certain user
+app.post('/profile/info', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "SELECT firstName, lastName, bio FROM user WHERE username = ?",
+            values: [req.body.username]
+        },
+        data => {
+            if (data.length > 0) {
+                res.status(httpOkCode).json(data[0])
+            } else {
+                res.status(500).json({reason: 'no data returned'})
+            }
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// update a users first name
+app.post('/profile/firstname', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET firstName = ? WHERE username = ?",
+            values: [req.body.firstName, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// update a users last name
+app.post('/profile/lastname', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET lastName = ? WHERE username = ?",
+            values: [req.body.lastName, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+
+// update a users bio
+app.post('/profile/bio', (req, res) => {
+    db.handleQuery(
+        connectionPool,
+        {
+            query: "UPDATE user SET bio = ? WHERE username = ?",
+            values: [req.body.bio, req.body.username]
+        },
+        data => {
+            res.status(httpOkCode)
+        },
+        err => res.status(badRequestCode).json({reason: err})
+    )
+})
+// update a users profile picture
+app.post('/profile/profilePicture', (req, res) => {
+    let profilePicture = req.files.profilePicture
+
+    profilePicture.mv(wwwrootPath + '/uploads/profile/' + req.body.username + '.dat', function (err) {
+        if (err) {
+            return res.status(badRequestCode).json({reason: err})
+        }
+        return res.status(httpOkCode).json('OK')
+    })
 })
 
 const USERIDMAP = {}
@@ -289,7 +637,6 @@ const wss = new WebSocket.Server({port: WSS_PORT, path: WSS_PATH})
 
 // listen for new connections
 wss.on('connection', ws => {
-    console.log('new connection')
     // listen for messages from client
     ws.on('close', function close() {
         db.handleQuery(connectionPool, {
@@ -299,7 +646,6 @@ wss.on('connection', ws => {
     })
     ws.on('message', async msg => {
         let {type, data} = JSON.parse(msg)
-        console.log(type, data)
         let receiverID
         if (data.receiver) receiverID = await nameToId(data.receiver)
         if (data.sender) senderID = await nameToId(data.sender)
@@ -349,7 +695,6 @@ wss.on('connection', ws => {
                     }
                 }
         }
-        // console.log(data)
     })
 
     sendSuccess(ws, 'connection')
@@ -398,408 +743,5 @@ async function putMessageInDB(ws, data) {
         )
     })
 }
-
-app.post('/edit', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: 'UPDATE message SET content = ?, edited = 1 WHERE id = ?',
-            values: [req.body.content, req.body.id],
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/history', async (req, res) => {
-    const id1 = await nameToId(req.body.receiver)
-    const id2 = await nameToId(req.body.sender)
-    db.handleQuery(connectionPool, {
-        query: 'UPDATE message SET status = 1 WHERE `to` = ? AND `from` = ?',
-        values: [id2, id1],
-    })
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'SELECT message.id as id, status, u1.username sender, u2.username receiver, content, timestamp, liked, edited FROM message INNER JOIN user u1 ON `from` = u1.id INNER JOIN user u2 ON `to` = u2.id WHERE `from` = ? AND `to` = ? OR `from` = ? AND `to` = ? ORDER BY timestamp;',
-            values: [id1, id2, id2, id1],
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/chatList', async (req, res) => {
-    const loggedInName = req.body.userIdLoggedIn
-    const id = await nameToId(loggedInName)
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'SELECT a.timestamp, a.content, u1.username receiver, u2.username sender FROM `message` a INNER JOIN(SELECT MAX(id) id FROM `message` WHERE `to` = ? or `from` = ? group by `to`, `from`) b ON a.id = b.id INNER JOIN user u1 ON a.`to` = u1.id INNER JOIN user u2 ON a.`from` = u2.id ORDER BY b.id desc',
-            values: [id, id],
-        },
-        data => {
-            if (data) {
-                let reg = new Set()
-                data = data.reduce((a, c) => {
-                    let other = c.receiver === loggedInName ? c.sender : c.receiver
-                    if (!reg.has(other)) {
-                        reg.add(other)
-                        a.push(c)
-                    }
-                    return a
-                }, [])
-                res.status(httpOkCode).json(data)
-            }
-        },
-        err => {
-            res.status(badRequestCode).json({reason: err})
-        }
-    )
-})
-
-app.post('/chatList/pin', async (req, res) => {
-    const loggedInName = req.body.userIdLoggedIn
-    const recieverName = req.body.otherUserName
-    console.log(recieverName, loggedInName)
-    const recieverId = await nameToId(recieverName)
-    const id = await nameToId(loggedInName)
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'UPDATE `chat` SET `sender` = ?,`reciever` = ?, `isPinned` = 1 WHERE `sender` = ? AND `reciever` = ?',
-            values: [id, recieverId, id, recieverId],
-        },
-        data => {
-            console.log(data)
-            if (data) {
-                res.status(httpOkCode).json(data)
-            }
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/chatList/pin', async (req, res) => {
-    const loggedInName = req.body.userIdLoggedIn
-    const recieverName = req.body.otherUserName
-    const recieverId = await nameToId(recieverName)
-    const id = await nameToId(loggedInName)
-    console.log(recieverId)
-    console.log('hello')
-    db.handleQuery(
-        (connectionPool,
-            {
-                query: 'INSERT INTO chat (sender, reciever, isPinned) VALUES (?,?, 1)',
-                values: [id, recieverId],
-            },
-            data => {
-                console.log(data)
-                if (data) {
-                    res.status(httpOkCode).json(data)
-                }
-            },
-            err => res.status(badRequestCode).json({reason: err}))
-    )
-})
-app.post('/isOnlineList', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: 'SELECT * FROM `user` WHERE `isOnline` = 1',
-        },
-        data => {
-            if (data) {
-                res.status(httpOkCode).json(data)
-            }
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/liking/like', (req, res) => {
-    const messageId = req.body.message
-    db.handleQuery(
-        connectionPool,
-        {
-            query: 'UPDATE message SET liked = 1 WHERE id=?',
-            values: [messageId],
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/liking/unlike', (req, res) => {
-    const messageId = req.body.message
-    db.handleQuery(
-        connectionPool,
-        {
-            query: 'UPDATE message SET liked = 0 WHERE id=?',
-            values: [messageId],
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/badge', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query:
-                'SELECT `badgeNr` FROM `badge` INNER JOIN `user` ON badge.user = user.id WHERE user.username = ?',
-            values: [req.body.username],
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/badge/online', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT `date` FROM online_badge INNER JOIN `user` ON online_badge.userId = user.id WHERE user.username = ?",
-            values: [req.body.username]
-        },
-        data => {
-            if (data.length === 7) {
-                res.status(httpOkCode)
-                return badgeAdd({'username': req.body.username, 'badgeNr': 1}, res)
-
-            } else {
-                res.status(httpOkCode)
-                return badgeRemove({'username': req.body.username, 'badgeNr': 1}, res)
-            }
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/badge/popular', async (req, res) => {
-    const userId = await nameToId(req.body.username);
-
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT `from`, `to`, `timestamp`, DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) AS diff FROM message WHERE (`from` = ? OR `to` = ?) AND (DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 31)",
-            values: [userId, userId]
-        },
-        data => {
-            const users = new Set();
-            for (let entry of data) {
-                users.add(entry.from)
-                users.add(entry.to)
-            }
-            console.log(users.size + "users")
-            if (users.size > 3) {
-                res.status(httpOkCode)
-                return badgeAdd({'username': req.body.username, 'badgeNr': 2}, res)
-
-            } else {
-                res.status(httpOkCode)
-                return badgeRemove({'username': req.body.username, 'badgeNr': 2}, res)
-            }
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/badge/fast', async (req, res) => {
-    const userId = await nameToId(req.body.username);
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT `from`, `to`, `timestamp` FROM message WHERE DATEDIFF(CURRENT_DATE, FROM_UNIXTIME(timestamp / 1000)) < 7 AND (`from` = ? OR `to` = ?)",
-            values: [userId, userId]
-        },
-        data => {
-            const from = [];
-            const to = []
-            for (let message of data) {
-                if (message.from === userId) {
-                    from.push(message)
-                } else {
-                    to.push(message)
-                }
-            }
-
-            let repliedFast = false;
-            for (let msgTo of to) {
-                for (let msgFrom of from) {
-                    const replyTime = new Date(msgFrom.timestamp).setHours(new Date(msgFrom.timestamp).getHours() + 1);
-
-                    if (new Date(msgTo.timestamp) < replyTime) {
-                        repliedFast = true;
-                    }
-                }
-            }
-            res.status(httpOkCode)
-            return repliedFast ? badgeAdd({
-                'username': req.body.username,
-                'badgeNr': 3
-            }, res) : badgeRemove({"username": req.body.username, "badgeNr": 3}, res)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/badge/og', (req, res) => {
-
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT dateJoined FROM user WHERE username = ?",
-            values: [req.body.username]
-        },
-        data => {
-            var oneYearAgo = new Date();
-            oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-            console.log(oneYearAgo)
-            if (data[0].dateJoined < oneYearAgo) {
-                res.status(httpOkCode)
-                return badgeAdd({'username': req.body.username, 'badgeNr': 4}, res)
-
-            } else {
-                res.status(httpOkCode)
-                return badgeRemove({'username': req.body.username, 'badgeNr': 4}, res)
-            }
-
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-const badgeAdd = async (req, res) => {
-    const userId = await nameToId(req.username);
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "INSERT IGNORE INTO badge VALUES (?,?)",
-            values: [req.badgeNr, userId]
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-}
-
-const badgeRemove = async (req, res) => {
-    const userId = await nameToId(req.username);
-    console.log(userId)
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "DELETE FROM badge WHERE user = ? AND badgeNr = ?",
-            values: [userId, req.badgeNr]
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-}
-
-app.post('/chat', async (req, res) => {
-    const stringValue = '%' + req.body.value + '%'
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT `from`, `to`, `timestamp`, `content`, `to`.`username` AS `receiver`, `from`.`username` AS" +
-                " `sender`, `message`.`id` FROM message INNER JOIN `user` AS `to` ON `to`.`id` = `message`.`to` INNER" +
-                " JOIN" +
-                " `user` AS `from` ON `from`.`id` = `message`.`from` WHERE `CONTENT` LIKE ? AND (`to`.`username` = ? OR `from`.`username` = ?)",
-            values: [stringValue, req.body.username, req.body.username]
-        },
-        data => {
-            res.status(httpOkCode).json(data)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/profile/info', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "SELECT firstName, lastName, bio FROM user WHERE username = ?",
-            values: [req.body.username]
-        },
-        data => {
-            if (data.length > 0) {
-                res.status(httpOkCode).json(data[0])
-            } else {
-                res.status(500).json({reason: 'no data returned'})
-            }
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-app.post('/profile/firstname', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "UPDATE user SET firstName = ? WHERE username = ?",
-            values: [req.body.firstName, req.body.username]
-        },
-        data => {
-            res.status(httpOkCode)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-app.post('/profile/lastname', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "UPDATE user SET lastName = ? WHERE username = ?",
-            values: [req.body.lastName, req.body.username]
-        },
-        data => {
-            res.status(httpOkCode)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-app.post('/profile/bio', (req, res) => {
-    db.handleQuery(
-        connectionPool,
-        {
-            query: "UPDATE user SET bio = ? WHERE username = ?",
-            values: [req.body.bio, req.body.username]
-        },
-        data => {
-            res.status(httpOkCode)
-        },
-        err => res.status(badRequestCode).json({reason: err})
-    )
-})
-
-app.post('/profile/profilePicture', (req, res) => {
-    let profilePicture = req.files.profilePicture
-
-    profilePicture.mv(wwwrootPath + '/uploads/profile/' + req.body.username + '.dat', function (err) {
-        if (err) {
-            return res.status(badRequestCode).json({reason: err})
-        }
-        return res.status(httpOkCode).json('OK')
-    })
-})
-
 module.exports = app
 module.exports.wss = wss

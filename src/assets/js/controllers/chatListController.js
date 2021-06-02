@@ -7,7 +7,6 @@ class chatListController {
 
     setup(htmlData) {
         this.chatView = $(htmlData)
-        this.chatView.find(".previewChat").on("click", e => console.log("click!"))
     }
 
 

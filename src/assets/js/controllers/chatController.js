@@ -19,14 +19,13 @@ class ChatController {
     this.chatRepository = new ChatRepository(from, to)
     this.chatListRepository = new ChatListRepository()
     this.badgeRepository = new badgeRepository()
-    // this.webSocket = new SimpleWebSocket()
     this._hasSelectedAChat = !!to
 
     this.init()
     window.chatController = this
   }
 
-  async init(data) {
+  async init() {
     let res = await fetch('views/chat.html')
     let html = await res.text()
     this.view = html

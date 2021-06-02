@@ -9,7 +9,8 @@ class ChatListRepository {
                 userIdLoggedIn: sessionManager.get("username")
             })
     }
-    getOnlineList(isOnlineList) {
+
+    getOnlineList() {
         return networkManager
             .doRequest("/isOnlineList", {
             })

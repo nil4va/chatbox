@@ -1,7 +1,7 @@
 /**
- * Responsible for handling the actions happening on sidebar view
+ * Responsible for handling the actions happening on navbarview
  *
- * @author Lennard Fonteijn, Pim Meijer
+ * @author Lennard Fonteijn, Pim Meijer, Maud de Jong
  */
 class NavbarController {
     constructor() {
@@ -10,18 +10,16 @@ class NavbarController {
             .fail(() => this.error());
     }
 
-    //Called when the navbar.html has been loaded
     setup(data) {
-        //Load the sidebar-content into memory
-        const sidebarView = $(data);
+        const navbarView = $(data);
 
         //Find all anchors and register the click-event
-        sidebarView.find("a").on("click", this.handleClickMenuItem);
+        navbarView.find("a").on("click", this.handleClickMenuItem);
 
         //TODO: Add logic here to determine which menu items should be visible or not
 
         //Empty the sidebar-div and add the resulting view to the page
-        $(".sidebar").empty().append(sidebarView);
+        $(".sidebar").empty().append(navbarView);
         app.isLoggedIn(
             () => this.hideWhenLoggedIn(),
             () => this.hideWhenLoggedOut()

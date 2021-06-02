@@ -1,7 +1,7 @@
 /**
- * Controller responsible for all events in view and setting data
+ * Controller of the login page
  *
- * @author Pim Meijer
+ * @author Maud de Jong
  */
 class LoginController {
 
@@ -15,7 +15,6 @@ class LoginController {
 
     //Called when the login.html has been loaded
     setup(data) {
-        //Load the login-content into memory
         this.loginView = $(data);
 
         this.loginView.find("#toReg").on("click", () => app.loadController(CONTROLLER_REGISTER));
@@ -30,15 +29,12 @@ class LoginController {
      * @param event
      */
     async handleLogin(event) {
-        //prevent actual submit and page refresh
         event.preventDefault();
 
-        //Find the username and password
         const username = document.querySelector("#exampleInputUsername").value;
         const password = document.querySelector("#exampleInputPassword").value;
 
         try{
-            //await keyword 'stops' code until data is returned - can only be used in async function
             const user = await this.userRepository.login(username, password);
 
             sessionManager.set("username", user.username);
