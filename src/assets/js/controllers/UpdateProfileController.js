@@ -26,7 +26,8 @@ class UpdateProfileController{
         $('#inputFirstname').val(personInfo.firstName);
         $('#inputLastname').val(personInfo.lastName);
         $("#inputBio").val(personInfo.bio);
-        this.updateProfilePicture()
+
+        this.updateProfilePicture();
 
         $('#saveProfile').on('click', async () => {
             this.updateFirstname().then(
@@ -58,6 +59,11 @@ class UpdateProfileController{
         })
     }
 
+    /**
+     * gets the first name value from the input field and when it isn't empty
+     * updates it in the database
+     * @returns {Promise<void>} returns when finished
+     */
     async updateFirstname(){
         const firstname = $('#inputFirstname').val();
         if (firstname.trim()){

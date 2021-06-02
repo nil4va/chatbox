@@ -15,11 +15,10 @@ export default class ChatRepository extends CustomEventTarget {
 
   // get all messages sent in this session
   async getAll() {
-    const data = await networkManager.doRequest('/history', {
+    return await networkManager.doRequest('/history', {
       receiver: this._receiver,
       sender: this._sender,
     })
-    return data
   }
 
   // the name of the logged in user

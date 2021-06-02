@@ -743,5 +743,6 @@ async function putMessageInDB(ws, data) {
         )
     })
 }
+
 module.exports = app
 module.exports.wss = wss

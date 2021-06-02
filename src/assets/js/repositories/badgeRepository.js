@@ -1,8 +1,14 @@
+/**
+ * This handles all database calls about badges.
+ *
+ * @author Maud de Jong
+ */
 class badgeRepository {
     constructor() {
         this.route = "/badge"
     }
 
+    // gets all badges of a certain user
     async getBadgeInfo(username) {
         await this.evaluateBadges(username)
         return networkManager
@@ -11,6 +17,7 @@ class badgeRepository {
             }, "POST");
     }
 
+    // evaluates every badge
     async evaluateBadges(username) {
         await networkManager.doRequest(`${this.route}/online`, {
             "username": username

@@ -1,9 +1,8 @@
 /**
- * responsible for showing al info about a post
+ * responsible for showing all info about a post
  *
  * @author Maud
  */
-
 class PostController {
   constructor(postId) {
     this.postRepository = new PostRepository()
@@ -21,9 +20,7 @@ class PostController {
 
     this.postView
       .find('#chatButton')
-      .on('click', e => this.startChat(info.creator))
-
-    // todo: use querystring
+      .on('click', () => this.startChat(info.creator))
 
     // display text from database on screen
     this.postView.find('#postTitle').text(info.title)
@@ -39,14 +36,19 @@ class PostController {
     $('.content').empty().append(this.postView)
   }
 
+  // go to chat with selected designer
   startChat(posterUserName) {
-    //check if user is logged in
+
     if (sessionManager.get('username')) {
       app.loadController(CONTROLLER_CHAT, posterUserName)
       console.log('chat aangemaakt!')
-      //TODO: kijk of er al een chat is, zo ja ga naar chatscherm. zo nee, start nieuwe chat
     } else {
       alert('You have to be logged in in order to start a chat')
     }
+
+  }
+
+  error() {
+    $(".content").html("Failed to load content!");
   }
 }

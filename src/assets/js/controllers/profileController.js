@@ -1,8 +1,14 @@
+/**
+ * responsible for showing the profile of a person
+ *
+ * @author Maud
+ */
 class ProfileController{
     constructor(person) {
         this.profileRepository = new ProfileRepository();
         this.badgeRepository = new badgeRepository();
         this.person = person === undefined ? sessionManager.get('username') : person;
+
         $.get('views/profile.html')
             .done(htmlData => this.setup(htmlData))
             .fail(() => this.error())
@@ -10,19 +16,23 @@ class ProfileController{
 
     async setup(htmlData) {
         this.profileView = $(htmlData);
+
         $(".content").empty().append(this.profileView);
 
         const personInfo = await this.profileRepository.getPersonalInfo(this.person);
+
         $("#name").text(personInfo.firstName === '' ? this.person :
             personInfo.firstName + (personInfo.lastName === '' ? '' : ' ' + personInfo.lastName));
         $(".bio").text(personInfo.bio);
 
         const earnedBadges = await this.badgeRepository.getBadgeInfo(this.person)
+
         for (let i = 0; i < earnedBadges.length; i++) {
             const badgeNr = earnedBadges[i].badgeNr
             $('#badge' + badgeNr).hide()
             $('#badgeBorder' + badgeNr).css('opacity', '100%')
         }
+
         if (this.person === sessionManager.get("username")){
             $('.progressText').text(sessionManager.get('username') + ", you have " + earnedBadges.length + " out of 4 badges right now.");
             $('.progress-bar').css('width',  earnedBadges.length / 4 * 100 + "%");
@@ -35,14 +45,12 @@ class ProfileController{
         } else {
             $('#changeProfile').hide();
             $('#badgeOverview').hide();
-
         }
 
         $('.profilePic').attr("src", "uploads/profile/" + this.person + ".dat")
         $('.profilePic').on("error", e => {
             $('.profilePic').attr("src", "assets/img/profilepic.jpg")
         })
-
     }
 
     error() {

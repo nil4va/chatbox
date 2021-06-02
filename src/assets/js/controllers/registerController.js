@@ -1,6 +1,12 @@
+/**
+ * responsible for the register page
+ *
+ * @author Maud
+ */
 class RegisterController {
     constructor() {
         this.registerRepository = new RegisterRepository();
+
         $.get("views/register.html")
             .done((data) => this.setup(data))
                 .fail(() => this.error());
@@ -15,12 +21,10 @@ class RegisterController {
         this.createRegisterView.find("#register").on("click", (e) => this.register(e))
     }
 
-    error() {
-        $(".content").html("Failed to load content!");
-    }
-
+    // checks every value and if everything is right creates user
     async register(event) {
         event.preventDefault();
+
         const username = this.createRegisterView.find("#name").val();
         const email = this.createRegisterView.find("#mail").val();
         const password = this.createRegisterView.find("#password").val();
@@ -42,6 +46,7 @@ class RegisterController {
         }
     }
 
+    // checks if the namefield is filled and the name is not already in use
     async nameCheck() {
         const username = this.createRegisterView.find("#name").val();
 
@@ -62,11 +67,13 @@ class RegisterController {
         return true;
     }
 
+    // add the error message fro the name to the right field
     nameError(message) {
         this.createRegisterView.find("#name").addClass('is-invalid');
         this.createRegisterView.find("#nameErrorMessage").text(message);
     }
 
+    // checks if emailfield is filled, has the right form and is not already in use.
     async mailCheck() {
         const email = this.createRegisterView.find("#mail").val();
 
@@ -94,11 +101,13 @@ class RegisterController {
         return true;
     }
 
+    // adds error message about mail to the right field
     mailError(message) {
         this.createRegisterView.find("#mail").addClass('is-invalid');
         this.createRegisterView.find("#mailErrorMessage").text(message);
     }
 
+    // checks if password field is filled and has the right form
     async passCheck() {
         const passwordField = this.createRegisterView.find("#password");
         const password = passwordField.val();
@@ -120,6 +129,7 @@ class RegisterController {
         return true;
     }
 
+    // checks if second password field is filled and is the same as the first password
     async repPassCheck() {
         const repPasswordField = this.createRegisterView.find("#repPassword");
         const password = this.createRegisterView.find("#password").val();
@@ -134,5 +144,9 @@ class RegisterController {
         repPasswordField.removeClass('is-invalid');
         this.createRegisterView.find("#pass2ErrorMessage").empty();
         return true;
+    }
+
+    error() {
+        $(".content").html("Failed to load content!");
     }
 }

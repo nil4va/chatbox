@@ -10,31 +10,14 @@ class UserRepository {
         this.route = "/user"
     }
 
-    async getAll() {
-
-    }
-
     /**
      * async function that handles a Promise from the networkmanager
-     * @param username
-     * @param password
-     * @returns {Promise<user>}
+     * @param username the username entered
+     * @param password the password entered
+     * @returns {Promise<user>} username if everything is correct, else a reason for error
      */
     async login(username, password) {
         return await networkManager
             .doRequest(`${this.route}/login`, {"username": username, "password": password}, "POST");
-    }
-
-    async delete() {
-
-    }
-
-
-    async register(username, password) {
-
-    }
-
-    async update(id, values = {}) {
-
     }
 }

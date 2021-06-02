@@ -34,4 +34,8 @@ class PostsController {
         app.loadController(CONTROLLER_POST, postId);
         console.log(postId);
     }
+
+    error() {
+        $(".content").html("Failed to load content!");
+    }
 }
