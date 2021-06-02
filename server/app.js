@@ -15,7 +15,6 @@ const WebSocket = require('ws')
 const path = require('path')
 const fs = require('fs')
 const {static} = require('express')
-
 const WSS_PORT = 8080
 const WSS_PATH = '/'
 

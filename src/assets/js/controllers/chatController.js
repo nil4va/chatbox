@@ -470,66 +470,11 @@ class ChatController {
             this.showBadges()
         }
 
-        $('.previewChat').on('click', selectChat.bind(this))
-        // searchbox for users
-        $('.searchbox').on('keyup', function () {
-            const value = $(this).val().toLowerCase()
-            $(this)
-                .parent()
-                .parent()
-                .find('.userName')
-                .filter(function () {
-                    $(this)
-                        .parent()
-                        .parent()
-                        .parent()
-                        .toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                    let previewChat = $('.previewChat')
-                    if ($('.chatList').find(previewChat).length > 0) {
-                        $('.chats').show()
-                        $('.messages').show()
-                    }
-                    if (value === '') {
-                        $('.chats').hide()
-                        $('.messages').hide()
-                    }
-
-                    if ($('.chatList, .pinnedList').children(':visible').length === 0) {
-                        $('.chats').hide()
-                    }
-                })
-        })
-
-        // searchbox for messages
-        function classActive(message) {
-            $('.activeMessage').removeClass('activeMessage')
-            $(message).addClass('activeMessage')
-            if (message) message.scrollIntoView()
-        }
-
-        let matchedMessages
-
-        $('.searchbox1').on('keyup', function () {
-            const value = new RegExp($(this).val().toLowerCase())
-            $('.activeMessage').removeClass('activeMessage')
-            if ($(this).val() === '') return
-            matchedMessages = $('.msg')
-                .filter(function () {
-                    return value.test($(this).text().toLowerCase())
-                })
-                .toArray()
-
-            matchedMessages = new LinkedList(...matchedMessages)
-            classActive(matchedMessages.tail.value)
-
-            if (matchedMessages.length === 0) {
-                $('#buttonUp').hide()
-                $('#buttonDown').hide()
-            } else {
-                $('#buttonUp').show()
-                $('#buttonDown').show()
-            }
-        })
+    function selectChat(e) {
+      $('.previewChat').removeClass('selected')
+      e.currentTarget.classList.add('selected')
+      this.showBadges()
+    }
 
         $('.searchbox1').on('input', function () {
             if (!$('.searchbox1').val()) {
@@ -552,6 +497,32 @@ class ChatController {
             const message = matchedMessages.next.value
             classActive(message)
         })
+        .toArray()
+
+      matchedMessages = new LinkedList(...matchedMessages)
+      classActive(matchedMessages.tail.value)
+    })
+
+    $('.searchMessageContainer').hide()
+
+    $('.searchGlobalMessages').hide()
+
+    $('.searchbox').on('keyup', async e => {
+      const value = $('.searchbox').val()
+      const allMessages = await this.chatRepository.allMessages(
+        sessionManager.get('username'),
+        value
+      )
+
+      $('.messages').html('')
+
+      let previewChatSearch = $('.previewChatSearch')
+
+      if (allMessages.length > 0) {
+        $('.searchGlobalMessages').show()
+      } else {
+        $('.searchGlobalMessages').hide()
+      }
 
         $('.searchMessageContainer').hide()
 

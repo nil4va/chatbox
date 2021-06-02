@@ -267,6 +267,7 @@ body {
 .msg .content {
   word-break: break-all;
 }
+
 .fcol {
   display: flex;
   flex-direction: column;
