@@ -459,10 +459,6 @@ class ChatController {
     function selectChat(e) {
       $('.previewChat').removeClass('selected')
       e.currentTarget.classList.add('selected')
-
-      qs('.searchbox1').value = ''
-      $('#buttonDown').hide()
-      $('#buttonUp').hide()
       this.showBadges()
     }
 
@@ -517,36 +513,6 @@ class ChatController {
 
       matchedMessages = new LinkedList(...matchedMessages)
       classActive(matchedMessages.tail.value)
-
-      if (matchedMessages.length === 0) {
-        $('#buttonUp').hide()
-        $('#buttonDown').hide()
-      } else {
-        $('#buttonUp').show()
-        $('#buttonDown').show()
-      }
-    })
-
-    $('.searchbox1').on('input', function () {
-      if (!$('.searchbox1').val()) {
-        $('#buttonUp').hide()
-        $('#buttonDown').hide()
-      }
-    })
-
-    $('#buttonUp').on('click', function () {
-      const message = matchedMessages.prev.value
-      classActive(message)
-    })
-
-    $('#buttonUp').on('click', function () {
-      const message = matchedMessages.prev.value
-      classActive(message)
-    })
-
-    $('#buttonDown').on('click', function () {
-      const message = matchedMessages.next.value
-      classActive(message)
     })
 
     $('.searchMessageContainer').hide()
