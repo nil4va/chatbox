@@ -47,6 +47,7 @@ class UpdateProfileController{
 
                 await this.profileRepository.updateProfilePicture(file, this.user)
                 this.updateProfilePicture()
+                location.reload()
             }
         }
     }
